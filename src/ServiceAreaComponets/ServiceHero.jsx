@@ -6,7 +6,7 @@ function ServiceHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/1200x/23/6e/d9/236ed92de8dc388b1ed7694467ab5761.jpg"
           alt="Service areas background"
           className="w-full h-full object-cover object-center"
         />
@@ -18,8 +18,8 @@ function ServiceHero() {
         {/* Centered on mobile, left-aligned from small screens up */}
         <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
           
-          {/* Title */}
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
+          {/* Title - Decreased size */}
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-white leading-tight">
             Service Areas
           </h1>
 
@@ -27,16 +27,6 @@ function ServiceHero() {
           <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
             Wales Healthcare provides reliable, high-standard healthcare services and professional support across communities throughout Ontario. Discover our coverage and how we bring quality care right to your door.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-2 flex justify-center sm:justify-start">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
-            >
-              <span>Get in Touch</span>
-            </a>
-          </div>
 
         </div>
       </div>

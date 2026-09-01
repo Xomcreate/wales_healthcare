@@ -7,7 +7,7 @@ function ResourceHero() {
       {/* Background Image without Heavy Overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/1200x/c4/e9/60/c4e96064ef0448669e119b0c273f80ac.jpg"
           alt="Guidance and resources background"
           className="w-full h-full object-cover object-center"
         />

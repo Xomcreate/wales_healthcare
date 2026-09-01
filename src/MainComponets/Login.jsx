@@ -4,17 +4,17 @@ import { Link } from 'react-router-dom'
 // Dynamic slideshow imagery for modern care environments
 const SLIDES = [
   {
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://i.pinimg.com/1200x/db/cd/1d/dbcd1dd88f1f3b4a2f391921c82a77e2.jpg',
     title: 'Precision & Empathy in Care',
     subtitle: 'Access your health records, appointments, and care coordinators effortlessly.',
   },
   {
-    image: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://i.pinimg.com/1200x/12/92/bf/1292bf366eead999951a9a6cc70d2797.jpg',
     title: 'Advanced Professional Network',
     subtitle: 'Empowering specialized practitioners with high-security facility tools.',
   },
   {
-    image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://i.pinimg.com/1200x/73/ee/fa/73eefa2afd327d19ef5c9b0c9eaa1460.jpg',
     title: 'Holistic Home Support Portal',
     subtitle: 'Bridging families and healthcare specialists with trust and precision.',
   },

@@ -6,7 +6,7 @@ function TestmonialHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/736x/e3/fd/c1/e3fdc18b2e24ce8586f99cb29b07e4af.jpg"
           alt="Family testimonials background"
           className="w-full h-full object-cover object-center"
         />
@@ -18,25 +18,15 @@ function TestmonialHero() {
         {/* Centered on mobile, left-aligned from small screens up */}
         <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
           
-          {/* Title */}
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
+          {/* Title - Decreased size */}
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-white leading-tight">
             Family Testimonials
           </h1>
 
-          {/* Small Writeup */}
+          {/* Small Writeup - Slightly increased body size */}
           <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
             Read authentic experiences and heartfelt stories from families and healthcare partners across Ontario who trust Wales Healthcare for compassionate support and dependable care.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-2 flex justify-center sm:justify-start">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
-            >
-              <span>Get Started</span>
-            </a>
-          </div>
 
         </div>
       </div>

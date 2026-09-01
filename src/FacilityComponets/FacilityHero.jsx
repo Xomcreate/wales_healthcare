@@ -7,7 +7,7 @@ function FacilityHero() {
       {/* Background Image without Heavy Overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=2000"
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1A1kOIFLTUlFO6TQL2O-9HENKtPagV7REPGIUqmAacw&s=10"
           alt="Professional facility care service background"
           className="w-full h-full object-cover object-center"
         />

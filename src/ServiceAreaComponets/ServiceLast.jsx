@@ -8,7 +8,7 @@ function ServiceLast() {
       <div 
         className="absolute inset-0 z-0 opacity-50 pointer-events-none" 
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=2000')",
+          backgroundImage: "url('https://i.pinimg.com/1200x/77/79/82/777982c5811c3b35878b30de34d379d0.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -34,7 +34,7 @@ function ServiceLast() {
           {/* Action Button styled in Teal */}
           <div className="pt-2">
             <a
-              href="#contact"
+              href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
               <span>Request a Care Assessment</span>

@@ -6,7 +6,7 @@ function TemporaryHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/1200x/81/5e/2f/815e2f4137a5d18facd5f0e7eb403efa.jpg"
           alt="Temporary and short-term coverage background"
           className="w-full h-full object-cover object-center"
         />
@@ -18,7 +18,7 @@ function TemporaryHero() {
         {/* Centered on mobile, left-aligned from small screens up */}
         <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
           
-          {/* Title */}
+          {/* Title - Reduced size */}
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
             Temporary and Short-Term Coverage
           </h1>
@@ -27,16 +27,6 @@ function TemporaryHero() {
           <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
             Providing reliable, flexible short-term care solutions and temporary coverage to ensure continuous comfort, safety, and seamless support when you need it most.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-2 flex justify-center sm:justify-start">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
-            >
-              <span>Get Started</span>
-            </a>
-          </div>
 
         </div>
       </div>

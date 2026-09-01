@@ -6,7 +6,7 @@ function FaqHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/736x/d7/6f/71/d76f719a2eb084f29d5e5c35293d8d98.jpg"
           alt="Frequently asked questions background"
           className="w-full h-full object-cover object-center"
         />

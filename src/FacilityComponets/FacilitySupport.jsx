@@ -51,7 +51,7 @@ function FacilitySupport() {
             <div className="relative mx-auto max-w-md lg:max-w-none">
               <div className="h-80 sm:h-90 w-full bg-slate-800 rounded-3xl shadow-2xl overflow-hidden relative border border-slate-700/50">
                 <img 
-                  src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1000" 
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCrZFEhBhwlBwI5Afz6cB1o63M1JHqerP5dbX9dAJ3UQ&s=10" 
                   alt="Compassionate facility care support and interaction" 
                   className="w-full h-full object-cover"
                 />

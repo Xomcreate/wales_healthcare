@@ -35,7 +35,7 @@ function DailyMatters() {
           {/* Action Button styled in Teal */}
           <div className="pt-1">
             <a
-              href="#contact"
+              href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
               <span>Contact us to learn more about daily support services</span>

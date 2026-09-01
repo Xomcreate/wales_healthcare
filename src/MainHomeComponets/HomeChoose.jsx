@@ -52,7 +52,7 @@ function HomeChoose() {
             {/* Left Column: Compact Image */}
             <div className="lg:col-span-4 relative h-80 sm:h-95 w-full overflow-hidden rounded-2xl shadow-md">
               <img 
-                src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?q=80&w=1000&auto=format&fit=crop" 
+                src="https://i.pinimg.com/736x/08/04/a7/0804a745798454281d5623c0758a2806.jpg" 
                 alt="Caregiver holding senior client's hand" 
                 className="w-full h-full object-cover"
               />

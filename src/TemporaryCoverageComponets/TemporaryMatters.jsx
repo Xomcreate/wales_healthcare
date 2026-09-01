@@ -8,7 +8,7 @@ function TemporaryMatters() {
       <div 
         className="absolute inset-0 z-0 opacity-50 pointer-events-none" 
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=2000')",
+          backgroundImage: "url('https://i.pinimg.com/736x/d5/69/ea/d569ea62ae4c13cca8dd4725388d996a.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -34,7 +34,7 @@ function TemporaryMatters() {
           {/* Action Button styled in Teal */}
           <div className="pt-1">
             <a
-              href="#contact"
+              href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
               <span>Contact us to arrange short-term support</span>

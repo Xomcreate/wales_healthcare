@@ -6,7 +6,7 @@ function DementiaHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfLO2JT9PQ4cNPNZVBwDKz2zrg-etfZs0sf9t6dXpwUg&s=10"
+          src="https://i.pinimg.com/736x/ea/f4/93/eaf49396c01960728c4c6c93ad90055d.jpg"
           alt="Dementia Care Background"
           className="w-full h-full object-cover object-center"
         />
@@ -18,8 +18,8 @@ function DementiaHero() {
         {/* Centered on mobile, left-aligned from small screens up */}
         <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
           
-          {/* Title */}
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+          {/* Title - Reduced size */}
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
             Dementia Care
           </h1>
 
@@ -27,16 +27,6 @@ function DementiaHero() {
           <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
             Providing specialized, compassionate, and safe memory support designed to nurture familiarity, comfort, and peace of mind for individuals and their families at home.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-2 flex justify-center sm:justify-start">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
-            >
-              <span>Get Started</span>
-            </a>
-          </div>
 
         </div>
       </div>

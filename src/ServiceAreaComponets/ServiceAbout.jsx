@@ -52,7 +52,7 @@ function ServiceAbout() {
             <span>Learn More About Staff Relief</span>
           </a>
           <a
-            href="#contact"
+            href="/contact"
             className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-md hover:shadow-teal-500/20"
           >
             <span>Request Care Today</span>

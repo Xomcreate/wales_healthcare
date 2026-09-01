@@ -6,7 +6,7 @@ function HospiceHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/1200x/87/74/33/877433d16a97d895dc26394be90c99b4.jpg"
           alt="Hospice Care Background"
           className="w-full h-full object-cover object-center"
         />
@@ -18,8 +18,8 @@ function HospiceHero() {
         {/* Centered on mobile, left-aligned from small screens up */}
         <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
           
-          {/* Title */}
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+          {/* Title - Reduced size */}
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
             Hospice Care
           </h1>
 
@@ -27,16 +27,6 @@ function HospiceHero() {
           <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
             Providing compassionate, dignity-centered end-of-life support focused on comfort, peace, and emotional reassurance for both individuals and their families.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-2 flex justify-center sm:justify-start">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
-            >
-              <span>Get Started</span>
-            </a>
-          </div>
 
         </div>
       </div>

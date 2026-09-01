@@ -35,7 +35,7 @@ function PersonalLast() {
           {/* Action Button (Background color matched to text-slate-950) */}
           <div className="pt-1">
             <a
-              href="#contact"
+              href="/contact"
               className="inline-flex items-center justify-center bg-slate-950 hover:bg-slate-800 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-slate-950/20"
             >
               <span>Request A Care Assessment</span>

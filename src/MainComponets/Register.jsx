@@ -4,17 +4,17 @@ import { Link } from 'react-router-dom'
 // Slideshow images showcasing premium medical healthcare facilities and professional care staff
 const SLIDES = [
   {
-    image: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://i.pinimg.com/736x/54/56/7a/54567ad0477fc3296a0079a0595bf8f1.jpg',
     title: 'Advanced Medical & Nursing Care',
     subtitle: 'Providing professional health services, specialized personal assistance, and clinical excellence directly to patients and families.',
   },
   {
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://i.pinimg.com/1200x/1e/f7/6a/1ef76af3851091f0546d33e7002abeeb.jpg',
     title: 'Trusted Facility Staffing Solutions',
     subtitle: 'Connecting certified practitioners, nurses, and care specialists with high-standard medical facilities across the region.',
   },
   {
-    image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://i.pinimg.com/736x/89/2a/79/892a79808a67037d8d59ec2a96460e62.jpg',
     title: 'Compassionate Home Healthcare Support',
     subtitle: 'Dedicated daily caregiving, dementia support, and holistic health services tailored to individual needs.',
   },

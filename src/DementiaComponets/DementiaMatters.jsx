@@ -9,7 +9,7 @@ function DementiaMatters() {
       <div 
         className="absolute inset-0 z-0 opacity-50 pointer-events-none" 
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=2000')",
+          backgroundImage: "url('https://i.pinimg.com/236x/0e/26/9f/0e269ff7f4f51f0cfe8a3618c6290199.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -35,7 +35,7 @@ function DementiaMatters() {
           {/* Action Button styled in Teal */}
           <div className="pt-1">
             <a
-              href="#contact"
+              href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
               <span>Contact us to learn more about dementia care support</span>

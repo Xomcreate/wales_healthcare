@@ -6,7 +6,7 @@ function LongTermHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/1200x/36/c2/23/36c223b532afe6d739b4e95d7860bb5d.jpg"
           alt="Long-term placement support background"
           className="w-full h-full object-cover object-center"
         />
@@ -18,25 +18,15 @@ function LongTermHero() {
         {/* Centered on mobile, left-aligned from small screens up */}
         <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
           
-          {/* Title */}
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
+          {/* Title - Reduced text size */}
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-white leading-tight">
             Long-Term Placement Support
           </h1>
 
           {/* Small Writeup */}
-          <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
+          <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-normal">
             Providing consistent, dependable, and compassionate long-term care placements designed to foster stable relationships and enduring support for residents and facilities.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-2 flex justify-center sm:justify-start">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
-            >
-              <span>Get Started</span>
-            </a>
-          </div>
 
         </div>
       </div>

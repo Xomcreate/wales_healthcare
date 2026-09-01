@@ -57,7 +57,7 @@ function TemporaryServices() {
             <div className="bg-teal-700 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-teal-600 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/736x/3f/b8/b2/3fb8b2cb3cb9b4278130befea2eb5f8f.jpg"
                   alt="Temporary staffing and care coverage"
                   className="w-full h-full object-cover"
                 />
@@ -99,7 +99,7 @@ function TemporaryServices() {
             <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-slate-800 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/1200x/db/cd/1d/dbcd1dd88f1f3b4a2f391921c82a77e2.jpg"
                   alt="Flexible healthcare staffing solutions"
                   className="w-full h-full object-cover"
                 />

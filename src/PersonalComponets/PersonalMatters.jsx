@@ -9,7 +9,7 @@ function PersonalMatters() {
       <div 
         className="absolute inset-0 z-0 opacity-50 pointer-events-none" 
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=2000')",
+          backgroundImage: "url('https://i.pinimg.com/1200x/70/e4/23/70e4230960bd04ab55e1d92788143f0b.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -35,7 +35,7 @@ function PersonalMatters() {
           {/* Action Button styled in Teal */}
           <div className="pt-1">
             <a
-              href="#contact"
+              href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
               <span>Get in touch to learn how we can support your loved one at home</span>

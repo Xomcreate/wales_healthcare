@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function HomeCareB() {
+  const navigate = useNavigate();
+
   return (
     <section className="bg-white py-16 lg:py-24 border-b border-slate-100 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -67,12 +70,12 @@ function HomeCareB() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="#consultation"
+          <button
+            onClick={() => navigate('/consultation')}
             className="w-full sm:w-auto bg-[#0077b6] hover:bg-[#026296] text-white font-semibold px-8 py-4 rounded-xl text-sm sm:text-base shadow-md transition-all text-center"
           >
             Request a Free Consultation
-          </a>
+          </button>
           <a
             href="tel:9057091767"
             className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-semibold px-8 py-4 rounded-xl text-sm sm:text-base shadow-md transition-all text-center"

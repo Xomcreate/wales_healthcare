@@ -1,13 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Added import for routing
 
 function HomeServices() {
+  const navigate = useNavigate(); // Initialize the navigation hook
+
   return (
     <section className="relative py-14 sm:py-16 px-4 sm:px-6 lg:px-8 font-sans overflow-hidden bg-slate-100">
       
       {/* Background Image with Transparent White Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1600" 
+          src="https://i.pinimg.com/1200x/03/25/76/032576a39dbd902073e3f4e39dcae22f.jpg" 
           alt="Background Care" 
           className="w-full h-full object-cover"
         />
@@ -16,7 +19,7 @@ function HomeServices() {
 
       <div className="max-w-6xl mx-auto relative z-10 flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">
         
-        {/* Right Side / Mobile First: Title & Description (Centered on mobile, right-aligned on desktop, comes first on mobile) */}
+        {/* Right Side / Mobile First: Title & Description */}
         <div className="w-full lg:w-5/12 flex flex-col items-center lg:items-end text-center lg:text-right lg:pt-3 order-1 lg:order-2">
           <div className="inline-flex items-center gap-2 bg-teal-50 border border-teal-200 px-3.5 py-1 rounded-full text-teal-700 font-semibold text-xs uppercase tracking-wider mb-3">
             Our Services
@@ -29,7 +32,7 @@ function HomeServices() {
           </p>
         </div>
 
-        {/* Left Side / Mobile Second: Two Cards Side-by-Side (Fully Responsive) */}
+        {/* Left Side / Mobile Second: Two Cards Side-by-Side */}
         <div className="w-full lg:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-5 order-2 lg:order-1">
           
           {/* Card 1: Home Care */}
@@ -37,7 +40,7 @@ function HomeServices() {
             <div>
               <div className="relative h-32 w-full overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=600" 
+                  src="https://i.pinimg.com/1200x/c8/b6/49/c8b649b773f8c5405a846904d77bb999.jpg" 
                   alt="Home Care" 
                   className="w-full h-full object-cover"
                 />
@@ -54,7 +57,11 @@ function HomeServices() {
               </div>
             </div>
             <div className="p-4 sm:p-5 pt-0">
-              <button className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-xl text-xs shadow-md transition-all">
+              {/* Added onClick routing here */}
+              <button 
+                onClick={() => navigate('/homecare')} 
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 rounded-xl text-xs shadow-md transition-all"
+              >
                 Book Home Care
               </button>
             </div>
@@ -65,7 +72,7 @@ function HomeServices() {
             <div>
               <div className="relative h-32 w-full overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=600" 
+                  src="https://i.pinimg.com/1200x/73/d4/2b/73d42b451d2d740b33c027287d4bd8e4.jpg" 
                   alt="Facility Care" 
                   className="w-full h-full object-cover"
                 />
@@ -82,7 +89,11 @@ function HomeServices() {
               </div>
             </div>
             <div className="p-4 sm:p-5 pt-0">
-              <button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 rounded-xl text-xs shadow-md transition-all">
+              {/* Added onClick routing here */}
+              <button 
+                onClick={() => navigate('/facility')} 
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 rounded-xl text-xs shadow-md transition-all"
+              >
                 Book Facility Staffing
               </button>
             </div>

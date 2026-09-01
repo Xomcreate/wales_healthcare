@@ -57,7 +57,7 @@ function DementiaService() {
             <div className="bg-teal-700 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-teal-600 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/1200x/a2/a5/68/a2a56873b14f582ac3e8caaa726ddb0d.jpg"
                   alt="Dementia memory care support"
                   className="w-full h-full object-cover"
                 />
@@ -99,7 +99,7 @@ function DementiaService() {
             <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-slate-800 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/1200x/26/68/a9/2668a9f7ea9c069201a81eda36439b07.jpg"
                   alt="Specialized memory care support"
                   className="w-full h-full object-cover"
                 />
@@ -125,7 +125,7 @@ function DementiaService() {
 
                 <div className="pt-6">
                   <a
-                    href="#contact"
+                    href="/contact"
                     className="inline-flex items-center justify-center w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-teal-500/20"
                   >
                     <span>Request Services</span>

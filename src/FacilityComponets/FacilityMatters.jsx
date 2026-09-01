@@ -38,7 +38,7 @@ function FacilityMatters() {
               <div className="absolute -inset-4 bg-teal-100/50 rounded-3xl transform rotate-3 -z-10" />
               <div className="h-100 sm:h-112.5 w-full bg-slate-200 rounded-2xl shadow-xl overflow-hidden relative border border-slate-100">
                 <img 
-                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1000" 
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl1J18_qDZMfeto-03E2V9aESzUcLjqkwGBrTG98p5yQ&s=10" 
                   alt="Supportive care in a facility setting" 
                   className="w-full h-full object-cover"
                 />
@@ -63,7 +63,7 @@ function FacilityMatters() {
               <div className="absolute -inset-4 bg-teal-100/50 rounded-3xl transform -rotate-3 -z-10" />
               <div className="h-100 sm:h-112.5 w-full bg-slate-200 rounded-2xl shadow-xl overflow-hidden relative border border-slate-100">
                 <img 
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=1000" 
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEuKvAotyBriZF0WAi-Z-1mM3mQJBW3kV9GRQmrwBbWmcePJf7ginIj3su&s=10" 
                   alt="Personalized resident advocacy and care" 
                   className="w-full h-full object-cover"
                 />

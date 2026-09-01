@@ -93,9 +93,12 @@ function HomeCareStories() {
 
         {/* Action Button */}
         <div>
-          <button className="bg-[#1D82B6] hover:bg-[#166995] text-white font-medium px-6 py-3 rounded-full shadow-md transition-all duration-200 text-xs sm:text-sm inline-flex items-center justify-center mx-auto">
+          <a
+            href="/about/stories"
+            className="bg-[#1D82B6] hover:bg-[#166995] text-white font-medium px-6 py-3 rounded-full shadow-md transition-all duration-200 text-xs sm:text-sm inline-flex items-center justify-center mx-auto"
+          >
             Read More Caregiver Stories
-          </button>
+          </a>
         </div>
 
       </div>

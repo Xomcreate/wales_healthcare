@@ -12,7 +12,7 @@ function CareerD() {
           <div className="relative w-full">
             <img
               // Using a high-quality relevant Unsplash image 
-              src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=900"
+              src="https://i.pinimg.com/736x/1d/c5/da/1dc5dae45b5c254b053be333e87f7246.jpg"
               alt="Compassionate caregiver smiling with a senior patient"
               className="w-full h-auto max-h-125 object-cover rounded-3xl shadow-lg"
             />

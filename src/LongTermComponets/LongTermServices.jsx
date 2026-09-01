@@ -57,7 +57,7 @@ function LongTermServices() {
             <div className="bg-teal-700 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-teal-600 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/1200x/95/db/ff/95dbffb1bba1e290aff07466b8ba4bce.jpg"
                   alt="Long term care companionship and support"
                   className="w-full h-full object-cover"
                 />
@@ -99,7 +99,7 @@ function LongTermServices() {
             <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-slate-800 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/736x/7e/da/cd/7edacd177e5905bf7a5d1ae96554ed38.jpg"
                   alt="Residents in long-term care settings"
                   className="w-full h-full object-cover"
                 />
@@ -125,7 +125,7 @@ function LongTermServices() {
 
                 <div className="pt-6">
                   <a
-                    href="#contact"
+                    href="/contact"
                     className="inline-flex items-center justify-center w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-teal-500/20"
                   >
                     <span>Request Long-Term Support</span>

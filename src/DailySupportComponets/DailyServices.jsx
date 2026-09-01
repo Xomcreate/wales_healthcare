@@ -57,7 +57,7 @@ function DailyServices() {
             <div className="bg-teal-700 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-teal-600 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/736x/75/10/81/751081c9aec85e4b38347e745ae30cd8.jpg"
                   alt="Companionship and daily support"
                   className="w-full h-full object-cover"
                 />
@@ -99,7 +99,7 @@ function DailyServices() {
             <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-slate-800 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/1200x/69/0a/ed/690aed3d40b81896e4c58acda6f6a657.jpg"
                   alt="Daily companionship support"
                   className="w-full h-full object-cover"
                 />
@@ -125,7 +125,7 @@ function DailyServices() {
 
                 <div className="pt-6">
                   <a
-                    href="#contact"
+                    href="/contact"
                     className="inline-flex items-center justify-center w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-teal-500/20"
                   >
                     <span>Request Services</span>

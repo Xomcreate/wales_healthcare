@@ -6,7 +6,7 @@ function DailyHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/736x/0c/f9/5b/0cf95bbb233db1f8194f48d95455edf7.jpg"
           alt="Companionship and Daily Support Background"
           className="w-full h-full object-cover object-center"
         />
@@ -18,8 +18,8 @@ function DailyHero() {
         {/* Centered on mobile, left-aligned from small screens up */}
         <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
           
-          {/* Title (Decreased size from xl:text-5xl to lg:text-4xl) */}
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
+          {/* Title - Text size further reduced */}
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
             Companionship / Daily Support
           </h1>
 
@@ -27,16 +27,6 @@ function DailyHero() {
           <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
             Enhancing daily life with warm companionship, meaningful engagement, and reliable assistance to help individuals thrive comfortably at home.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-2 flex justify-center sm:justify-start">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
-            >
-              <span>Get Started</span>
-            </a>
-          </div>
 
         </div>
       </div>

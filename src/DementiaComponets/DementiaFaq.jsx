@@ -74,7 +74,7 @@ function DementiaFaq() {
         {/* Footer Action Button routed to Contact Page */}
         <div className="flex items-center justify-center">
           <Link 
-            to="/faq" 
+            to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
             View all FAQ

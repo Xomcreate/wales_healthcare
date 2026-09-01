@@ -57,7 +57,7 @@ function EmergencyServices() {
             <div className="bg-teal-700 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-teal-600 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/236x/91/2b/96/912b96673688ee3ba19a6f492c4ddeff.jpg"
                   alt="Emergency staffing and rapid deployment"
                   className="w-full h-full object-cover"
                 />
@@ -99,7 +99,7 @@ function EmergencyServices() {
             <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-slate-800 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/736x/5a/68/a8/5a68a8fe3cdae2e6c9602dd191e18c3e.jpg"
                   alt="Urgent staffing solutions for care facilities"
                   className="w-full h-full object-cover"
                 />
@@ -125,7 +125,7 @@ function EmergencyServices() {
 
                 <div className="pt-6">
                   <a
-                    href="#contact"
+                    href="/contact"
                     className="inline-flex items-center justify-center w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-teal-500/20"
                   >
                     <span>Request Emergency Coverage</span>

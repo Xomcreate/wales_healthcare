@@ -6,7 +6,7 @@ function EmergencyHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=2000"
+          src="https://i.pinimg.com/736x/5c/4f/04/5c4f046003928966fa271061510ae40d.jpg"
           alt="Emergency staffing background"
           className="w-full h-full object-cover object-center"
         />
@@ -18,25 +18,15 @@ function EmergencyHero() {
         {/* Centered on mobile, left-aligned from small screens up */}
         <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
           
-          {/* Title */}
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white leading-tight">
+          {/* Title - Reduced text size */}
+          <h1 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-white leading-tight">
             Emergency Staffing
           </h1>
 
           {/* Small Writeup */}
-          <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
+          <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-normal">
             Providing rapid, reliable, and urgent healthcare staffing solutions to ensure uninterrupted resident safety, care continuity, and operational stability when critical shortages occur.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-2 flex justify-center sm:justify-start">
-            <a
-              href="#contact"
-              className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
-            >
-              <span>Get Started</span>
-            </a>
-          </div>
 
         </div>
       </div>

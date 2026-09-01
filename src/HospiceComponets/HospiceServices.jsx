@@ -57,7 +57,7 @@ function HospiceServices() {
             <div className="bg-teal-700 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-teal-600 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/1200x/70/a0/57/70a05761b6e05e9e6194f82208cc67b6.jpg"
                   alt="Hospice and end of life support"
                   className="w-full h-full object-cover"
                 />
@@ -99,7 +99,7 @@ function HospiceServices() {
             <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between border border-slate-800 text-white text-center sm:text-left relative z-10">
               <div className="w-full h-48 sm:h-56 relative overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=800"
+                  src="https://i.pinimg.com/1200x/cd/5c/15/cd5c15b285535e257112dac835abcadb.jpg"
                   alt="Compassionate end of life support"
                   className="w-full h-full object-cover"
                 />
@@ -125,7 +125,7 @@ function HospiceServices() {
 
                 <div className="pt-6">
                   <a
-                    href="#contact"
+                    href="/contact"
                     className="inline-flex items-center justify-center w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-teal-500/20"
                   >
                     <span>Request Services</span>

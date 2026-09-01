@@ -10,7 +10,7 @@ function AboutB() {
           <div className="lg:col-span-6 relative">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100 aspect-4/3 sm:aspect-16/11 group">
               <img
-                src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&q=80&w=1200"
+                src="https://i.pinimg.com/736x/1c/e6/68/1ce66810219cdc6cc5013364a8dcf3b4.jpg"
                 alt="Compassionate caregiver supporting a client at Wales Healthcare"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />

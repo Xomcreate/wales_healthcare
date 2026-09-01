@@ -8,7 +8,7 @@ function HomeHero() {
       {/* Background Image with Dark Gradient Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFJw1rC5_lfZ44ZkqeevcysLAMMM3hP_lF6gOlTA4SqQ&s=10"
+        src="https://i.pinimg.com/736x/04/f9/c8/04f9c8713a0e55f7986ebe8572a221be.jpg"
           alt="Caregiver supporting senior individual" 
           className="w-full h-full object-cover scale-105"
         />

@@ -63,7 +63,7 @@ function HomeCareE() {
               <div className="absolute -inset-4 bg-purple-100/50 rounded-3xl transform -rotate-3 -z-10" />
               <div className="h-100 sm:h-112.5 w-full bg-slate-200 rounded-2xl shadow-xl overflow-hidden relative border border-slate-100">
                 <img 
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3VxpVUQiDJaDAWmFgkJBSfJaGyAQ5ljHSw3sYC0J66A&s=10" 
+                  src="https://i.pinimg.com/736x/15/04/02/1504029ca6de74a33f32c256d75d04e1.jpg" 
                   alt="Professional caregiver supporting a senior" 
                   className="w-full h-full object-cover"
                 />
