@@ -45,7 +45,7 @@ function ContactC() {
           {/* Bottom Action Button matching the reference layout */}
           <div className="text-center mt-8">
             <a
-              href="tel:09076084515"
+              href="/about/service-areas"
               className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-7 py-3 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/20"
             >
               <span>View All Service Areas</span>

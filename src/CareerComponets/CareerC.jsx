@@ -13,7 +13,7 @@ function CareerC() {
         {/* Action Button - Reduced top padding for overall height compression */}
         <div className="pt-1">
           <a
-            href="#apply-form"
+            href="/apply"
             className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-700 text-white font-semibold px-8 py-3 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/25"
           >
             Apply Now

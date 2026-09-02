@@ -28,8 +28,8 @@ function Footer() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-12">
         
-        {/* Main 5-Column Grid Layout matching the reference */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-6 text-left">
+        {/* Main 5-Column Grid Layout: Centered on mobile/tablet, left-aligned on large screens */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-6 text-center lg:text-left">
           
           {/* Column 1: Contact */}
           <div className="space-y-3">
@@ -175,7 +175,7 @@ function Footer() {
         </div>
 
         {/* Divider Line */}
-        <div className="mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 space-y-3 sm:space-y-0">
+        <div className="mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 space-y-3 sm:space-y-0 text-center sm:text-left">
           <p>Serving Communities Across Ontario, From Windsor to Ottawa</p>
           <p>© Wales Healthcare. All Rights Reserved.</p>
         </div>

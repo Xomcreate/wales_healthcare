@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function HomeLast() {
   return (
@@ -28,9 +29,12 @@ function HomeLast() {
               Contact us today for a friendly, no-obligation consultation. Let's create a customized support plan tailored to your family's needs.
             </p>
 
-            <button className="bg-[#132A3E] hover:bg-slate-800 text-white font-semibold text-sm px-8 py-3.5 rounded-full shadow-md transition-all duration-200 mb-6">
+            <Link 
+              to="/consultation" 
+              className="inline-block bg-[#132A3E] hover:bg-slate-800 text-white font-semibold text-sm px-8 py-3.5 rounded-full shadow-md transition-all duration-200 mb-6"
+            >
               Book Your Free Consultation
-            </button>
+            </Link>
 
             {/* Feature bullets */}
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm font-semibold text-slate-900">
@@ -75,12 +79,12 @@ function HomeLast() {
                 </p>
 
                 <div className="flex flex-wrap justify-center lg:justify-start items-center gap-4">
-                  <button className="bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all duration-200">
-                    Explore Open Positions
-                  </button>
-                  <button className="bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all duration-200">
+                  <Link 
+                    to="/contact" 
+                    className="inline-block bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all duration-200"
+                  >
                     Get in Touch
-                  </button>
+                  </Link>
                 </div>
 
               </div>

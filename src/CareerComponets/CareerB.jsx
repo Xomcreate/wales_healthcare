@@ -92,7 +92,7 @@ function CareerB() {
                   <p className="text-base font-bold text-slate-900">Join Our Care Team</p>
                 </div>
                 <a
-                  href="#apply"
+                  href="/apply"
                   className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all shadow-md whitespace-nowrap"
                 >
                   Apply Now

@@ -40,13 +40,13 @@ function CareerD() {
             {/* Action Buttons (Pill shape to match screenshot) */}
             <div className="pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
               <a
-                href="#about"
+                href="/about"
                 className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-700 text-white font-semibold px-7 py-3 rounded-full text-sm transition-all shadow-md hover:shadow-teal-500/25"
               >
                 Learn More About Wales Healthcare
               </a>
               <a
-                href="#service-areas"
+                href="/about/service-areas"
                 className="inline-flex items-center justify-center bg-slate-800 hover:bg-slate-900 text-white font-semibold px-7 py-3 rounded-full text-sm transition-all shadow-md"
               >
                 View Service Areas

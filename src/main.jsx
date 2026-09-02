@@ -27,46 +27,94 @@ import Register from './MainComponets/Register'
 import Login from './MainComponets/Login'
 import Footer from './MainComponets/Footer'
 import Consultation from './MainComponets/Consultation'
+import ScrollToTop from './MainComponets/ScrollToTop'
+import DevelopmentalSupport from './GuideComponets/DevelopmentalSupport'
+import PersonalSupportWorker from './GuideComponets/PersonalSupportWorker'
+import CareerForm from './MainComponets/CareerForm'
+import Privacy from './MainComponets/Privacy'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
+
+      {/* Automatically scroll to top whenever page changes */}
+      <ScrollToTop />
+
       <Header />
 
       <Routes>
+
         {/* Landing Page */}
         <Route path="/" element={<Home />} />
 
         {/* Homecare */}
         <Route path="/homecare" element={<HomeCare />} />
-        <Route path="/homecare/personal-care" element={<PersonalCare/>} />
-        <Route path="/homecare/dementia-care" element={<Dementia/>} />
-        <Route path="/homecare/hospice-care" element={<Hospice/>} />
-        <Route path="/homecare/companionship" element={<Daily/>} />
-        <Route path="/homecare/nursing" element={<Nursing/>} />
+        <Route path="/homecare/personal-care" element={<PersonalCare />} />
+        <Route path="/homecare/dementia-care" element={<Dementia />} />
+        <Route path="/homecare/hospice-care" element={<Hospice />} />
+        <Route path="/homecare/companionship" element={<Daily />} />
+        <Route path="/homecare/nursing" element={<Nursing />} />
 
         {/* Facility */}
         <Route path="/facility" element={<Facility />} />
-        <Route path="facility/temporary-coverage" element={<Temporary />} />
-        <Route path="facility/long-term-placement" element={<LongTerm/>} />
-        <Route path="facility/emergency-staffing" element={<Emergency/>} />
-             
-        {/* About */}
-        <Route path="/about" element={<About/>} />
-        <Route path="/about/testimonials" element={<Testimonial/>} />
-        <Route path="about/stories" element={<Caregiver/>} />
-        <Route path="about/service-areas" element={<Service/>} />
+        <Route
+          path="/facility/temporary-coverage"
+          element={<Temporary />}
+        />
+        <Route
+          path="/facility/long-term-placement"
+          element={<LongTerm />}
+        />
+        <Route
+          path="/facility/emergency-staffing"
+          element={<Emergency />}
+        />
 
-        {/* Resource */}
-        <Route path="/resources" element={<Resources/>} />
-        <Route path="/resources/faq" element={<Faq/>} />
+        {/* About */}
+        <Route path="/about" element={<About />} />
+        <Route
+          path="/about/testimonials"
+          element={<Testimonial />}
+        />
+        <Route
+          path="/about/stories"
+          element={<Caregiver />}
+        />
+        <Route
+          path="/about/service-areas"
+          element={<Service />}
+        />
+
+        {/* Resources */}
+        <Route path="/resources" element={<Resources />} />
+        <Route path="/resources/faq" element={<Faq />} />
+
+
+        {/* Guide */}
+        {/* Guides */}
+<Route
+  path="/guides/developmental-support"
+  element={<DevelopmentalSupport />}
+/>
+
+<Route
+  path="/guides/personal-support-worker"
+  element={<PersonalSupportWorker />}
+/>
 
         {/* Main Pages */}
         <Route path="/careers" element={<Career />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/consultation" element={<Consultation />} />
+         <Route path="/apply" element={<CareerForm />} />
+          <Route path="/apply" element={<CareerForm />} />
+            <Route path="/privacy" element={<Privacy/>} />
+        <Route
+          path="/consultation"
+          element={<Consultation />}
+        />
+
       </Routes>
 
       {/* Floating Bottom-Right Consultation Button */}
@@ -76,11 +124,15 @@ createRoot(document.getElementById('root')).render(
           className="flex items-center space-x-2 bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-6 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 border border-teal-500/30 backdrop-blur-md"
         >
           <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
-          <span className="text-sm sm:text-base">Get a Consultation</span>
+
+          <span className="text-sm sm:text-base">
+            Get a Consultation
+          </span>
         </Link>
       </div>
 
       <Footer />
+
     </BrowserRouter>
-  </StrictMode>,
+  </StrictMode>
 )
