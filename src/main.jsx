@@ -32,6 +32,16 @@ import DevelopmentalSupport from './GuideComponets/DevelopmentalSupport'
 import PersonalSupportWorker from './GuideComponets/PersonalSupportWorker'
 import CareerForm from './MainComponets/CareerForm'
 import Privacy from './MainComponets/Privacy'
+import CaregiverRole from './GuideComponets/CaregiverRole'
+import AlzheimerGuide from './GuideComponets/AlzheimerGuide'
+import Caregivertips from './GuideComponets/Caregivertips'
+import IntroducingHomeCare from './GuideComponets/IntroducingHomeCare'
+import FundingOptions from './GuideComponets/FundingOptions'
+import MemoryLoss from './GuideComponets/MemoryLoss'
+import ParentCaregiver from './GuideComponets/ParentCaregiver'
+import LongTime from './GuideComponets/LongTime'
+import SafeSpace from './GuideComponets/SafeSpace'
+import RespiteCare from './GuideComponets/RespiteCare'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -100,6 +110,54 @@ createRoot(document.getElementById('root')).render(
 <Route
   path="/guides/personal-support-worker"
   element={<PersonalSupportWorker />}
+/>
+
+<Route
+  path="/guides/caregiver-role"
+  element={<CaregiverRole />}
+/>
+<Route
+  path="/guides/caregivertips"
+  element={<Caregivertips/>}
+/>
+<Route
+  path="/guides/introducing-at-home-care"
+  element={<IntroducingHomeCare/>}
+/>
+
+<Route
+  path="/guides/funding-options"
+  element={<FundingOptions/>}
+/>
+
+<Route
+  path="/guides/memory-loss"
+  element={<MemoryLoss/>}
+/>
+
+<Route
+  path="/guides/parentgiver"
+  element={<ParentCaregiver/>}
+/>
+
+<Route
+  path="/guides/longtime"
+  element={<LongTime/>}
+/>
+
+<Route
+  path="/guides/safespace"
+  element={<SafeSpace/>}
+/>
+
+<Route
+  path="/guides/respitecare"
+  element={<RespiteCare/>}
+/>
+
+<Route
+  path="/guides/alzheimer-guide"
+  element={<AlzheimerGuide/>}
 />
 
         {/* Main Pages */}
