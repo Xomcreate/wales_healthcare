@@ -44,8 +44,15 @@ import LongTime from './GuideComponets/LongTime'
 import SafeSpace from './GuideComponets/SafeSpace'
 import RespiteCare from './GuideComponets/RespiteCare'
 
+// ========================================
+// DASHBOARDS
+// ========================================
+
 // Franchise Partner Dashboard
 import FranchisePartnerPortalDashboard from './DashboardComponets/FranchisePartnerPortalDashboard'
+
+// Head Office Dashboard
+import HeadOfficePortalDashboard from './DashboardComponets/HeadOfficePortalDashboard'
 
 
 // ========================================
@@ -104,7 +111,10 @@ createRoot(document.getElementById('root')).render(
             element={<Home />}
           />
 
-          {/* Homecare */}
+          {/* ========================================
+              HOMECARE
+          ======================================== */}
+
           <Route
             path="/homecare"
             element={<HomeCare />}
@@ -136,7 +146,10 @@ createRoot(document.getElementById('root')).render(
           />
 
 
-          {/* Facility */}
+          {/* ========================================
+              FACILITY
+          ======================================== */}
+
           <Route
             path="/facility"
             element={<Facility />}
@@ -158,7 +171,10 @@ createRoot(document.getElementById('root')).render(
           />
 
 
-          {/* About */}
+          {/* ========================================
+              ABOUT
+          ======================================== */}
+
           <Route
             path="/about"
             element={<About />}
@@ -180,7 +196,10 @@ createRoot(document.getElementById('root')).render(
           />
 
 
-          {/* Resources */}
+          {/* ========================================
+              RESOURCES
+          ======================================== */}
+
           <Route
             path="/resources"
             element={<Resources />}
@@ -192,7 +211,10 @@ createRoot(document.getElementById('root')).render(
           />
 
 
-          {/* Guides */}
+          {/* ========================================
+              GUIDES
+          ======================================== */}
+
           <Route
             path="/guides/developmental-support"
             element={<DevelopmentalSupport />}
@@ -254,7 +276,10 @@ createRoot(document.getElementById('root')).render(
           />
 
 
-          {/* Main Pages */}
+          {/* ========================================
+              MAIN PAGES
+          ======================================== */}
+
           <Route
             path="/careers"
             element={<Career />}
@@ -300,6 +325,16 @@ createRoot(document.getElementById('root')).render(
         <Route
           path="/franchise-partner-dashboard/*"
           element={<FranchisePartnerPortalDashboard />}
+        />
+
+
+        {/* ========================================
+            HEAD OFFICE PORTAL DASHBOARD
+        ======================================== */}
+
+        <Route
+          path="/head-office-portal-dashboard"
+          element={<HeadOfficePortalDashboard />}
         />
 
       </Routes>
