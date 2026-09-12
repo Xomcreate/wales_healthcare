@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom'
 import './index.css'
 
 import Header from './MainComponets/Header'
@@ -28,6 +28,7 @@ import Login from './MainComponets/Login'
 import Footer from './MainComponets/Footer'
 import Consultation from './MainComponets/Consultation'
 import ScrollToTop from './MainComponets/ScrollToTop'
+
 import DevelopmentalSupport from './GuideComponets/DevelopmentalSupport'
 import PersonalSupportWorker from './GuideComponets/PersonalSupportWorker'
 import CareerForm from './MainComponets/CareerForm'
@@ -43,139 +44,22 @@ import LongTime from './GuideComponets/LongTime'
 import SafeSpace from './GuideComponets/SafeSpace'
 import RespiteCare from './GuideComponets/RespiteCare'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <BrowserRouter>
+// Franchise Partner Dashboard
+import FranchisePartnerPortalDashboard from './DashboardComponets/FranchisePartnerPortalDashboard'
 
-      {/* Automatically scroll to top whenever page changes */}
-      <ScrollToTop />
 
+// ========================================
+// PUBLIC WEBSITE LAYOUT
+// ========================================
+
+function PublicLayout() {
+  return (
+    <>
       <Header />
 
-      <Routes>
+      <Outlet />
 
-        {/* Landing Page */}
-        <Route path="/" element={<Home />} />
-
-        {/* Homecare */}
-        <Route path="/homecare" element={<HomeCare />} />
-        <Route path="/homecare/personal-care" element={<PersonalCare />} />
-        <Route path="/homecare/dementia-care" element={<Dementia />} />
-        <Route path="/homecare/hospice-care" element={<Hospice />} />
-        <Route path="/homecare/companionship" element={<Daily />} />
-        <Route path="/homecare/nursing" element={<Nursing />} />
-
-        {/* Facility */}
-        <Route path="/facility" element={<Facility />} />
-        <Route
-          path="/facility/temporary-coverage"
-          element={<Temporary />}
-        />
-        <Route
-          path="/facility/long-term-placement"
-          element={<LongTerm />}
-        />
-        <Route
-          path="/facility/emergency-staffing"
-          element={<Emergency />}
-        />
-
-        {/* About */}
-        <Route path="/about" element={<About />} />
-        <Route
-          path="/about/testimonials"
-          element={<Testimonial />}
-        />
-        <Route
-          path="/about/stories"
-          element={<Caregiver />}
-        />
-        <Route
-          path="/about/service-areas"
-          element={<Service />}
-        />
-
-        {/* Resources */}
-        <Route path="/resources" element={<Resources />} />
-        <Route path="/resources/faq" element={<Faq />} />
-
-
-        {/* Guide */}
-        {/* Guides */}
-<Route
-  path="/guides/developmental-support"
-  element={<DevelopmentalSupport />}
-/>
-
-<Route
-  path="/guides/personal-support-worker"
-  element={<PersonalSupportWorker />}
-/>
-
-<Route
-  path="/guides/caregiver-role"
-  element={<CaregiverRole />}
-/>
-<Route
-  path="/guides/caregivertips"
-  element={<Caregivertips/>}
-/>
-<Route
-  path="/guides/introducing-at-home-care"
-  element={<IntroducingHomeCare/>}
-/>
-
-<Route
-  path="/guides/funding-options"
-  element={<FundingOptions/>}
-/>
-
-<Route
-  path="/guides/memory-loss"
-  element={<MemoryLoss/>}
-/>
-
-<Route
-  path="/guides/parentgiver"
-  element={<ParentCaregiver/>}
-/>
-
-<Route
-  path="/guides/longtime"
-  element={<LongTime/>}
-/>
-
-<Route
-  path="/guides/safespace"
-  element={<SafeSpace/>}
-/>
-
-<Route
-  path="/guides/respitecare"
-  element={<RespiteCare/>}
-/>
-
-<Route
-  path="/guides/alzheimer-guide"
-  element={<AlzheimerGuide/>}
-/>
-
-        {/* Main Pages */}
-        <Route path="/careers" element={<Career />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-         <Route path="/apply" element={<CareerForm />} />
-          <Route path="/apply" element={<CareerForm />} />
-            <Route path="/privacy" element={<Privacy/>} />
-        <Route
-          path="/consultation"
-          element={<Consultation />}
-        />
-
-      </Routes>
-
-      {/* Floating Bottom-Right Consultation Button */}
+      {/* Floating Consultation Button */}
       <div className="fixed bottom-6 right-6 z-50">
         <Link
           to="/consultation"
@@ -190,6 +74,235 @@ createRoot(document.getElementById('root')).render(
       </div>
 
       <Footer />
+    </>
+  )
+}
+
+
+// ========================================
+// APP
+// ========================================
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <BrowserRouter>
+
+      {/* Automatically scroll to top whenever page changes */}
+      <ScrollToTop />
+
+      <Routes>
+
+        {/* ========================================
+            PUBLIC WEBSITE
+        ======================================== */}
+
+        <Route element={<PublicLayout />}>
+
+          {/* Landing Page */}
+          <Route
+            path="/"
+            element={<Home />}
+          />
+
+          {/* Homecare */}
+          <Route
+            path="/homecare"
+            element={<HomeCare />}
+          />
+
+          <Route
+            path="/homecare/personal-care"
+            element={<PersonalCare />}
+          />
+
+          <Route
+            path="/homecare/dementia-care"
+            element={<Dementia />}
+          />
+
+          <Route
+            path="/homecare/hospice-care"
+            element={<Hospice />}
+          />
+
+          <Route
+            path="/homecare/companionship"
+            element={<Daily />}
+          />
+
+          <Route
+            path="/homecare/nursing"
+            element={<Nursing />}
+          />
+
+
+          {/* Facility */}
+          <Route
+            path="/facility"
+            element={<Facility />}
+          />
+
+          <Route
+            path="/facility/temporary-coverage"
+            element={<Temporary />}
+          />
+
+          <Route
+            path="/facility/long-term-placement"
+            element={<LongTerm />}
+          />
+
+          <Route
+            path="/facility/emergency-staffing"
+            element={<Emergency />}
+          />
+
+
+          {/* About */}
+          <Route
+            path="/about"
+            element={<About />}
+          />
+
+          <Route
+            path="/about/testimonials"
+            element={<Testimonial />}
+          />
+
+          <Route
+            path="/about/stories"
+            element={<Caregiver />}
+          />
+
+          <Route
+            path="/about/service-areas"
+            element={<Service />}
+          />
+
+
+          {/* Resources */}
+          <Route
+            path="/resources"
+            element={<Resources />}
+          />
+
+          <Route
+            path="/resources/faq"
+            element={<Faq />}
+          />
+
+
+          {/* Guides */}
+          <Route
+            path="/guides/developmental-support"
+            element={<DevelopmentalSupport />}
+          />
+
+          <Route
+            path="/guides/personal-support-worker"
+            element={<PersonalSupportWorker />}
+          />
+
+          <Route
+            path="/guides/caregiver-role"
+            element={<CaregiverRole />}
+          />
+
+          <Route
+            path="/guides/caregivertips"
+            element={<Caregivertips />}
+          />
+
+          <Route
+            path="/guides/introducing-at-home-care"
+            element={<IntroducingHomeCare />}
+          />
+
+          <Route
+            path="/guides/funding-options"
+            element={<FundingOptions />}
+          />
+
+          <Route
+            path="/guides/memory-loss"
+            element={<MemoryLoss />}
+          />
+
+          <Route
+            path="/guides/parentgiver"
+            element={<ParentCaregiver />}
+          />
+
+          <Route
+            path="/guides/longtime"
+            element={<LongTime />}
+          />
+
+          <Route
+            path="/guides/safespace"
+            element={<SafeSpace />}
+          />
+
+          <Route
+            path="/guides/respitecare"
+            element={<RespiteCare />}
+          />
+
+          <Route
+            path="/guides/alzheimer-guide"
+            element={<AlzheimerGuide />}
+          />
+
+
+          {/* Main Pages */}
+          <Route
+            path="/careers"
+            element={<Career />}
+          />
+
+          <Route
+            path="/contact"
+            element={<Contact />}
+          />
+
+          <Route
+            path="/register"
+            element={<Register />}
+          />
+
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+
+          <Route
+            path="/apply"
+            element={<CareerForm />}
+          />
+
+          <Route
+            path="/privacy"
+            element={<Privacy />}
+          />
+
+          <Route
+            path="/consultation"
+            element={<Consultation />}
+          />
+
+        </Route>
+
+
+        {/* ========================================
+            FRANCHISE PARTNER DASHBOARD
+        ======================================== */}
+
+        <Route
+          path="/franchise-partner-dashboard/*"
+          element={<FranchisePartnerPortalDashboard />}
+        />
+
+      </Routes>
 
     </BrowserRouter>
   </StrictMode>
