@@ -53,6 +53,8 @@ import FranchisePartnerPortalDashboard from './DashboardComponets/FranchisePartn
 
 // Head Office Dashboard
 import HeadOfficePortalDashboard from './DashboardComponets/HeadOfficePortalDashboard'
+import CustomerDashboard from './DashboardComponets/CustomerDashboard'
+import EmployeeDashboard from './DashboardComponets/EmployeeDashboard'
 
 
 // ========================================
@@ -327,6 +329,11 @@ createRoot(document.getElementById('root')).render(
           element={<FranchisePartnerPortalDashboard />}
         />
 
+          <Route
+          path="/employee-dashboard"
+          element={<EmployeeDashboard />}
+        />
+
 
         {/* ========================================
             HEAD OFFICE PORTAL DASHBOARD
@@ -335,6 +342,11 @@ createRoot(document.getElementById('root')).render(
         <Route
           path="/head-office-portal-dashboard"
           element={<HeadOfficePortalDashboard />}
+        />
+
+        <Route
+          path="/customer-dashboard"
+          element={<CustomerDashboard />}
         />
 
       </Routes>
