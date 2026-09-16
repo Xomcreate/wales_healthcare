@@ -95,12 +95,11 @@ export default function HeadOfficePortalDashboard() {
       {/* LOGO AREA */}
       <div className="mb-6 flex items-center justify-between px-5">
         <div className="flex items-center">
-          <div
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg font-black text-white shadow-lg shadow-teal-900/30"
-            style={{ background: BRAND_COLOR }}
-          >
-            WH
-          </div>
+          <img
+            src="/walescares.png"
+            alt="Wales Healthcare logo"
+            className="h-11 w-11 shrink-0 rounded-xl object-contain shadow-lg shadow-teal-900/30"
+          />
 
           {(!isSidebarCollapsed || isMobile) && (
             <motion.div

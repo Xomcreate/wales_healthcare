@@ -250,9 +250,11 @@ function Header() {
           onClick={closeMobileMenu}
           className="flex items-center space-x-2.5 sm:space-x-3 cursor-pointer shrink-0"
         >
-          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-xs">
-            WH
-          </div>
+          <img
+            src="/walescares.png"
+            alt="Wales Healthcare logo"
+            className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
+          />
 
           <span className="text-lg sm:text-xl font-bold tracking-tight text-slate-900">
             Wales <span className="text-teal-600">Healthcare</span>
