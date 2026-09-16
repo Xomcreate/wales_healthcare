@@ -3,6 +3,7 @@ import {
   FaHome,
   FaUsers,
   FaUserTie,
+  FaUserPlus,
   FaConciergeBell,
   FaCalendarAlt,
   FaFileInvoiceDollar,
@@ -25,6 +26,7 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import DashboardOverview from "../FranchisePartnerPortalDashboardComponets/DashboardOverview";
 import Customers from "../FranchisePartnerPortalDashboardComponets/Customers";
 import Employees from "../FranchisePartnerPortalDashboardComponets/Employees";
+import Applicants from "../FranchisePartnerPortalDashboardComponets/Applicants";
 import Services from "../FranchisePartnerPortalDashboardComponets/Services";
 import Appointments from "../FranchisePartnerPortalDashboardComponets/Appointments";
 import InvoicesPayments from "../FranchisePartnerPortalDashboardComponets/InvoicesPayments";
@@ -41,13 +43,9 @@ const menuItems = [
   { name: "Dashboard", icon: <FaHome />, key: "dashboard" },
   { name: "Customers", icon: <FaUsers />, key: "customers" },
   { name: "Employees", icon: <FaUserTie />, key: "employees" },
+  { name: "Applicants", icon: <FaUserPlus />, key: "applicants" },
   { name: "Services", icon: <FaConciergeBell />, key: "services" },
-  {
-    name: "Appointments",
-    icon: <FaCalendarAlt />,
-    key: "appointments",
-    badge: "4",
-  },
+  { name: "Appointments", icon: <FaCalendarAlt />, key: "appointments" },
   {
     name: "Invoices & Payments",
     icon: <FaFileInvoiceDollar />,
@@ -55,12 +53,7 @@ const menuItems = [
   },
   { name: "Reports", icon: <FaChartBar />, key: "reports" },
   { name: "Documents", icon: <FaFolderOpen />, key: "documents" },
-  {
-    name: "Messages",
-    icon: <FaEnvelope />,
-    key: "messages",
-    badge: "12",
-  },
+  { name: "Messages", icon: <FaEnvelope />, key: "messages" },
   { name: "Settings", icon: <FaCog />, key: "settings" },
 ];
 
@@ -83,6 +76,9 @@ export default function FranchisePartnerPortalDashboard() {
 
       case "employees":
         return <Employees />;
+
+      case "applicants":
+        return <Applicants />;
 
       case "services":
         return <Services />;
@@ -217,28 +213,16 @@ export default function FranchisePartnerPortalDashboard() {
                   {item.icon}
                 </span>
 
-                {/* TEXT & BADGES */}
+                {/* TEXT */}
                 {(!isSidebarCollapsed || isMobile) && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="ml-3.5 flex flex-1 items-center justify-between overflow-hidden"
+                    className="ml-3.5 flex flex-1 items-center overflow-hidden"
                   >
                     <span className="truncate text-left text-[11px] font-bold uppercase tracking-wider">
                       {item.name}
                     </span>
-
-                    {item.badge && (
-                      <span
-                        className={`ml-2 rounded-full px-2 py-0.5 text-[9px] font-black ${
-                          active
-                            ? "bg-teal-600 text-white"
-                            : "bg-slate-800 text-teal-300"
-                        }`}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
                   </motion.div>
                 )}
               </button>
