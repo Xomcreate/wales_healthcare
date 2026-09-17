@@ -1,549 +1,1298 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  FaUsers,
-  FaUserShield,
-  FaPlus,
   FaSearch,
   FaFilter,
-  FaEnvelope,
-  FaCheckCircle,
-  FaTimes,
-  FaExclamationTriangle,
-  FaShieldAlt,
-  FaLock,
+  FaUserPlus,
   FaEye,
   FaEdit,
-  FaTrashAlt,
-  FaArrowRight,
-  FaArrowLeft,
-  FaKey,
+  FaTimes,
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaBuilding,
+  FaShieldAlt,
+  FaCheckCircle,
+  FaBan,
+  FaUsers,
+  FaChevronDown,
 } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import api from "../api/axios";
 
-const initialUsers = [
-  {
-    id: "USR-001",
-    name: "Dr. Arthur Pendelton",
-    email: "arthur.p@waleshealth.co.uk",
-    role: "Franchise Owner",
-    scope: "One Franchise (North London)",
-    status: "Active",
-    lastLogin: "2026-09-11 14:22",
-  },
-  {
-    id: "USR-002",
-    name: "Sarah Jenkins",
-    email: "s.jenkins@waleshealth.co.uk",
-    role: "Franchise Owner",
-    scope: "One Franchise (Manchester Central)",
-    status: "Active",
-    lastLogin: "2026-09-12 09:15",
-  },
-  {
-    id: "USR-003",
-    name: "Eleanor Vance",
-    email: "e.vance@waleshealth.co.uk",
-    role: "Operations Manager",
-    scope: "All Franchises",
-    status: "Active",
-    lastLogin: "2026-09-12 08:30",
-  },
-  {
-    id: "USR-004",
-    name: "Marcus Thorne",
-    email: "m.thorne@waleshealth.co.uk",
-    role: "Finance Manager",
-    scope: "All Franchises",
-    status: "Pending",
-    lastLogin: "Never",
-  },
-  {
-    id: "USR-005",
-    name: "Hanna Abbott",
-    email: "h.abbott@waleshealth.co.uk",
-    role: "Compliance Manager",
-    scope: "All Franchises",
-    status: "Suspended",
-    lastLogin: "2026-08-19 11:45",
-  },
-];
+const ROLE_LABELS = {
+  customer: "Customer",
+  employee: "Employee",
+  franchise_manager: "Franchise Manager",
+  head_office: "Head Office",
+  super_admin: "Super Admin",
+};
 
-const rolesList = [
-  { role: "Super Admin", permissions: "Full platform control, system configuration, roles, franchises and audit access." },
-  { role: "Operations Manager", permissions: "Franchise operations, approvals, territories, operational reports." },
-  { role: "Finance Manager", permissions: "Franchise fees, payments, financial reports and reconciliation." },
-  { role: "Compliance Manager", permissions: "Documents, policies, expiry tracking, compliance review." },
-  { role: "Content/Brand Manager", permissions: "Brand templates, approved content, manuals and resources." },
-  { role: "Franchise Owner", permissions: "Full access to their own franchise only." },
-  { role: "Franchise Manager", permissions: "Local operations, staff, customers and appointments." },
-  { role: "Franchise Accountant", permissions: "Local invoices, payments and permitted financial reports." },
-  { role: "Staff/Caregiver", permissions: "Own profile, schedule, assigned work and permitted customer information." },
-];
+const ROLE_COLORS = {
+  customer: "bg-blue-50 text-blue-700",
+  employee: "bg-purple-50 text-purple-700",
+  franchise_manager: "bg-orange-50 text-orange-700",
+  head_office: "bg-green-50 text-green-700",
+  super_admin: "bg-red-50 text-red-700",
+};
 
-export default function Users() {
-  const [users, setUsers] = useState(initialUsers);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [roleFilter, setRoleFilter] = useState("All");
-  const [activeTab, setActiveTab] = useState("directory"); // 'directory' | 'matrix'
+const formatRole = (role) => ROLE_LABELS[role] || role || "Customer";
 
-  // Modal State
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [newUser, setNewUser] = useState({
-    name: "",
-    email: "",
-    role: "Franchise Owner",
-    scope: "One Franchise",
+const formatDate = (date) => {
+  if (!date) return "Never";
+
+  const parsed = new Date(date);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return "Never";
+  }
+
+  return parsed.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
   });
+};
 
-  // Drawer Detail State
+const getFullName = (user) => {
+  if (user.full_name) return user.full_name;
+
+  if (user.first_name || user.last_name) {
+    return `${user.first_name || ""} ${user.last_name || ""}`.trim();
+  }
+
+  return user.email || "Unnamed User";
+};
+
+const getInitials = (name) => {
+  if (!name) return "U";
+
+  const parts = name.trim().split(" ");
+
+  if (parts.length === 1) {
+    return parts[0].charAt(0).toUpperCase();
+  }
+
+  return `${parts[0].charAt(0)}${parts[parts.length - 1].charAt(
+    0
+  )}`.toUpperCase();
+};
+
+const getPhone = (user) => {
+  return user.profile?.phone || user.phone || "Not provided";
+};
+
+const getFranchise = (user) => {
+  if (user.franchise) {
+    return user.franchise;
+  }
+
+  if (user.profile?.franchise) {
+    return user.profile.franchise;
+  }
+
+  return null;
+};
+
+const getUserRole = (user) => {
+  return user.role || user.profile?.role || "customer";
+};
+
+const Users = () => {
+  const [users, setUsers] = useState([]);
+  const [franchises, setFranchises] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  const [loadingFranchises, setLoadingFranchises] = useState(true);
+
+  const [error, setError] = useState("");
+
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [franchiseFilter, setFranchiseFilter] = useState("all");
+
   const [selectedUser, setSelectedUser] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
 
-  // Filter logic
-  const filteredUsers = users.filter((u) => {
-    const matchesSearch =
-      u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.email.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesRole = roleFilter === "All" || u.role === roleFilter;
-    return matchesSearch && matchesRole;
-  });
+  const [editRole, setEditRole] = useState("");
+  const [editFranchise, setEditFranchise] = useState("");
+  const [editActive, setEditActive] = useState(true);
 
-  const handleCreateSubmit = (e) => {
-    e.preventDefault();
-    const created = {
-      id: `USR-00${users.length + 1}`,
-      name: newUser.name || "New Staff Member",
-      email: newUser.email || "user@waleshealth.co.uk",
-      role: newUser.role,
-      scope: newUser.scope,
-      status: "Pending",
-      lastLogin: "Never",
-    };
-    setUsers([created, ...users]);
-    setIsCreateModalOpen(false);
-    setNewUser({
-      name: "",
-      email: "",
-      role: "Franchise Owner",
-      scope: "One Franchise",
-    });
+  const [saving, setSaving] = useState(false);
+
+  // --------------------------------------------------
+  // FETCH USERS
+  // --------------------------------------------------
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await api.get("/admin/users/");
+
+      setUsers(Array.isArray(response.data) ? response.data : []);
+    } catch (err) {
+      console.error("Failed to fetch users:", err);
+
+      setError(
+        err.response?.data?.detail ||
+          "Unable to load users. Please check your permissions."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // --------------------------------------------------
+  // FETCH FRANCHISES
+  // --------------------------------------------------
+
+  const fetchFranchises = async () => {
+    try {
+      setLoadingFranchises(true);
+
+      const response = await api.get("/admin/franchises/");
+
+      setFranchises(Array.isArray(response.data) ? response.data : []);
+    } catch (err) {
+      console.error("Failed to fetch franchises:", err);
+    } finally {
+      setLoadingFranchises(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchFranchises();
+  }, []);
+
+  // --------------------------------------------------
+  // FILTER USERS
+  // --------------------------------------------------
+
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      const name = getFullName(user);
+      const email = user.email || "";
+      const role = getUserRole(user);
+      const franchise = getFranchise(user);
+
+      const searchText = search.toLowerCase();
+
+      const matchesSearch =
+        name.toLowerCase().includes(searchText) ||
+        email.toLowerCase().includes(searchText) ||
+        String(user.id).includes(searchText);
+
+      const matchesRole =
+        roleFilter === "all" || role === roleFilter;
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" && user.is_active) ||
+        (statusFilter === "suspended" && !user.is_active);
+
+      const matchesFranchise =
+        franchiseFilter === "all" ||
+        String(franchise?.id) === String(franchiseFilter);
+
+      return (
+        matchesSearch &&
+        matchesRole &&
+        matchesStatus &&
+        matchesFranchise
+      );
+    });
+  }, [
+    users,
+    search,
+    roleFilter,
+    statusFilter,
+    franchiseFilter,
+  ]);
+
+  // --------------------------------------------------
+  // SUMMARY
+  // --------------------------------------------------
+
+  const totalUsers = users.length;
+
+  const activeUsers = users.filter(
+    (user) => user.is_active
+  ).length;
+
+  const suspendedUsers = users.filter(
+    (user) => !user.is_active
+  ).length;
+
+  const franchiseManagers = users.filter(
+    (user) => getUserRole(user) === "franchise_manager"
+  ).length;
+
+  // --------------------------------------------------
+  // OPEN EDIT
+  // --------------------------------------------------
+
+  const openEdit = (user) => {
+    setEditingUser(user);
+
+    const role = getUserRole(user);
+    const franchise = getFranchise(user);
+
+    setEditRole(role);
+    setEditFranchise(franchise?.id ? String(franchise.id) : "");
+    setEditActive(Boolean(user.is_active));
+  };
+
+  // --------------------------------------------------
+  // UPDATE USER
+  // --------------------------------------------------
+
+  const updateUser = async () => {
+    if (!editingUser) return;
+
+    try {
+      setSaving(true);
+      setError("");
+
+      const payload = {
+        role: editRole,
+        franchise:
+          editRole === "franchise_manager"
+            ? Number(editFranchise)
+            : null,
+        is_active: editActive,
+      };
+
+      const response = await api.patch(
+        `/admin/users/${editingUser.id}/`,
+        payload
+      );
+
+      const updatedUser = response.data;
+
+      setUsers((currentUsers) =>
+        currentUsers.map((user) =>
+          user.id === editingUser.id
+            ? updatedUser
+            : user
+        )
+      );
+
+      setEditingUser(null);
+    } catch (err) {
+      console.error("Failed to update user:", err);
+
+      setError(
+        err.response?.data?.detail ||
+          err.response?.data?.franchise?.[0] ||
+          err.response?.data?.role?.[0] ||
+          "Unable to update this user."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // --------------------------------------------------
+  // TOGGLE USER STATUS
+  // --------------------------------------------------
+
+  const toggleUserStatus = async (user) => {
+    try {
+      setSaving(true);
+      setError("");
+
+      const response = await api.patch(
+        `/admin/users/${user.id}/`,
+        {
+          role: getUserRole(user),
+          franchise:
+            getUserRole(user) === "franchise_manager"
+              ? getFranchise(user)?.id || null
+              : null,
+          is_active: !user.is_active,
+        }
+      );
+
+      setUsers((currentUsers) =>
+        currentUsers.map((item) =>
+          item.id === user.id ? response.data : item
+        )
+      );
+
+      if (selectedUser?.id === user.id) {
+        setSelectedUser(response.data);
+      }
+    } catch (err) {
+      console.error("Failed to change user status:", err);
+
+      setError(
+        err.response?.data?.detail ||
+          "Unable to change this user's status."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // --------------------------------------------------
+  // LOADING
+  // --------------------------------------------------
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-10 h-10 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin mx-auto mb-4" />
+
+          <p className="text-gray-600 text-sm">
+            Loading users...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // --------------------------------------------------
+  // PAGE
+  // --------------------------------------------------
+
   return (
-    <div className="space-y-6">
-      {/* HEADER SECTION */}
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+
+      {/* HEADER */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">
+
         <div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-teal-600 ring-1 ring-teal-500/20">
-              Access & Security Control
-            </span>
-          </div>
-          <h1 className="text-2xl font-black tracking-tight text-slate-900 mt-1">
-            Users, Roles & Permissions
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Users
           </h1>
-          <p className="text-xs text-slate-500">
-            Manage system operators, enforce role-based access control (RBAC), and configure tenant/location scopes.
+
+          <p className="text-gray-500 mt-1">
+            Manage users, roles, franchise assignments and account access.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex rounded-xl bg-slate-100 p-1">
-            <button
-              type="button"
-              onClick={() => setActiveTab("directory")}
-              className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition ${
-                activeTab === "directory" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              User Directory
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("matrix")}
-              className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition ${
-                activeTab === "matrix" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              RBAC Matrix Guide
-            </button>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-teal-900/20 transition hover:bg-teal-500 active:scale-95"
-          >
-            <FaPlus className="text-xs" />
-            <span>Add User</span>
-          </button>
-        </div>
+        {/* Backend currently has no POST /admin/users/ endpoint */}
+        <button
+          type="button"
+          disabled
+          title="User creation endpoint has not been added to the backend yet."
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gray-300 text-gray-500 cursor-not-allowed font-medium"
+        >
+          <FaUserPlus />
+          Add User
+        </button>
       </div>
 
-      {activeTab === "directory" ? (
-        <>
-          {/* CONTROLS BAR: SEARCH & ROLE FILTER */}
-          <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
-            <div className="relative flex-1">
-              <FaSearch className="absolute left-3.5 top-3.5 text-xs text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search user by name or email..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:bg-white focus:outline-none"
-              />
-            </div>
-
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-              {["All", "Franchise Owner", "Operations Manager", "Finance Manager", "Compliance Manager"].map((roleName) => (
-                <button
-                  key={roleName}
-                  type="button"
-                  onClick={() => setRoleFilter(roleName)}
-                  className={`rounded-lg px-3 py-2 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
-                    roleFilter === roleName
-                      ? "bg-slate-900 text-white shadow-sm"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                  }`}
-                >
-                  {roleName}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* USERS TABLE */}
-          <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    <th className="py-3.5 px-4">User Operator</th>
-                    <th className="py-3.5 px-4">Assigned Role</th>
-                    <th className="py-3.5 px-4">Data Scope</th>
-                    <th className="py-3.5 px-4">Status</th>
-                    <th className="py-3.5 px-4">Last Login</th>
-                    <th className="py-3.5 px-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-xs">
-                  {filteredUsers.length > 0 ? (
-                    filteredUsers.map((user) => (
-                      <tr key={user.id} className="transition hover:bg-slate-50/80 group">
-                        <td className="py-4 px-4">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700 font-bold">
-                              <FaUsers className="text-xs" />
-                            </div>
-                            <div>
-                              <p className="font-bold text-slate-900">{user.name}</p>
-                              <p className="text-[10px] font-medium text-slate-400">{user.email}</p>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className="py-4 px-4">
-                          <span className="inline-flex items-center gap-1.5 rounded-md bg-slate-100 px-2 py-1 text-[11px] font-bold text-slate-700">
-                            <FaShieldAlt className="text-teal-600 text-[10px]" />
-                            {user.role}
-                          </span>
-                        </td>
-
-                        <td className="py-4 px-4 font-medium text-slate-600 text-[11px]">
-                          {user.scope}
-                        </td>
-
-                        <td className="py-4 px-4">
-                          <span
-                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                              user.status === "Active"
-                                ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500/20"
-                                : user.status === "Pending"
-                                ? "bg-amber-50 text-amber-700 ring-1 ring-amber-500/20"
-                                : "bg-rose-50 text-rose-700 ring-1 ring-rose-500/20"
-                            }`}
-                          >
-                            <span
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                user.status === "Active"
-                                  ? "bg-emerald-500"
-                                  : user.status === "Pending"
-                                  ? "bg-amber-500"
-                                  : "bg-rose-500"
-                              }`}
-                            />
-                            {user.status}
-                          </span>
-                        </td>
-
-                        <td className="py-4 px-4 text-[11px] text-slate-500">
-                          {user.lastLogin}
-                        </td>
-
-                        <td className="py-4 px-4 text-right">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedUser(user)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-bold text-slate-700 shadow-2xs transition hover:border-teal-500 hover:text-teal-600 active:scale-95"
-                          >
-                            <FaEye className="text-xs" />
-                            <span>Configure</span>
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="6" className="py-12 text-center text-slate-400">
-                        No user operators matching your search criteria.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </>
-      ) : (
-        /* RBAC MATRIX VIEW GUIDE */
-        <div className="space-y-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs">
-            <h3 className="text-base font-black text-slate-900 mb-1">
-              Permission Design Requirements & Guidelines
-            </h3>
-            <p className="text-xs text-slate-500 mb-4">
-              System architecture strictly enforces authorization per the following operational constraints:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-xs text-slate-700 font-medium">
-              <li>Permissions should be action-based: <strong className="text-slate-900">view, create, edit, approve, suspend, export, delete/archive.</strong></li>
-              <li>Scope should be data-based: <strong className="text-slate-900">all franchises, assigned franchises, one franchise, assigned customers or self.</strong></li>
-              <li>Destructive actions require stronger permission and secondary admin confirmation.</li>
-              <li>Security enforcement is handled at both the UI and backend level; backend verifies every token scope.</li>
-            </ul>
-          </div>
-
-          <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-            <div className="bg-slate-900 px-6 py-4 text-white">
-              <h3 className="text-sm font-black">Role & Typical Permissions Matrix</h3>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    <th className="py-3.5 px-6 w-1/3">Role</th>
-                    <th className="py-3.5 px-6">Typical Permissions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-xs">
-                  {rolesList.map((r, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/50">
-                      <td className="py-4 px-6 font-bold text-slate-900 flex items-center gap-2">
-                        <FaUserShield className="text-teal-600 text-xs" />
-                        {r.role}
-                      </td>
-                      <td className="py-4 px-6 text-slate-600 font-medium">{r.permissions}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      {/* ERROR */}
+      {error && (
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
         </div>
       )}
 
-      {/* ================= ADD USER MODAL ================= */}
-      <AnimatePresence>
-        {isCreateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsCreateModalOpen(false)}
-              className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"
+      {/* SUMMARY CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-7">
+
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">
+                Total Users
+              </p>
+
+              <h2 className="text-2xl font-bold text-gray-900 mt-1">
+                {totalUsers}
+              </h2>
+            </div>
+
+            <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              <FaUsers />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">
+                Active
+              </p>
+
+              <h2 className="text-2xl font-bold text-gray-900 mt-1">
+                {activeUsers}
+              </h2>
+            </div>
+
+            <div className="w-11 h-11 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
+              <FaCheckCircle />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">
+                Suspended
+              </p>
+
+              <h2 className="text-2xl font-bold text-gray-900 mt-1">
+                {suspendedUsers}
+              </h2>
+            </div>
+
+            <div className="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+              <FaBan />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-500">
+                Franchise Managers
+              </p>
+
+              <h2 className="text-2xl font-bold text-gray-900 mt-1">
+                {franchiseManagers}
+              </h2>
+            </div>
+
+            <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
+              <FaBuilding />
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* FILTER BAR */}
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-4 mb-6">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+
+          {/* SEARCH */}
+          <div className="relative">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search users..."
+              className="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-gray-400 text-sm"
             />
+          </div>
 
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 10 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 10 }}
-              className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl md:p-8 z-10"
+          {/* ROLE */}
+          <div className="relative">
+            <select
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+              className="appearance-none w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl outline-none focus:border-gray-400 text-sm bg-white"
             >
-              <div className="flex items-center justify-between pb-6 border-b border-slate-100">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600">
-                    Access Control
-                  </span>
-                  <h3 className="text-lg font-black text-slate-900">Provision New Operator</h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsCreateModalOpen(false)}
-                  className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              <option value="all">All Roles</option>
+              <option value="customer">Customer</option>
+              <option value="employee">Employee</option>
+              <option value="franchise_manager">
+                Franchise Manager
+              </option>
+              <option value="head_office">
+                Head Office
+              </option>
+              <option value="super_admin">
+                Super Admin
+              </option>
+            </select>
+
+            <FaChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none" />
+          </div>
+
+          {/* STATUS */}
+          <div className="relative">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="appearance-none w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl outline-none focus:border-gray-400 text-sm bg-white"
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="suspended">Suspended</option>
+            </select>
+
+            <FaChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none" />
+          </div>
+
+          {/* FRANCHISE */}
+          <div className="relative">
+            <select
+              value={franchiseFilter}
+              onChange={(e) =>
+                setFranchiseFilter(e.target.value)
+              }
+              className="appearance-none w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl outline-none focus:border-gray-400 text-sm bg-white"
+            >
+              <option value="all">
+                All Franchises
+              </option>
+
+              {franchises.map((franchise) => (
+                <option
+                  key={franchise.id}
+                  value={franchise.id}
                 >
-                  <FaTimes />
-                </button>
+                  {franchise.name}
+                </option>
+              ))}
+            </select>
+
+            <FaChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none" />
+          </div>
+
+        </div>
+      </div>
+
+      {/* USER TABLE */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div>
+            <h2 className="font-semibold text-gray-900">
+              User Directory
+            </h2>
+
+            <p className="text-sm text-gray-500 mt-1">
+              {filteredUsers.length} user
+              {filteredUsers.length !== 1 ? "s" : ""} found
+            </p>
+          </div>
+
+          <FaFilter className="text-gray-400" />
+        </div>
+
+        {/* DESKTOP TABLE */}
+        <div className="hidden lg:block overflow-x-auto">
+
+          <table className="w-full">
+
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-100">
+
+                <th className="text-left px-5 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  User
+                </th>
+
+                <th className="text-left px-5 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  Role
+                </th>
+
+                <th className="text-left px-5 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  Franchise
+                </th>
+
+                <th className="text-left px-5 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  Status
+                </th>
+
+                <th className="text-left px-5 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  Last Login
+                </th>
+
+                <th className="text-right px-5 py-4 text-xs font-semibold text-gray-500 uppercase">
+                  Actions
+                </th>
+
+              </tr>
+            </thead>
+
+            <tbody className="divide-y divide-gray-100">
+
+              {filteredUsers.map((user) => {
+                const name = getFullName(user);
+                const role = getUserRole(user);
+                const franchise = getFranchise(user);
+
+                return (
+                  <tr
+                    key={user.id}
+                    className="hover:bg-gray-50 transition"
+                  >
+
+                    {/* USER */}
+                    <td className="px-5 py-4">
+
+                      <div className="flex items-center gap-3">
+
+                        <div className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center text-sm font-semibold">
+                          {getInitials(name)}
+                        </div>
+
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {name}
+                          </p>
+
+                          <p className="text-sm text-gray-500">
+                            {user.email}
+                          </p>
+
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            ID: {user.id}
+                          </p>
+                        </div>
+
+                      </div>
+
+                    </td>
+
+                    {/* ROLE */}
+                    <td className="px-5 py-4">
+
+                      <span
+                        className={`inline-flex px-3 py-1.5 rounded-full text-xs font-medium ${
+                          ROLE_COLORS[role] ||
+                          "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {formatRole(role)}
+                      </span>
+
+                    </td>
+
+                    {/* FRANCHISE */}
+                    <td className="px-5 py-4">
+
+                      {franchise ? (
+                        <div>
+                          <p className="text-sm font-medium text-gray-800">
+                            {franchise.name}
+                          </p>
+
+                          {franchise.location && (
+                            <p className="text-xs text-gray-500">
+                              {franchise.location}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400">
+                          Network-wide
+                        </span>
+                      )}
+
+                    </td>
+
+                    {/* STATUS */}
+                    <td className="px-5 py-4">
+
+                      {user.is_active ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-green-700 bg-green-50 px-3 py-1.5 rounded-full">
+                          <FaCheckCircle className="text-[10px]" />
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-red-700 bg-red-50 px-3 py-1.5 rounded-full">
+                          <FaBan className="text-[10px]" />
+                          Suspended
+                        </span>
+                      )}
+
+                    </td>
+
+                    {/* LAST LOGIN */}
+                    <td className="px-5 py-4 text-sm text-gray-500">
+                      {formatDate(user.last_login)}
+                    </td>
+
+                    {/* ACTIONS */}
+                    <td className="px-5 py-4">
+
+                      <div className="flex justify-end gap-2">
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setSelectedUser(user)
+                          }
+                          className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition"
+                          title="View user"
+                        >
+                          <FaEye />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => openEdit(user)}
+                          className="w-9 h-9 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition"
+                          title="Edit user"
+                        >
+                          <FaEdit />
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+                );
+              })}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        {/* MOBILE CARDS */}
+        <div className="lg:hidden divide-y divide-gray-100">
+
+          {filteredUsers.map((user) => {
+            const name = getFullName(user);
+            const role = getUserRole(user);
+            const franchise = getFranchise(user);
+
+            return (
+              <div
+                key={user.id}
+                className="p-5"
+              >
+
+                <div className="flex items-start gap-3">
+
+                  <div className="w-11 h-11 shrink-0 rounded-full bg-gray-900 text-white flex items-center justify-center text-sm font-semibold">
+                    {getInitials(name)}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+
+                    <div className="flex items-start justify-between gap-3">
+
+                      <div>
+                        <h3 className="font-semibold text-gray-900">
+                          {name}
+                        </h3>
+
+                        <p className="text-sm text-gray-500 break-all">
+                          {user.email}
+                        </p>
+                      </div>
+
+                      {user.is_active ? (
+                        <span className="shrink-0 w-2.5 h-2.5 rounded-full bg-green-500 mt-2" />
+                      ) : (
+                        <span className="shrink-0 w-2.5 h-2.5 rounded-full bg-red-500 mt-2" />
+                      )}
+
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mt-3">
+
+                      <span
+                        className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${
+                          ROLE_COLORS[role] ||
+                          "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {formatRole(role)}
+                      </span>
+
+                      {franchise && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 text-xs">
+                          <FaBuilding />
+                          {franchise.name}
+                        </span>
+                      )}
+
+                    </div>
+
+                    <div className="flex gap-2 mt-4">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSelectedUser(user)
+                        }
+                        className="flex-1 py-2.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-700"
+                      >
+                        View
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => openEdit(user)}
+                        className="flex-1 py-2.5 rounded-lg bg-gray-900 text-white text-sm font-medium"
+                      >
+                        Edit
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
               </div>
+            );
+          })}
 
-              <form onSubmit={handleCreateSubmit} className="py-6 space-y-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Dr. Amanda Vance"
-                    value={newUser.name}
-                    onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                    required
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
-                  />
-                </div>
+        </div>
 
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Email Address (Username)
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="a.vance@waleshealth.co.uk"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                    required
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
-                  />
-                </div>
+        {/* EMPTY */}
+        {filteredUsers.length === 0 && (
+          <div className="py-16 text-center">
 
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Assign RBAC Role
-                  </label>
-                  <select
-                    value={newUser.role}
-                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
-                  >
-                    {rolesList.map((r, i) => (
-                      <option key={i} value={r.role}>{r.role}</option>
-                    ))}
-                  </select>
-                </div>
+            <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+              <FaUsers className="text-gray-400 text-xl" />
+            </div>
 
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Data & Location Scope
-                  </label>
-                  <select
-                    value={newUser.scope}
-                    onChange={(e) => setNewUser({ ...newUser, scope: e.target.value })}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
-                  >
-                    <option>All Franchises (Head Office)</option>
-                    <option>Assigned Franchises Group</option>
-                    <option>One Franchise Only</option>
-                    <option>Self Profile Only</option>
-                  </select>
-                </div>
+            <h3 className="font-semibold text-gray-900">
+              No users found
+            </h3>
 
-                <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => setIsCreateModalOpen(false)}
-                    className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="rounded-xl bg-teal-600 px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md hover:bg-teal-500"
-                  >
-                    Create User & Send Invite
-                  </button>
-                </div>
-              </form>
-            </motion.div>
+            <p className="text-sm text-gray-500 mt-1">
+              Try changing your search or filters.
+            </p>
+
           </div>
         )}
-      </AnimatePresence>
 
-      {/* ================= CONFIGURE USER DRAWER ================= */}
+      </div>
+
+      {/* VIEW USER DRAWER */}
       <AnimatePresence>
+
         {selectedUser && (
-          <div className="fixed inset-0 z-50 flex justify-end">
+          <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedUser(null)}
-              className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"
+              className="fixed inset-0 bg-black/30 z-40"
             />
 
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="relative w-full max-w-md bg-white shadow-2xl flex flex-col h-full z-10"
+              transition={{ type: "tween", duration: 0.25 }}
+              className="fixed right-0 top-0 h-full w-full sm:max-w-md bg-white z-50 shadow-2xl overflow-y-auto"
             >
-              <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5 bg-slate-900 text-white">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-500/20 text-teal-400 font-bold">
-                    <FaUserShield />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-black text-white">{selectedUser.name}</h2>
-                    <p className="text-[10px] text-teal-400 font-semibold uppercase tracking-widest">
-                      ID: {selectedUser.id} • {selectedUser.role}
-                    </p>
-                  </div>
-                </div>
+
+              <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+
+                <h2 className="text-lg font-semibold text-gray-900">
+                  User Details
+                </h2>
+
                 <button
                   type="button"
-                  onClick={() => setSelectedUser(null)}
-                  className="rounded-lg p-2 text-slate-400 hover:text-white"
+                  onClick={() =>
+                    setSelectedUser(null)
+                  }
+                  className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200"
                 >
-                  <FaTimes className="text-lg" />
+                  <FaTimes />
                 </button>
+
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                <div className="rounded-xl border border-slate-200 p-5 bg-slate-50/50 space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Account Details</p>
-                  <p className="text-xs text-slate-700"><strong>Email:</strong> {selectedUser.email}</p>
-                  <p className="text-xs text-slate-700"><strong>Data Scope:</strong> {selectedUser.scope}</p>
-                  <p className="text-xs text-slate-700"><strong>Account Status:</strong> {selectedUser.status}</p>
-                </div>
+              <div className="p-6">
 
-                <div className="rounded-xl border border-slate-200 p-5 space-y-4">
-                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-900">Security Actions</h4>
-                  <div className="space-y-2">
-                    <button
-                      type="button"
-                      onClick={() => alert(`Password reset instructions sent to ${selectedUser.email}`)}
-                      className="w-full flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white p-3 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-2xs"
-                    >
-                      <FaKey className="text-teal-600" />
-                      <span>Send Password Reset Link</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setUsers(users.map(u => u.id === selectedUser.id ? { ...u, status: u.status === "Active" ? "Suspended" : "Active" } : u));
-                        setSelectedUser({ ...selectedUser, status: selectedUser.status === "Active" ? "Suspended" : "Active" });
-                      }}
-                      className={`w-full flex items-center justify-center gap-2 rounded-xl p-3 text-xs font-bold text-white shadow-xs ${
-                        selectedUser.status === "Active" ? "bg-rose-600 hover:bg-rose-500" : "bg-emerald-600 hover:bg-emerald-500"
-                      }`}
-                    >
-                      {selectedUser.status === "Active" ? "Suspend Operator Access" : "Activate Operator Account"}
-                    </button>
+                <div className="text-center mb-7">
+
+                  <div className="w-20 h-20 rounded-full bg-gray-900 text-white flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                    {getInitials(
+                      getFullName(selectedUser)
+                    )}
                   </div>
+
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {getFullName(selectedUser)}
+                  </h3>
+
+                  <p className="text-gray-500 text-sm mt-1">
+                    {selectedUser.email}
+                  </p>
+
                 </div>
+
+                <div className="space-y-4">
+
+                  <div className="flex items-start gap-3">
+                    <FaShieldAlt className="text-gray-400 mt-1" />
+
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase font-semibold">
+                        Role
+                      </p>
+
+                      <p className="text-sm text-gray-800 mt-1">
+                        {formatRole(
+                          getUserRole(selectedUser)
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <FaBuilding className="text-gray-400 mt-1" />
+
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase font-semibold">
+                        Franchise
+                      </p>
+
+                      <p className="text-sm text-gray-800 mt-1">
+                        {getFranchise(selectedUser)
+                          ?.name || "Network-wide"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <FaPhone className="text-gray-400 mt-1" />
+
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase font-semibold">
+                        Phone
+                      </p>
+
+                      <p className="text-sm text-gray-800 mt-1">
+                        {getPhone(selectedUser)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <FaEnvelope className="text-gray-400 mt-1" />
+
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase font-semibold">
+                        Email
+                      </p>
+
+                      <p className="text-sm text-gray-800 mt-1 break-all">
+                        {selectedUser.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <FaUser className="text-gray-400 mt-1" />
+
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase font-semibold">
+                        Account Status
+                      </p>
+
+                      <p
+                        className={`text-sm mt-1 font-medium ${
+                          selectedUser.is_active
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {selectedUser.is_active
+                          ? "Active"
+                          : "Suspended"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <FaCheckCircle className="text-gray-400 mt-1" />
+
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase font-semibold">
+                        Last Login
+                      </p>
+
+                      <p className="text-sm text-gray-800 mt-1">
+                        {formatDate(
+                          selectedUser.last_login
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <FaUser className="text-gray-400 mt-1" />
+
+                    <div>
+                      <p className="text-xs text-gray-400 uppercase font-semibold">
+                        Date Joined
+                      </p>
+
+                      <p className="text-sm text-gray-800 mt-1">
+                        {formatDate(
+                          selectedUser.date_joined
+                        )}
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div className="mt-8 pt-5 border-t border-gray-100">
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedUser(null);
+                      openEdit(selectedUser);
+                    }}
+                    className="w-full py-3 rounded-xl bg-gray-900 text-white font-medium hover:bg-gray-800 transition"
+                  >
+                    Edit User
+                  </button>
+
+                </div>
+
               </div>
+
             </motion.div>
-          </div>
+          </>
         )}
+
       </AnimatePresence>
+
+      {/* EDIT USER MODAL */}
+      <AnimatePresence>
+
+        {editingUser && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => !saving && setEditingUser(null)}
+              className="fixed inset-0 bg-black/40 z-50"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              className="fixed inset-0 z-60 flex items-center justify-center p-4 pointer-events-none"
+            >
+
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg pointer-events-auto">
+
+                <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      Edit User
+                    </h2>
+
+                    <p className="text-sm text-gray-500 mt-1">
+                      {getFullName(editingUser)}
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={saving}
+                    onClick={() =>
+                      setEditingUser(null)
+                    }
+                    className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500"
+                  >
+                    <FaTimes />
+                  </button>
+
+                </div>
+
+                <div className="p-5 space-y-5">
+
+                  {/* ROLE */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Role
+                    </label>
+
+                    <div className="relative">
+
+                      <select
+                        value={editRole}
+                        onChange={(e) =>
+                          setEditRole(e.target.value)
+                        }
+                        className="appearance-none w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl outline-none focus:border-gray-400 bg-white"
+                      >
+                        <option value="customer">
+                          Customer
+                        </option>
+
+                        <option value="employee">
+                          Employee
+                        </option>
+
+                        <option value="franchise_manager">
+                          Franchise Manager
+                        </option>
+
+                        <option value="head_office">
+                          Head Office
+                        </option>
+
+                        <option value="super_admin">
+                          Super Admin
+                        </option>
+                      </select>
+
+                      <FaChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none" />
+
+                    </div>
+                  </div>
+
+                  {/* FRANCHISE */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Franchise
+                    </label>
+
+                    <div className="relative">
+
+                      <select
+                        value={editFranchise}
+                        onChange={(e) =>
+                          setEditFranchise(e.target.value)
+                        }
+                        disabled={
+                          editRole !==
+                            "franchise_manager" ||
+                          loadingFranchises
+                        }
+                        className="appearance-none w-full px-4 py-3 pr-10 border border-gray-200 rounded-xl outline-none focus:border-gray-400 bg-white disabled:bg-gray-100 disabled:text-gray-400"
+                      >
+                        <option value="">
+                          {editRole ===
+                          "franchise_manager"
+                            ? "Select Franchise"
+                            : "No Franchise / Network-wide"}
+                        </option>
+
+                        {franchises.map(
+                          (franchise) => (
+                            <option
+                              key={franchise.id}
+                              value={franchise.id}
+                            >
+                              {franchise.name}
+                            </option>
+                          )
+                        )}
+
+                      </select>
+
+                      <FaChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none" />
+
+                    </div>
+
+                    {editRole ===
+                      "franchise_manager" && (
+                      <p className="text-xs text-gray-500 mt-2">
+                        A Franchise Manager must be assigned
+                        to a franchise.
+                      </p>
+                    )}
+                  </div>
+
+                  {/* STATUS */}
+                  <div className="border border-gray-200 rounded-xl p-4">
+
+                    <div className="flex items-center justify-between gap-4">
+
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          Account Status
+                        </p>
+
+                        <p className="text-sm text-gray-500 mt-1">
+                          {editActive
+                            ? "This user can log in."
+                            : "This user cannot log in."}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        disabled={saving}
+                        onClick={() =>
+                          setEditActive(
+                            !editActive
+                          )
+                        }
+                        className={`relative w-12 h-6 rounded-full transition ${
+                          editActive
+                            ? "bg-green-500"
+                            : "bg-gray-300"
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition ${
+                            editActive
+                              ? "left-7"
+                              : "left-1"
+                          }`}
+                        />
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* MODAL ACTIONS */}
+                <div className="p-5 border-t border-gray-100 flex gap-3">
+
+                  <button
+                    type="button"
+                    disabled={saving}
+                    onClick={() =>
+                      setEditingUser(null)
+                    }
+                    className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={
+                      saving ||
+                      (editRole ===
+                        "franchise_manager" &&
+                        !editFranchise)
+                    }
+                    onClick={updateUser}
+                    className="flex-1 py-3 rounded-xl bg-gray-900 text-white font-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  >
+                    {saving
+                      ? "Saving..."
+                      : "Save Changes"}
+                  </button>
+
+                </div>
+
+              </div>
+
+            </motion.div>
+          </>
+        )}
+
+      </AnimatePresence>
+
     </div>
   );
-}
+};
+
+export default Users;

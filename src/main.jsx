@@ -1,40 +1,79 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  Outlet
+} from 'react-router-dom'
+
 import './index.css'
+
+// ========================================
+// MAIN COMPONENTS
+// ========================================
 
 import Header from './MainComponets/Header'
 import Home from './MainComponets/Home'
 import Contact from './MainComponets/Contact'
 import Career from './MainComponets/Career'
+import Register from './MainComponets/Register'
+import Login from './MainComponets/Login'
+import Footer from './MainComponets/Footer'
+import Consultation from './MainComponets/Consultation'
+import ScrollToTop from './MainComponets/ScrollToTop'
+import CareerForm from './MainComponets/CareerForm'
+import Privacy from './MainComponets/Privacy'
+
+
+// ========================================
+// HOMECARE COMPONENTS
+// ========================================
+
 import HomeCare from './HomeComponets/HomeCare'
 import PersonalCare from './PersonalComponets/PersonalCare'
 import Dementia from './DementiaComponets/Dementia'
 import Hospice from './HospiceComponets/Hospice'
 import Daily from './DailySupportComponets/Daily'
 import Nursing from './NursingComponets/Nursing'
+
+
+// ========================================
+// FACILITY COMPONENTS
+// ========================================
+
 import Facility from './FacilityComponets/Facility'
 import Temporary from './TemporaryCoverageComponets/Temporary'
 import LongTerm from './LongTermComponets/LongTerm'
 import Emergency from './EmergencyComponets/Emergency'
+
+
+// ========================================
+// ABOUT COMPONENTS
+// ========================================
+
 import About from './AboutComponets/About'
 import Testimonial from './TestimonialsComponets/Testimonial'
 import Caregiver from './CaregiverComponets/Caregiver'
 import Service from './ServiceAreaComponets/Service'
+
+
+// ========================================
+// RESOURCE COMPONENTS
+// ========================================
+
 import Resources from './ResourcesComponets/Resources'
 import Faq from './FaqComponets/Faq'
-import Register from './MainComponets/Register'
-import Login from './MainComponets/Login'
-import Footer from './MainComponets/Footer'
-import Consultation from './MainComponets/Consultation'
-import ScrollToTop from './MainComponets/ScrollToTop'
+
+
+// ========================================
+// GUIDE COMPONENTS
+// ========================================
 
 import DevelopmentalSupport from './GuideComponets/DevelopmentalSupport'
 import PersonalSupportWorker from './GuideComponets/PersonalSupportWorker'
-import CareerForm from './MainComponets/CareerForm'
-import Privacy from './MainComponets/Privacy'
 import CaregiverRole from './GuideComponets/CaregiverRole'
-import AlzheimerGuide from './GuideComponets/AlzheimerGuide'
 import Caregivertips from './GuideComponets/Caregivertips'
 import IntroducingHomeCare from './GuideComponets/IntroducingHomeCare'
 import FundingOptions from './GuideComponets/FundingOptions'
@@ -43,6 +82,8 @@ import ParentCaregiver from './GuideComponets/ParentCaregiver'
 import LongTime from './GuideComponets/LongTime'
 import SafeSpace from './GuideComponets/SafeSpace'
 import RespiteCare from './GuideComponets/RespiteCare'
+import AlzheimerGuide from './GuideComponets/AlzheimerGuide'
+
 
 // ========================================
 // DASHBOARDS
@@ -53,8 +94,19 @@ import FranchisePartnerPortalDashboard from './DashboardComponets/FranchisePartn
 
 // Head Office Dashboard
 import HeadOfficePortalDashboard from './DashboardComponets/HeadOfficePortalDashboard'
+
+// Customer Dashboard
 import CustomerDashboard from './DashboardComponets/CustomerDashboard'
+
+// Employee Dashboard
 import EmployeeDashboard from './DashboardComponets/EmployeeDashboard'
+
+
+// ========================================
+// PROTECTED ROUTE
+// ========================================
+
+import ProtectedRoute from './MainComponets/ProtectedRoute'
 
 
 // ========================================
@@ -112,6 +164,7 @@ createRoot(document.getElementById('root')).render(
             path="/"
             element={<Home />}
           />
+
 
           {/* ========================================
               HOMECARE
@@ -279,7 +332,7 @@ createRoot(document.getElementById('root')).render(
 
 
           {/* ========================================
-              MAIN PAGES
+              MAIN PUBLIC PAGES
           ======================================== */}
 
           <Route
@@ -321,18 +374,44 @@ createRoot(document.getElementById('root')).render(
 
 
         {/* ========================================
+            PROTECTED DASHBOARDS
+        ======================================== */}
+
+
+        {/* ========================================
             FRANCHISE PARTNER DASHBOARD
         ======================================== */}
 
         <Route
-          path="/franchise-partner-dashboard/*"
-          element={<FranchisePartnerPortalDashboard />}
-        />
-
+          element={
+            <ProtectedRoute
+              allowedRoles={["franchise_manager"]}
+            />
+          }
+        >
           <Route
-          path="/employee-dashboard"
-          element={<EmployeeDashboard />}
-        />
+            path="/franchise-partner-dashboard/*"
+            element={<FranchisePartnerPortalDashboard />}
+          />
+        </Route>
+
+
+        {/* ========================================
+            EMPLOYEE DASHBOARD
+        ======================================== */}
+
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={["employee"]}
+            />
+          }
+        >
+          <Route
+            path="/employee-dashboard"
+            element={<EmployeeDashboard />}
+          />
+        </Route>
 
 
         {/* ========================================
@@ -340,14 +419,38 @@ createRoot(document.getElementById('root')).render(
         ======================================== */}
 
         <Route
-          path="/head-office-portal-dashboard"
-          element={<HeadOfficePortalDashboard />}
-        />
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                "head_office",
+                "super_admin"
+              ]}
+            />
+          }
+        >
+          <Route
+            path="/head-office-portal-dashboard"
+            element={<HeadOfficePortalDashboard />}
+          />
+        </Route>
+
+
+        {/* ========================================
+            CUSTOMER DASHBOARD
+        ======================================== */}
 
         <Route
-          path="/customer-dashboard"
-          element={<CustomerDashboard />}
-        />
+          element={
+            <ProtectedRoute
+              allowedRoles={["customer"]}
+            />
+          }
+        >
+          <Route
+            path="/customer-dashboard"
+            element={<CustomerDashboard />}
+          />
+        </Route>
 
       </Routes>
 

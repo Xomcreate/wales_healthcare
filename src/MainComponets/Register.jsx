@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { Eye, EyeOff } from 'lucide-react'
+import api from '../api/axios'
 
 // Slideshow images showcasing premium medical healthcare facilities and professional care staff
 const SLIDES = [
@@ -21,6 +23,7 @@ const SLIDES = [
 ]
 
 function Register() {
+  const navigate = useNavigate()
   const [currentSlide, setCurrentSlide] = useState(0)
 
   // Standard patient/client or staff registration form state
@@ -30,10 +33,17 @@ function Register() {
     email: '',
     phone: '',
     password: '',
-    accountType: 'Patient / Family Client',
+    confirmPassword: '',
+    accountType: 'Patient / Family Client', // fixed default, no longer user-selectable
     serviceInterest: 'Homecare Services',
     agreeTerms: false,
   })
+
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   // Automatic slideshow ticker
   useEffect(() => {
@@ -53,23 +63,57 @@ function Register() {
 
   const handleNext = (e) => {
     e.preventDefault()
+    setError('')
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+
     setStep(2)
   }
 
-  const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault()
-    alert('Account registration successful!')
-  }
+    setError('')
 
+    if (!formData.agreeTerms) {
+      setError('You must agree to the terms of service to continue.')
+      return
+    }
+
+    setLoading(true)
+    try {
+      await api.post('auth/register/', {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        confirm_password: formData.confirmPassword,
+        service_interest: formData.serviceInterest,
+        agree_terms: formData.agreeTerms,
+      })
+      navigate('/login', { state: { justRegistered: true } })
+    } catch (err) {
+      const data = err.response?.data
+      const message = data
+        ? Object.entries(data)
+            .map(([key, val]) => (Array.isArray(val) ? val.join(' ') : val))
+            .join(' ')
+        : 'Registration failed. Please try again.'
+      setError(message)
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <div className="relative min-h-screen bg-white font-sans flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
-      
+
       {/* Background Animated/Stroke Heart SVG Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-50 z-0 overflow-hidden">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
           <defs>
             <pattern id="outline-heart-pattern" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-              {/* Hand-drawn style heart paths */}
               <path
                 d="M60 35 C52 20, 25 20, 18 35 C11 50, 30 65, 60 90 C90 65, 109 50, 102 35 C95 20, 68 20, 60 35 Z"
                 fill="none"
@@ -107,7 +151,7 @@ function Register() {
 
       {/* Main Card Container */}
       <div className="relative z-10 w-full max-w-5xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
-        
+
         {/* Left Column: Image Slideshow */}
         <div className="lg:col-span-5 relative bg-slate-900 overflow-hidden flex flex-col justify-between min-h-70 lg:min-h-150">
           {SLIDES.map((slide, index) => (
@@ -159,7 +203,7 @@ function Register() {
         {/* Right Column: Multi-Step Registration Form */}
         <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-white">
           <div className="max-w-lg mx-auto w-full space-y-6">
-            
+
             <div className="space-y-1">
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
@@ -170,20 +214,27 @@ function Register() {
                 </span>
               </div>
               <p className="text-sm text-slate-500">
-                {step === 1 
-                  ? 'Enter your personal details to begin your portal account.' 
-                  : 'Select your account profile and primary requirement.'}
+                {step === 1
+                  ? 'Enter your personal details to begin your portal account.'
+                  : 'Select your primary requirement to finish setting up.'}
               </p>
             </div>
 
             {/* Progress Bar */}
             <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-              <div 
+              <div
                 className={`h-full bg-teal-600 transition-all duration-300 ${
                   step === 1 ? 'w-1/2' : 'w-full'
                 }`}
               />
             </div>
+
+            {/* Error banner */}
+            {error && (
+              <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
 
             {/* Form Body */}
             {step === 1 ? (
@@ -238,15 +289,52 @@ function Register() {
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                     Secure Password
                   </label>
-                  <input
-                    type="password"
-                    name="password"
-                    required
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="••••••••••••"
-                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      required
+                      minLength={8}
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="••••••••••••"
+                      className="w-full px-3.5 py-2.5 pr-10 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      name="confirmPassword"
+                      required
+                      minLength={8}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="••••••••••••"
+                      className="w-full px-3.5 py-2.5 pr-10 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword((prev) => !prev)}
+                      aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+                    >
+                      {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
                 </div>
 
                 <button
@@ -258,39 +346,21 @@ function Register() {
               </form>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Account Type
-                    </label>
-                    <select
-                      name="accountType"
-                      value={formData.accountType}
-                      onChange={handleChange}
-                      className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
-                    >
-                      <option value="Patient / Family Client">Patient / Family Client</option>
-                      <option value="Healthcare Professional">Healthcare Professional / Nurse</option>
-                      <option value="Facility Manager">Facility Partner</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Primary Service Interest
-                    </label>
-                    <select
-                      name="serviceInterest"
-                      value={formData.serviceInterest}
-                      onChange={handleChange}
-                      className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
-                    >
-                      <option value="Homecare Services">Homecare Services</option>
-                      <option value="Nursing & Clinical Care">Nursing & Clinical Care</option>
-                      <option value="Dementia & Special Care">Dementia & Special Care</option>
-                      <option value="Facility Staffing Coverage">Facility Staffing Coverage</option>
-                    </select>
-                  </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Primary Service Interest
+                  </label>
+                  <select
+                    name="serviceInterest"
+                    value={formData.serviceInterest}
+                    onChange={handleChange}
+                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
+                  >
+                    <option value="Homecare Services">Homecare Services</option>
+                    <option value="Nursing & Clinical Care">Nursing & Clinical Care</option>
+                    <option value="Dementia & Special Care">Dementia & Special Care</option>
+                    <option value="Facility Staffing Coverage">Facility Staffing Coverage</option>
+                  </select>
                 </div>
 
                 <div className="flex items-start space-x-3 pt-2">
@@ -312,15 +382,17 @@ function Register() {
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 rounded-lg transition-colors text-sm"
+                    disabled={loading}
+                    className="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-3 rounded-lg transition-colors text-sm disabled:opacity-50"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    className="w-2/3 bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm text-sm"
+                    disabled={loading}
+                    className="w-2/3 bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-lg transition-colors shadow-sm text-sm disabled:opacity-60"
                   >
-                    Complete Registration
+                    {loading ? 'Creating account…' : 'Complete Registration'}
                   </button>
                 </div>
               </form>

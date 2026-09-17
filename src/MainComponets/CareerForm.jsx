@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react'
 import api from '../api/axios'
 
@@ -7,6 +8,9 @@ function CareerForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [submitSuccess, setSubmitSuccess] = useState(false)
+
+  const [franchises, setFranchises] = useState([])
+  const [isLoadingFranchises, setIsLoadingFranchises] = useState(true)
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -20,6 +24,7 @@ function CareerForm() {
     gender: 'Prefer not to say',
     coverNote: '',
     agreeTerms: false,
+    franchise: '',
   })
 
   // Introductory Loading Screen
@@ -31,8 +36,41 @@ function CareerForm() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Fetch active healthcare locations
+  useEffect(() => {
+    const fetchFranchises = async () => {
+      try {
+        setIsLoadingFranchises(true)
+        setSubmitError('')
+
+        const response = await api.get('careers/franchises/')
+
+        setFranchises(response.data || [])
+      } catch (error) {
+        console.error(
+          'Unable to load healthcare locations:',
+          error
+        )
+
+        setSubmitError(
+          'Unable to load healthcare locations. Please refresh the page and try again.'
+        )
+      } finally {
+        setIsLoadingFranchises(false)
+      }
+    }
+
+    fetchFranchises()
+  }, [])
+
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target
+    const {
+      name,
+      value,
+      type,
+      checked,
+      files,
+    } = e.target
 
     setFormData((prev) => ({
       ...prev,
@@ -48,6 +86,11 @@ function CareerForm() {
     if (submitError) {
       setSubmitError('')
     }
+
+    // Clear success message when user starts editing again
+    if (submitSuccess) {
+      setSubmitSuccess(false)
+    }
   }
 
   const handleNext = (e) => {
@@ -55,18 +98,33 @@ function CareerForm() {
 
     setSubmitError('')
 
-    // Make sure required Step 1 fields are filled
+    // Step 1 validation
     if (
-      !formData.fullName ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.customRole
+      !formData.fullName.trim() ||
+      !formData.email.trim() ||
+      !formData.phone.trim() ||
+      !formData.customRole.trim()
     ) {
-      setSubmitError('Please complete all required fields before continuing.')
+      setSubmitError(
+        'Please complete all required fields before continuing.'
+      )
+      return
+    }
+
+    // Franchise validation
+    if (!formData.franchise) {
+      setSubmitError(
+        'Please select the healthcare location you are applying to.'
+      )
       return
     }
 
     setStep(2)
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
   }
 
   const handleSubmit = async (e) => {
@@ -75,14 +133,28 @@ function CareerForm() {
     setSubmitError('')
     setSubmitSuccess(false)
 
-    // Frontend validation
+    // Franchise validation
+    if (!formData.franchise) {
+      setSubmitError(
+        'Please select the healthcare location you are applying to.'
+      )
+
+      setStep(1)
+
+      return
+    }
+
+    // Resume validation
     if (!formData.resumeFile) {
       setSubmitError('Please upload your CV or resume.')
       return
     }
 
+    // Terms validation
     if (!formData.agreeTerms) {
-      setSubmitError('Please agree to the terms before submitting.')
+      setSubmitError(
+        'Please agree to the terms before submitting.'
+      )
       return
     }
 
@@ -90,7 +162,9 @@ function CareerForm() {
     const maxFileSize = 10 * 1024 * 1024
 
     if (formData.resumeFile.size > maxFileSize) {
-      setSubmitError('Your CV/resume must not be larger than 10MB.')
+      setSubmitError(
+        'Your CV/resume must not be larger than 10MB.'
+      )
       return
     }
 
@@ -101,8 +175,20 @@ function CareerForm() {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ]
 
-    if (!allowedTypes.includes(formData.resumeFile.type)) {
-      setSubmitError('Only PDF, DOC, and DOCX files are allowed.')
+    const fileName = formData.resumeFile.name.toLowerCase()
+
+    const validExtension =
+      fileName.endsWith('.pdf') ||
+      fileName.endsWith('.doc') ||
+      fileName.endsWith('.docx')
+
+    if (
+      !allowedTypes.includes(formData.resumeFile.type) &&
+      !validExtension
+    ) {
+      setSubmitError(
+        'Only PDF, DOC, and DOCX files are allowed.'
+      )
       return
     }
 
@@ -112,22 +198,68 @@ function CareerForm() {
       const data = new FormData()
 
       // These names match the Django backend
-      data.append('full_name', formData.fullName)
-      data.append('email', formData.email)
-      data.append('phone', formData.phone)
-      data.append('position', formData.customRole)
-      data.append('experience_years', formData.experienceYears)
-      data.append('availability', formData.availability)
-      data.append('referral_source', formData.referralSource)
-      data.append('gender', formData.gender)
-      data.append('cover_note', formData.coverNote)
-      data.append('agree_terms', String(formData.agreeTerms))
+      data.append(
+        'full_name',
+        formData.fullName.trim()
+      )
 
-      // Franchise will be added properly later
-      data.append('franchise', '')
+      data.append(
+        'email',
+        formData.email.trim()
+      )
+
+      data.append(
+        'phone',
+        formData.phone.trim()
+      )
+
+      data.append(
+        'position',
+        formData.customRole.trim()
+      )
+
+      data.append(
+        'experience_years',
+        formData.experienceYears
+      )
+
+      data.append(
+        'availability',
+        formData.availability
+      )
+
+      data.append(
+        'referral_source',
+        formData.referralSource
+      )
+
+      data.append(
+        'gender',
+        formData.gender
+      )
+
+      data.append(
+        'cover_note',
+        formData.coverNote.trim()
+      )
+
+      data.append(
+        'agree_terms',
+        String(formData.agreeTerms)
+      )
+
+      // IMPORTANT:
+      // Send the selected Franchise ID
+      data.append(
+        'franchise',
+        String(formData.franchise)
+      )
 
       // CV / Resume
-      data.append('resume', formData.resumeFile)
+      data.append(
+        'resume',
+        formData.resumeFile
+      )
 
       const response = await api.post(
         'careers/applications/',
@@ -139,7 +271,10 @@ function CareerForm() {
         }
       )
 
-      console.log('Career application response:', response.data)
+      console.log(
+        'Career application response:',
+        response.data
+      )
 
       setSubmitSuccess(true)
 
@@ -156,33 +291,58 @@ function CareerForm() {
         gender: 'Prefer not to say',
         coverNote: '',
         agreeTerms: false,
+        franchise: '',
       })
 
       setStep(1)
 
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      })
     } catch (error) {
-      console.error('Career application error:', error)
+      console.error(
+        'Career application error:',
+        error
+      )
 
       if (error.response) {
-        console.error('Backend response:', error.response.data)
+        console.error(
+          'Backend response:',
+          error.response.data
+        )
 
-        const backendError = error.response.data
+        const backendError =
+          error.response.data
 
-        if (typeof backendError === 'object') {
-          const firstError = Object.values(backendError)[0]
+        if (
+          typeof backendError === 'object' &&
+          backendError !== null
+        ) {
+          const firstError =
+            Object.values(backendError)[0]
 
           if (Array.isArray(firstError)) {
-            setSubmitError(firstError[0])
-          } else if (typeof firstError === 'string') {
-            setSubmitError(firstError)
+            setSubmitError(
+              firstError[0]
+            )
+          } else if (
+            typeof firstError === 'string'
+          ) {
+            setSubmitError(
+              firstError
+            )
           } else {
             setSubmitError(
               backendError.message ||
+              backendError.detail ||
               'Unable to submit your application.'
             )
           }
         } else {
-          setSubmitError('Unable to submit your application.')
+          setSubmitError(
+            'Unable to submit your application.'
+          )
         }
       } else if (error.request) {
         setSubmitError(
@@ -193,7 +353,6 @@ function CareerForm() {
           'Something went wrong while submitting your application.'
         )
       }
-
     } finally {
       setIsSubmitting(false)
     }
@@ -206,13 +365,16 @@ function CareerForm() {
 
         {/* Background Subtle Heart Pattern */}
         <div className="absolute inset-0 pointer-events-none opacity-10">
+
           <svg
             className="w-full h-full"
             xmlns="http://www.w3.org/2000/svg"
             width="100%"
             height="100%"
           >
+
             <defs>
+
               <pattern
                 id="career-loader-heart"
                 x="0"
@@ -221,6 +383,7 @@ function CareerForm() {
                 height="100"
                 patternUnits="userSpaceOnUse"
               >
+
                 <path
                   d="M50 30 C43 18, 22 18, 16 30 C10 42, 26 54, 50 75 C74 54, 90 42, 84 30 C78 18, 57 18, 50 30 Z"
                   fill="none"
@@ -228,7 +391,9 @@ function CareerForm() {
                   strokeWidth="1.5"
                   transform="scale(0.5) translate(20, 20)"
                 />
+
               </pattern>
+
             </defs>
 
             <rect
@@ -236,28 +401,35 @@ function CareerForm() {
               height="100%"
               fill="url(#career-loader-heart)"
             />
+
           </svg>
+
         </div>
 
         <div className="relative z-10 text-center space-y-6 max-w-lg mx-auto px-4">
 
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-teal-500/10 border border-teal-500/30 text-teal-400 shadow-xl shadow-teal-500/5 animate-pulse">
+
             <svg
               className="w-10 h-10"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
+
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="1.75"
                 d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
+
             </svg>
+
           </div>
 
           <div className="space-y-2">
+
             <span className="text-xs font-bold tracking-widest text-teal-400 uppercase">
               Wales Healthcare
             </span>
@@ -269,14 +441,21 @@ function CareerForm() {
             <p className="text-xs sm:text-sm text-slate-400 max-w-sm mx-auto">
               Initializing secure applicant portal and submission workspace...
             </p>
+
           </div>
 
           <div className="flex items-center justify-center space-x-1.5 pt-2">
+
             <div className="w-2.5 h-2.5 bg-teal-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
+
             <div className="w-2.5 h-2.5 bg-teal-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+
             <div className="w-2.5 h-2.5 bg-teal-300 rounded-full animate-bounce" />
+
           </div>
+
         </div>
+
       </div>
     )
   }
@@ -287,13 +466,16 @@ function CareerForm() {
 
       {/* Background Subtle Heart Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-30 z-0 overflow-hidden">
+
         <svg
           className="w-full h-full"
           xmlns="http://www.w3.org/2000/svg"
           width="100%"
           height="100%"
         >
+
           <defs>
+
             <pattern
               id="career-bg-pattern"
               x="0"
@@ -302,6 +484,7 @@ function CareerForm() {
               height="100"
               patternUnits="userSpaceOnUse"
             >
+
               <path
                 d="M50 30 C43 18, 22 18, 16 30 C10 42, 26 54, 50 75 C74 54, 90 42, 84 30 C78 18, 57 18, 50 30 Z"
                 fill="none"
@@ -310,7 +493,9 @@ function CareerForm() {
                 strokeOpacity="0.25"
                 transform="scale(0.5) translate(20, 20)"
               />
+
             </pattern>
+
           </defs>
 
           <rect
@@ -318,7 +503,9 @@ function CareerForm() {
             height="100%"
             fill="url(#career-bg-pattern)"
           />
+
         </svg>
+
       </div>
 
       {/* Main Form Container */}
@@ -330,6 +517,7 @@ function CareerForm() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
             <div>
+
               <span className="text-[11px] font-bold tracking-wider uppercase text-teal-600 bg-teal-50 px-2.5 py-1 rounded-md border border-teal-100">
                 Wales Healthcare Careers
               </span>
@@ -337,38 +525,50 @@ function CareerForm() {
               <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight mt-1.5">
                 Employment Application Form
               </h1>
+
             </div>
 
             <div className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full w-fit mx-auto sm:mx-0">
               Step {step} of 2
             </div>
+
           </div>
 
           <p className="text-xs sm:text-sm text-slate-500">
+
             {step === 1
               ? 'Enter your contact details and specify any position you wish to apply for.'
               : 'Upload your CV/resume and provide background details to complete your submission.'}
+
           </p>
 
           {/* Progress Bar */}
           <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-4">
+
             <div
               className={`h-full bg-teal-600 transition-all duration-300 ${
-                step === 1 ? 'w-1/2' : 'w-full'
+                step === 1
+                  ? 'w-1/2'
+                  : 'w-full'
               }`}
             />
+
           </div>
+
         </div>
 
         {/* Success Message */}
         {submitSuccess && (
           <div className="mt-6 p-4 rounded-xl bg-teal-50 border border-teal-200 text-teal-800 text-sm">
+
             <p className="font-semibold">
               Application submitted successfully!
             </p>
+
             <p className="mt-1 text-teal-700">
               Your application and CV have been received by Wales Healthcare.
             </p>
+
           </div>
         )}
 
@@ -379,11 +579,17 @@ function CareerForm() {
           </div>
         )}
 
-        {/* Step 1 */}
+        {/* STEP 1 */}
         {step === 1 ? (
-          <form onSubmit={handleNext} className="space-y-4 pt-6">
 
+          <form
+            onSubmit={handleNext}
+            className="space-y-4 pt-6"
+          >
+
+            {/* Full Name */}
             <div>
+
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                 Full Name *
               </label>
@@ -397,11 +603,15 @@ function CareerForm() {
                 placeholder="e.g. Amanda Taylor"
                 className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
               />
+
             </div>
 
+            {/* Email + Phone */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
+              {/* Email */}
               <div>
+
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Email Address *
                 </label>
@@ -415,9 +625,12 @@ function CareerForm() {
                   placeholder="amanda@example.com"
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
                 />
+
               </div>
 
+              {/* Phone */}
               <div>
+
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Phone Number *
                 </label>
@@ -431,11 +644,14 @@ function CareerForm() {
                   placeholder="647-555-0188"
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
                 />
+
               </div>
 
             </div>
 
+            {/* Position */}
             <div>
+
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                 Position Applying For * (Open to any role)
               </label>
@@ -453,11 +669,67 @@ function CareerForm() {
               <p className="text-[11px] text-slate-400 mt-1">
                 You are not restricted to listed roles—type any job position you wish to apply for.
               </p>
+
             </div>
 
+            {/* Healthcare Location */}
+            <div>
+
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                Healthcare Location *
+              </label>
+
+              <select
+                name="franchise"
+                required
+                value={formData.franchise}
+                onChange={handleChange}
+                disabled={
+                  isLoadingFranchises ||
+                  franchises.length === 0
+                }
+                className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+
+                <option value="">
+                  {isLoadingFranchises
+                    ? 'Loading healthcare locations...'
+                    : franchises.length === 0
+                      ? 'No healthcare locations available'
+                      : 'Select a healthcare location'}
+                </option>
+
+                {franchises.map((franchise) => (
+
+                  <option
+                    key={franchise.id}
+                    value={franchise.id}
+                  >
+
+                    {franchise.name}
+
+                    {franchise.location
+                      ? ` — ${franchise.location}`
+                      : ''}
+
+                  </option>
+
+                ))}
+
+              </select>
+
+              <p className="text-[11px] text-slate-400 mt-1">
+                Select the healthcare location you are applying to.
+              </p>
+
+            </div>
+
+            {/* Experience + Availability */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
+              {/* Experience */}
               <div>
+
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Years of Experience
                 </label>
@@ -468,14 +740,30 @@ function CareerForm() {
                   onChange={handleChange}
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
                 >
-                  <option value="Under 1 year">Under 1 year</option>
-                  <option value="1-3 years">1-3 years</option>
-                  <option value="3-5 years">3-5 years</option>
-                  <option value="5+ years">5+ years</option>
+
+                  <option value="Under 1 year">
+                    Under 1 year
+                  </option>
+
+                  <option value="1-3 years">
+                    1-3 years
+                  </option>
+
+                  <option value="3-5 years">
+                    3-5 years
+                  </option>
+
+                  <option value="5+ years">
+                    5+ years
+                  </option>
+
                 </select>
+
               </div>
 
+              {/* Availability */}
               <div>
+
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Preferred Availability
                 </label>
@@ -486,32 +774,58 @@ function CareerForm() {
                   onChange={handleChange}
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
                 >
-                  <option value="Full-Time">Full-Time</option>
-                  <option value="Part-Time">Part-Time</option>
-                  <option value="Flexible / Shifts">Flexible / Shifts</option>
-                  <option value="On-Call">On-Call</option>
+
+                  <option value="Full-Time">
+                    Full-Time
+                  </option>
+
+                  <option value="Part-Time">
+                    Part-Time
+                  </option>
+
+                  <option value="Flexible / Shifts">
+                    Flexible / Shifts
+                  </option>
+
+                  <option value="On-Call">
+                    On-Call
+                  </option>
+
                 </select>
+
               </div>
 
             </div>
 
+            {/* Continue Button */}
             <div className="pt-3">
+
               <button
                 type="submit"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3.5 rounded-xl transition-colors shadow-sm text-sm"
+                disabled={
+                  isLoadingFranchises ||
+                  franchises.length === 0
+                }
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3.5 rounded-xl transition-colors shadow-sm text-sm disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 Continue to CV & Details
               </button>
+
             </div>
 
           </form>
+
         ) : (
 
-          /* Step 2 */
-          <form onSubmit={handleSubmit} className="space-y-4 pt-6">
+          /* STEP 2 */
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 pt-6"
+          >
 
             {/* CV / Resume Upload */}
             <div>
+
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                 Upload CV & Resume * (PDF, DOC, DOCX)
               </label>
@@ -528,27 +842,36 @@ function CareerForm() {
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
+
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 0115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                       />
+
                     </svg>
 
                     <p className="text-xs text-slate-600 font-medium">
+
                       {formData.resumeFile ? (
+
                         <span className="text-teal-700 font-semibold">
                           {formData.resumeFile.name}
                         </span>
+
                       ) : (
+
                         'Click to upload or drag and drop your CV / Resume'
+
                       )}
+
                     </p>
 
                     <p className="text-[10px] text-slate-400 mt-0.5">
                       Maximum file size 10MB
                     </p>
+
                   </div>
 
                   <input
@@ -561,13 +884,17 @@ function CareerForm() {
                   />
 
                 </label>
+
               </div>
+
             </div>
 
-            {/* Referral & Gender */}
+            {/* Referral + Gender */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
+              {/* Referral */}
               <div>
+
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   How did you hear about Staff Relief? *
                 </label>
@@ -578,22 +905,38 @@ function CareerForm() {
                   onChange={handleChange}
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
                 >
-                  <option value="Google Search">Google Search</option>
-                  <option value="Social Media">Social Media</option>
+
+                  <option value="Google Search">
+                    Google Search
+                  </option>
+
+                  <option value="Social Media">
+                    Social Media
+                  </option>
+
                   <option value="Friend or Colleague">
                     Friend or Colleague
                   </option>
+
                   <option value="Job Board (Indeed/LinkedIn)">
                     Job Board (Indeed / LinkedIn)
                   </option>
+
                   <option value="Healthcare Event">
                     Healthcare Event
                   </option>
-                  <option value="Other">Other</option>
+
+                  <option value="Other">
+                    Other
+                  </option>
+
                 </select>
+
               </div>
 
+              {/* Gender */}
               <div>
+
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Gender *
                 </label>
@@ -604,20 +947,36 @@ function CareerForm() {
                   onChange={handleChange}
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
                 >
-                  <option value="Female">Female</option>
-                  <option value="Male">Male</option>
-                  <option value="Non-binary">Non-binary</option>
-                  <option value="Other">Other</option>
+
+                  <option value="Female">
+                    Female
+                  </option>
+
+                  <option value="Male">
+                    Male
+                  </option>
+
+                  <option value="Non-binary">
+                    Non-binary
+                  </option>
+
+                  <option value="Other">
+                    Other
+                  </option>
+
                   <option value="Prefer not to say">
                     Prefer not to say
                   </option>
+
                 </select>
+
               </div>
 
             </div>
 
             {/* Cover Note */}
             <div>
+
               <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                 Additional Cover Note or Message
               </label>
@@ -630,6 +989,7 @@ function CareerForm() {
                 placeholder="Share anything else relevant to your application..."
                 className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all resize-none"
               />
+
             </div>
 
             {/* Terms */}
@@ -674,19 +1034,25 @@ function CareerForm() {
                 disabled={isSubmitting}
                 className="w-2/3 bg-teal-600 hover:bg-teal-700 text-white font-medium py-3.5 rounded-xl transition-colors shadow-sm text-sm disabled:opacity-60 disabled:cursor-not-allowed"
               >
+
                 {isSubmitting
                   ? 'Submitting Application...'
                   : 'Submit Application & Resume'}
+
               </button>
 
             </div>
 
           </form>
+
         )}
 
       </div>
+
     </div>
   )
 }
 
 export default CareerForm
+
+
