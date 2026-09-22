@@ -19,17 +19,29 @@ import {
   FaArrowLeft,
   FaClipboardList,
   FaSignOutAlt,
+  FaEnvelopeOpenText,
+  FaConciergeBell,
+  FaFileAlt,
 } from "react-icons/fa";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+
+import {
+  motion,
+  AnimatePresence,
+  LayoutGroup,
+} from "framer-motion";
 
 import api from "../api/axios";
 
+// ============================================================
 // HEAD OFFICE DASHBOARD COMPONENTS
+// ============================================================
+
 import DashboardOverview from "../HeadOfficePortalDashboardComponets/DashboardOverview";
 import Franchises from "../HeadOfficePortalDashboardComponets/Franchises";
 import Users from "../HeadOfficePortalDashboardComponets/Users";
 import Branding from "../HeadOfficePortalDashboardComponets/Branding";
 import PoliciesResources from "../HeadOfficePortalDashboardComponets/PoliciesResources";
+import Documents from "../HeadOfficePortalDashboardComponets/Documents";
 import FeesRenewals from "../HeadOfficePortalDashboardComponets/FeesRenewals";
 import Reports from "../HeadOfficePortalDashboardComponets/Reports";
 import Compliance from "../HeadOfficePortalDashboardComponets/Compliance";
@@ -38,27 +50,186 @@ import Settings from "../HeadOfficePortalDashboardComponets/Settings";
 import SupportDesk from "../HeadOfficePortalDashboardComponets/SupportDesk";
 import Applications from "../HeadOfficePortalDashboardComponets/Application";
 
+// ============================================================
+// SERVICES
+// ============================================================
+
+import Services from "../HeadOfficePortalDashboardComponets/Services";
+
+// ============================================================
+// HEAD OFFICE CONTACT MESSAGES
+// ============================================================
+
+import Messages from "../HeadOfficePortalDashboardComponets/Messages";
+
+// ============================================================
+// CONSTANTS
+// ============================================================
+
 const BRAND_COLOR = "#0d9488";
 const BRAND_BG = "#f8fafc";
 
+// ============================================================
+// SCROLLBAR-HIDE STYLE
+// ============================================================
+
+const scrollbarHideStyle = `
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+// ============================================================
+// MENU ITEMS
+// ============================================================
+
 const menuItems = [
-  { name: "Dashboard", icon: <FaHome />, key: "dashboard" },
-  { name: "Franchises", icon: <FaBuilding />, key: "franchises" },
-  { name: "Applications", icon: <FaClipboardList />, key: "applications" },
-  { name: "Users", icon: <FaUsers />, key: "users" },
-  { name: "Branding", icon: <FaPalette />, key: "branding" },
-  { name: "Policies & Resources", icon: <FaBookOpen />, key: "policies" },
-  { name: "Fees & Renewals", icon: <FaMoneyBillWave />, key: "fees" },
-  { name: "Reports", icon: <FaChartBar />, key: "reports" },
-  { name: "Compliance", icon: <FaShieldAlt />, key: "compliance" },
-  { name: "Activity Log", icon: <FaHistory />, key: "activity" },
-  { name: "Settings", icon: <FaCog />, key: "settings" },
+  {
+    name: "Dashboard",
+    icon: <FaHome />,
+    key: "dashboard",
+  },
+
+  {
+    name: "Franchises",
+    icon: <FaBuilding />,
+    key: "franchises",
+  },
+
+  {
+    name: "Applications",
+    icon: <FaClipboardList />,
+    key: "applications",
+  },
+
+  // ==========================================================
+  // SERVICES
+  // ==========================================================
+
+  {
+    name: "Services",
+    icon: <FaConciergeBell />,
+    key: "services",
+  },
+
+  // ==========================================================
+  // MESSAGES
+  // ==========================================================
+
+  {
+    name: "Messages",
+    icon: <FaEnvelopeOpenText />,
+    key: "messages",
+  },
+
+  // ==========================================================
+  // USERS
+  // ==========================================================
+
+  {
+    name: "Users",
+    icon: <FaUsers />,
+    key: "users",
+  },
+
+  // ==========================================================
+  // BRANDING
+  // ==========================================================
+
+  {
+    name: "Branding",
+    icon: <FaPalette />,
+    key: "branding",
+  },
+
+  // ==========================================================
+  // POLICIES & RESOURCES
+  // ==========================================================
+
+  {
+    name: "Policies & Resources",
+    icon: <FaBookOpen />,
+    key: "policies",
+  },
+
+  // ==========================================================
+  // DOCUMENTS
+  // ==========================================================
+
+  {
+    name: "Documents",
+    icon: <FaFileAlt />,
+    key: "documents",
+  },
+
+  // ==========================================================
+  // FEES & RENEWALS
+  // ==========================================================
+
+  {
+    name: "Fees & Renewals",
+    icon: <FaMoneyBillWave />,
+    key: "fees",
+  },
+
+  // ==========================================================
+  // REPORTS
+  // ==========================================================
+
+  {
+    name: "Reports",
+    icon: <FaChartBar />,
+    key: "reports",
+  },
+
+  // ==========================================================
+  // COMPLIANCE
+  // ==========================================================
+
+  {
+    name: "Compliance",
+    icon: <FaShieldAlt />,
+    key: "compliance",
+  },
+
+  // ==========================================================
+  // ACTIVITY LOG
+  // ==========================================================
+
+  {
+    name: "Activity Log",
+    icon: <FaHistory />,
+    key: "activity",
+  },
+
+  // ==========================================================
+  // SETTINGS
+  // ==========================================================
+
+  {
+    name: "Settings",
+    icon: <FaCog />,
+    key: "settings",
+  },
 ];
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
 
 export default function HeadOfficePortalDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const [isSidebarCollapsed, setIsSidebarCollapsed] =
+    useState(false);
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] =
+    useState(false);
 
   // ============================================================
   // LOGGED-IN ADMIN
@@ -102,16 +273,19 @@ export default function HeadOfficePortalDashboard() {
 
         const response = await api.get("auth/me/");
 
-        console.log("Logged-in admin:", response.data);
+        console.log(
+          "Logged-in admin:",
+          response.data
+        );
 
         setAdmin(response.data);
       } catch (error) {
-        console.error("Unable to fetch logged-in admin:", error);
+        console.error(
+          "Unable to fetch logged-in admin:",
+          error
+        );
 
-        /*
-         * If the token is invalid/expired, send the user
-         * back to login.
-         */
+        // If token is invalid/expired, send user back to login.
         if (
           error.response?.status === 401 ||
           error.response?.status === 403
@@ -120,7 +294,9 @@ export default function HeadOfficePortalDashboard() {
 
           setAdmin(null);
 
-          window.dispatchEvent(new Event("authChanged"));
+          window.dispatchEvent(
+            new Event("authChanged")
+          );
 
           window.location.href = "/login";
         }
@@ -140,10 +316,6 @@ export default function HeadOfficePortalDashboard() {
     if (!admin) {
       return "Head Office Admin";
     }
-
-    /*
-     * Handle different possible response structures.
-     */
 
     const firstName =
       admin.first_name ||
@@ -173,7 +345,8 @@ export default function HeadOfficePortalDashboard() {
       admin.user?.username ||
       "";
 
-    const combinedName = `${firstName} ${lastName}`.trim();
+    const combinedName =
+      `${firstName} ${lastName}`.trim();
 
     if (combinedName) {
       return combinedName;
@@ -233,7 +406,9 @@ export default function HeadOfficePortalDashboard() {
     if (role) {
       return role
         .replace(/_/g, " ")
-        .replace(/\b\w/g, (letter) => letter.toUpperCase());
+        .replace(/\b\w/g, (letter) =>
+          letter.toUpperCase()
+        );
     }
 
     return "Network Administrator";
@@ -256,10 +431,14 @@ export default function HeadOfficePortalDashboard() {
       .filter(Boolean);
 
     if (parts.length >= 2) {
-      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+      return `${parts[0][0]}${
+        parts[parts.length - 1][0]
+      }`.toUpperCase();
     }
 
-    return parts[0].substring(0, 2).toUpperCase();
+    return parts[0]
+      .substring(0, 2)
+      .toUpperCase();
   };
 
   // ============================================================
@@ -274,9 +453,8 @@ export default function HeadOfficePortalDashboard() {
     if (!confirmed) return;
 
     /*
-     * Try to get the refresh token from either localStorage
-     * or sessionStorage, under any of the key names used
-     * across the app.
+     * Try to get refresh token from either localStorage
+     * or sessionStorage.
      */
 
     const refreshToken =
@@ -287,11 +465,8 @@ export default function HeadOfficePortalDashboard() {
 
     try {
       /*
-       * Tell Django that the current refresh token should
-       * be invalidated/blacklisted.
-       *
-       * If your backend logout endpoint accepts the refresh
-       * token, this will properly log the account out server-side.
+       * Tell Django that the current refresh token
+       * should be invalidated/blacklisted.
        */
 
       if (refreshToken) {
@@ -301,8 +476,8 @@ export default function HeadOfficePortalDashboard() {
       }
     } catch (error) {
       /*
-       * Even if the backend logout request fails, we still
-       * clear the local tokens below.
+       * Even if backend logout fails,
+       * clear local tokens below.
        */
 
       console.error(
@@ -316,13 +491,15 @@ export default function HeadOfficePortalDashboard() {
       // Clear dashboard state.
       setAdmin(null);
 
-      // Close the mobile menu.
+      // Close mobile menu.
       setIsMobileMenuOpen(false);
 
-      // Tell the public Header that authentication changed.
-      window.dispatchEvent(new Event("authChanged"));
+      // Tell public Header that authentication changed.
+      window.dispatchEvent(
+        new Event("authChanged")
+      );
 
-      // Return to the login page.
+      // Return to login page.
       window.location.href = "/login";
     }
   };
@@ -333,46 +510,131 @@ export default function HeadOfficePortalDashboard() {
 
   const renderContent = () => {
     switch (activeTab) {
+      // ========================================================
+      // DASHBOARD
+      // ========================================================
+
       case "dashboard":
-        return <DashboardOverview setActiveTab={setActiveTab} />;
+        return (
+          <DashboardOverview
+            setActiveTab={setActiveTab}
+          />
+        );
+
+      // ========================================================
+      // FRANCHISES
+      // ========================================================
 
       case "franchises":
         return <Franchises />;
 
+      // ========================================================
+      // APPLICATIONS
+      // ========================================================
+
       case "applications":
         return <Applications />;
+
+      // ========================================================
+      // SERVICES
+      // ========================================================
+
+      case "services":
+        return <Services />;
+
+      // ========================================================
+      // CONTACT MESSAGES
+      // ========================================================
+
+      case "messages":
+        return <Messages />;
+
+      // ========================================================
+      // USERS
+      // ========================================================
 
       case "users":
         return <Users />;
 
+      // ========================================================
+      // BRANDING
+      // ========================================================
+
       case "branding":
         return <Branding />;
+
+      // ========================================================
+      // POLICIES & RESOURCES
+      // ========================================================
 
       case "policies":
         return <PoliciesResources />;
 
+      // ========================================================
+      // DOCUMENTS
+      // ========================================================
+
+      case "documents":
+        return <Documents />;
+
+      // ========================================================
+      // FEES & RENEWALS
+      // ========================================================
+
       case "fees":
         return <FeesRenewals />;
+
+      // ========================================================
+      // REPORTS
+      // ========================================================
 
       case "reports":
         return <Reports />;
 
+      // ========================================================
+      // COMPLIANCE
+      // ========================================================
+
       case "compliance":
         return <Compliance />;
+
+      // ========================================================
+      // ACTIVITY LOG
+      // ========================================================
 
       case "activity":
         return <ActivityLog />;
 
+      // ========================================================
+      // SETTINGS
+      // ========================================================
+
       case "settings":
         return <Settings />;
+
+      // ========================================================
+      // SUPPORT
+      // ========================================================
 
       case "support":
         return <SupportDesk />;
 
+      // ========================================================
+      // DEFAULT
+      // ========================================================
+
       default:
-        return <DashboardOverview setActiveTab={setActiveTab} />;
+        return (
+          <DashboardOverview
+            setActiveTab={setActiveTab}
+          />
+        );
     }
   };
+
+  // ============================================================
+  // ACTIVE PAGE TITLE
+  // ============================================================
 
   const activePage =
     activeTab === "support"
@@ -385,23 +647,33 @@ export default function HeadOfficePortalDashboard() {
   // SIDEBAR CONTENT
   // ============================================================
 
-  const SidebarContent = ({ isMobile = false }) => (
+  const SidebarContent = ({
+    isMobile = false,
+  }) => (
     <>
-      {/* LOGO AREA */}
+      {/* ======================================================
+          LOGO AREA
+      ====================================================== */}
 
-      <div className="mb-6 flex items-center justify-between px-5">
+      <div className="mb-6 flex shrink-0 items-center justify-between px-5">
         <div className="flex items-center">
-
           <img
             src="/walescares.png"
             alt="Wales Healthcare logo"
             className="h-11 w-11 shrink-0 rounded-xl object-contain shadow-lg shadow-teal-900/30"
           />
 
-          {(!isSidebarCollapsed || isMobile) && (
+          {(!isSidebarCollapsed ||
+            isMobile) && (
             <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{
+                opacity: 0,
+                x: -10,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+              }}
               className="ml-3.5 overflow-hidden"
             >
               <h1 className="truncate text-sm font-black tracking-wide text-white">
@@ -413,7 +685,6 @@ export default function HeadOfficePortalDashboard() {
               </p>
             </motion.div>
           )}
-
         </div>
 
         {/* MOBILE CLOSE */}
@@ -431,20 +702,20 @@ export default function HeadOfficePortalDashboard() {
         )}
       </div>
 
-      {/* NAVIGATION LINKS */}
+      {/* ======================================================
+          NAVIGATION LINKS
+      ====================================================== */}
 
       <LayoutGroup>
-
-        <div className="flex-1 space-y-1.5 overflow-y-auto px-3 scrollbar-none">
-
-          {(!isSidebarCollapsed || isMobile) && (
+        <div className="hide-scrollbar min-h-0 flex-1 space-y-1.5 overflow-y-auto px-3">
+          {(!isSidebarCollapsed ||
+            isMobile) && (
             <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
               Network Management
             </p>
           )}
 
           {menuItems.map((item) => {
-
             const active =
               activeTab === item.key;
 
@@ -453,13 +724,11 @@ export default function HeadOfficePortalDashboard() {
                 key={item.key}
                 type="button"
                 onClick={() => {
-
                   setActiveTab(item.key);
 
                   if (isMobile) {
                     setIsMobileMenuOpen(false);
                   }
-
                 }}
                 className={`relative flex w-full items-center rounded-xl px-3.5 py-3 transition-all duration-200 group ${
                   active
@@ -473,7 +742,6 @@ export default function HeadOfficePortalDashboard() {
                     : ""
                 }
               >
-
                 {/* ACTIVE INDICATOR */}
 
                 {active && (
@@ -512,8 +780,12 @@ export default function HeadOfficePortalDashboard() {
                 {(!isSidebarCollapsed ||
                   isMobile) && (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    initial={{
+                      opacity: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                    }}
                     className="ml-3.5 flex flex-1 items-center justify-between overflow-hidden"
                   >
                     <span className="truncate text-left text-[11px] font-bold uppercase tracking-wider">
@@ -521,32 +793,26 @@ export default function HeadOfficePortalDashboard() {
                     </span>
                   </motion.div>
                 )}
-
               </button>
             );
           })}
-
         </div>
-
       </LayoutGroup>
 
-      {/* SIDEBAR FOOTER ACTIONS */}
+      {/* ======================================================
+          SIDEBAR FOOTER ACTIONS
+      ====================================================== */}
 
-      <div className="mt-auto border-t border-slate-900/80 px-3 pt-4">
-
+      <div className="mt-auto shrink-0 border-t border-slate-900/80 px-3 pt-4">
         {(!isSidebarCollapsed ||
           isMobile) && (
-
           <div className="mb-3 rounded-xl border border-white/10 bg-linear-to-b from-white/0.06 to-white/0.02 p-3.5">
-
             <div className="mb-1 flex items-center gap-2 text-teal-400">
-
               <FaHeadset className="text-xs" />
 
               <p className="text-xs font-bold text-slate-200">
                 Need support?
               </p>
-
             </div>
 
             <p className="text-[10px] leading-relaxed text-slate-400">
@@ -558,24 +824,22 @@ export default function HeadOfficePortalDashboard() {
             <button
               type="button"
               onClick={() => {
-
                 setActiveTab("support");
 
                 if (isMobile) {
                   setIsMobileMenuOpen(false);
                 }
-
               }}
               className="mt-2.5 w-full rounded-lg border border-teal-500/30 bg-teal-600/20 py-2 text-[10px] font-bold uppercase tracking-wider text-teal-300 shadow-sm transition hover:bg-teal-600 hover:text-white active:scale-95"
             >
               Support Desk
             </button>
-
           </div>
-
         )}
 
-        {/* BACK TO WEBSITE */}
+        {/* ======================================================
+            BACK TO WEBSITE
+        ====================================================== */}
 
         <button
           type="button"
@@ -584,7 +848,6 @@ export default function HeadOfficePortalDashboard() {
           }}
           className="group flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-slate-400 transition hover:bg-white/10 hover:text-white lg:justify-start"
         >
-
           <FaArrowLeft className="shrink-0 text-sm transition-transform group-hover:-translate-x-1" />
 
           {(!isSidebarCollapsed ||
@@ -593,17 +856,17 @@ export default function HeadOfficePortalDashboard() {
               Back to Website
             </span>
           )}
-
         </button>
 
-        {/* LOGOUT */}
+        {/* ======================================================
+            LOGOUT
+        ====================================================== */}
 
         <button
           type="button"
           onClick={handleLogout}
           className="group flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-rose-400 transition hover:bg-rose-500/10 hover:text-rose-300 lg:justify-start"
         >
-
           <FaSignOutAlt className="shrink-0 text-sm transition-transform group-hover:translate-x-0.5" />
 
           {(!isSidebarCollapsed ||
@@ -612,9 +875,7 @@ export default function HeadOfficePortalDashboard() {
               Logout
             </span>
           )}
-
         </button>
-
       </div>
     </>
   );
@@ -630,21 +891,23 @@ export default function HeadOfficePortalDashboard() {
         background: BRAND_BG,
       }}
     >
+      {/* Hides scrollbar track but keeps scrolling */}
+
+      <style>{scrollbarHideStyle}</style>
 
       <div className="relative flex h-screen w-full overflow-hidden">
 
-        {/* ========================================================
+        {/* ====================================================
             DESKTOP SIDEBAR
-        ======================================================== */}
+        ==================================================== */}
 
         <aside
-          className={`relative z-30 hidden shrink-0 flex-col border-r border-slate-900 bg-slate-950 py-6 text-white shadow-2xl transition-all duration-300 md:flex ${
+          className={`relative z-30 hidden h-full min-h-0 shrink-0 flex-col border-r border-slate-900 bg-slate-950 py-6 text-white shadow-2xl transition-all duration-300 md:flex ${
             isSidebarCollapsed
               ? "w-20"
               : "w-64"
           }`}
         >
-
           {/* COLLAPSE TOGGLE */}
 
           <button
@@ -661,7 +924,6 @@ export default function HeadOfficePortalDashboard() {
                 : "Collapse Sidebar"
             }
           >
-
             <FaChevronLeft
               className={`text-xs transition-transform duration-300 ${
                 isSidebarCollapsed
@@ -669,28 +931,30 @@ export default function HeadOfficePortalDashboard() {
                   : ""
               }`}
             />
-
           </button>
 
           <SidebarContent />
-
         </aside>
 
-        {/* ========================================================
+        {/* ====================================================
             MOBILE SIDEBAR
-        ======================================================== */}
+        ==================================================== */}
 
         <AnimatePresence>
-
           {isMobileMenuOpen && (
             <>
-
               {/* BACKDROP */}
 
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                }}
                 onClick={() =>
                   setIsMobileMenuOpen(false)
                 }
@@ -700,38 +964,39 @@ export default function HeadOfficePortalDashboard() {
               {/* DRAWER */}
 
               <motion.aside
-                initial={{ x: "-100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "-100%" }}
+                initial={{
+                  x: "-100%",
+                }}
+                animate={{
+                  x: 0,
+                }}
+                exit={{
+                  x: "-100%",
+                }}
                 transition={{
                   type: "spring",
                   damping: 25,
                   stiffness: 200,
                 }}
-                className="fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-950 py-6 text-white shadow-2xl md:hidden"
+                className="fixed inset-y-0 left-0 z-50 flex h-full min-h-0 w-72 flex-col bg-slate-950 py-6 text-white shadow-2xl md:hidden"
               >
-
                 <SidebarContent isMobile />
-
               </motion.aside>
-
             </>
           )}
-
         </AnimatePresence>
 
-        {/* ========================================================
+        {/* ====================================================
             MAIN CONTAINER
-        ======================================================== */}
+        ==================================================== */}
 
         <div className="flex flex-1 flex-col overflow-hidden">
 
-          {/* ======================================================
+          {/* ==================================================
               TOP HEADER
-          ====================================================== */}
+          ================================================== */}
 
           <header className="sticky top-0 z-30 flex h-20 shrink-0 items-center justify-between border-b border-slate-200/80 bg-white/80 px-6 shadow-xs backdrop-blur-xl md:px-8">
-
             <div className="flex items-center gap-4">
 
               {/* MOBILE MENU */}
@@ -747,32 +1012,31 @@ export default function HeadOfficePortalDashboard() {
               </button>
 
               <div>
-
                 <div className="flex items-center gap-2">
-
                   <span className="h-2 w-2 animate-pulse rounded-full bg-teal-500" />
 
                   <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-slate-400">
                     Head Office Portal
                   </p>
-
                 </div>
 
                 <h2 className="flex items-center gap-1 text-xl font-black tracking-tight text-slate-900 md:text-2xl">
-
                   {activePage}
 
-                  <span style={{ color: BRAND_COLOR }}>
+                  <span
+                    style={{
+                      color: BRAND_COLOR,
+                    }}
+                  >
                     .
                   </span>
-
                 </h2>
-
               </div>
-
             </div>
 
-            {/* HEADER ACTIONS */}
+            {/* ==================================================
+                HEADER ACTIONS
+            ================================================== */}
 
             <div className="flex items-center gap-3">
 
@@ -782,7 +1046,6 @@ export default function HeadOfficePortalDashboard() {
                 type="button"
                 className="hidden items-center gap-2 rounded-xl border border-slate-200/80 bg-slate-50/50 px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-2xs transition hover:bg-slate-100 sm:flex"
               >
-
                 <FaMapMarkerAlt
                   style={{
                     color: BRAND_COLOR,
@@ -796,7 +1059,6 @@ export default function HeadOfficePortalDashboard() {
                 <span className="text-[9px] text-slate-400">
                   ▼
                 </span>
-
               </button>
 
               {/* NOTIFICATIONS */}
@@ -805,11 +1067,9 @@ export default function HeadOfficePortalDashboard() {
                 type="button"
                 className="relative flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 bg-slate-50/50 text-slate-600 shadow-2xs transition hover:bg-slate-100 hover:text-teal-600"
               >
-
                 <FaBell className="text-sm" />
 
                 <span className="absolute right-2.5 top-2.5 h-2.5 w-2.5 animate-bounce rounded-full bg-rose-500 ring-2 ring-white" />
-
               </button>
 
               {/* ==================================================
@@ -820,7 +1080,6 @@ export default function HeadOfficePortalDashboard() {
                 type="button"
                 className="flex items-center gap-3 rounded-xl border border-transparent px-2.5 py-1.5 transition hover:border-slate-200 hover:bg-slate-50"
               >
-
                 {/* INITIALS */}
 
                 <div
@@ -838,7 +1097,6 @@ export default function HeadOfficePortalDashboard() {
                 {/* NAME + ROLE */}
 
                 <div className="hidden text-left md:block">
-
                   <p className="max-w-40 truncate text-xs font-bold leading-tight text-slate-800">
                     {adminLoading
                       ? "Loading..."
@@ -850,31 +1108,24 @@ export default function HeadOfficePortalDashboard() {
                       ? "Loading..."
                       : getAdminRole()}
                   </p>
-
                 </div>
 
                 <span className="hidden text-[9px] text-slate-400 md:block">
                   ▼
                 </span>
-
               </button>
-
             </div>
-
           </header>
 
-          {/* ======================================================
+          {/* ==================================================
               DYNAMIC CONTENT
-          ====================================================== */}
+          ================================================== */}
 
           <main className="flex-1 overflow-y-auto p-4 md:p-8">
-
             <div className="mx-auto max-w-7xl">
 
               <div className="min-h-[75vh] rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs md:p-8">
-
                 <AnimatePresence mode="wait">
-
                   <motion.div
                     key={activeTab}
                     initial={{
@@ -894,23 +1145,14 @@ export default function HeadOfficePortalDashboard() {
                       ease: "easeInOut",
                     }}
                   >
-
                     {renderContent()}
-
                   </motion.div>
-
                 </AnimatePresence>
-
               </div>
-
             </div>
-
           </main>
-
         </div>
-
       </div>
-
     </div>
   );
 }

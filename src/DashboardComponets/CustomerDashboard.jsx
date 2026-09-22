@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaHome,
   FaUserCircle,
@@ -11,12 +11,14 @@ import {
   FaBars,
   FaTimes,
   FaBell,
-  FaSearch,
   FaChevronLeft,
   FaHeadset,
   FaArrowLeft,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+
+import api from "../api/axios";
 
 // CUSTOMER DASHBOARD COMPONENTS
 import Overview from "../CustomerDashboardComponets/Overview";
@@ -49,6 +51,227 @@ export default function CustomerDashboard() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // ============================================================
+  // LOGGED-IN USER
+  // ============================================================
+
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+
+  // ============================================================
+  // CLEAR AUTH STORAGE
+  // ============================================================
+
+  const clearAuthStorage = () => {
+    // LOCAL STORAGE
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
+    localStorage.removeItem("user");
+    localStorage.removeItem("currentUser");
+
+    // SESSION STORAGE
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("refresh_token");
+
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("currentUser");
+  };
+
+  // ============================================================
+  // FETCH CURRENT LOGGED-IN USER
+  // ============================================================
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        setUserLoading(true);
+
+        const response = await api.get("auth/me/");
+
+        console.log("Logged-in customer user:", response.data);
+
+        setCurrentUser(response.data);
+      } catch (error) {
+        console.error("Unable to fetch logged-in user:", error);
+
+        /*
+         * If the token has expired or is invalid,
+         * clear authentication and return to login.
+         */
+
+        if (
+          error.response?.status === 401 ||
+          error.response?.status === 403
+        ) {
+          clearAuthStorage();
+
+          setCurrentUser(null);
+
+          window.dispatchEvent(new Event("authChanged"));
+
+          window.location.href = "/login";
+        }
+      } finally {
+        setUserLoading(false);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  // ============================================================
+  // GET USER NAME
+  // ============================================================
+
+  const getUserName = () => {
+    if (!currentUser) {
+      return "Customer";
+    }
+
+    const firstName =
+      currentUser.first_name ||
+      currentUser.firstName ||
+      currentUser.user?.first_name ||
+      currentUser.user?.firstName ||
+      "";
+
+    const lastName =
+      currentUser.last_name ||
+      currentUser.lastName ||
+      currentUser.user?.last_name ||
+      currentUser.user?.lastName ||
+      "";
+
+    const fullName =
+      currentUser.full_name ||
+      currentUser.fullName ||
+      currentUser.name ||
+      currentUser.user?.full_name ||
+      currentUser.user?.fullName ||
+      currentUser.user?.name ||
+      "";
+
+    const username =
+      currentUser.username || currentUser.user?.username || "";
+
+    const combinedName = `${firstName} ${lastName}`.trim();
+
+    if (combinedName) {
+      return combinedName;
+    }
+
+    if (fullName) {
+      return fullName;
+    }
+
+    if (username) {
+      return username;
+    }
+
+    return "Customer";
+  };
+
+  // ============================================================
+  // GET USER EMAIL
+  // ============================================================
+
+  const getUserEmail = () => {
+    if (!currentUser) {
+      return "";
+    }
+
+    return currentUser.email || currentUser.user?.email || "";
+  };
+
+  // ============================================================
+  // GET USER INITIALS
+  // ============================================================
+
+  const getUserInitials = () => {
+    const name = getUserName();
+
+    if (!name || name === "Customer") {
+      return "CU";
+    }
+
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+
+    return parts[0].substring(0, 2).toUpperCase();
+  };
+
+  // ============================================================
+  // LOGOUT
+  // ============================================================
+
+  const handleLogout = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to log out?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    /*
+     * Find refresh token from localStorage
+     * or sessionStorage.
+     */
+
+    const refreshToken =
+      localStorage.getItem("refresh_token") ||
+      localStorage.getItem("refreshToken") ||
+      sessionStorage.getItem("refresh_token") ||
+      sessionStorage.getItem("refreshToken");
+
+    try {
+      /*
+       * Try to invalidate the refresh token
+       * through Django.
+       */
+
+      if (refreshToken) {
+        await api.post("auth/logout/", {
+          refresh: refreshToken,
+        });
+      }
+    } catch (error) {
+      /*
+       * Even if backend logout fails,
+       * still clear local authentication.
+       */
+
+      console.error("Backend logout request failed:", error);
+    } finally {
+      // Clear all auth storage.
+      clearAuthStorage();
+
+      // Clear current user.
+      setCurrentUser(null);
+
+      // Close mobile sidebar.
+      setIsMobileMenuOpen(false);
+
+      // Notify other components.
+      window.dispatchEvent(new Event("authChanged"));
+
+      // Go back to login.
+      window.location.href = "/login";
+    }
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
@@ -70,7 +293,7 @@ export default function CustomerDashboard() {
       case "support":
         return <SupportDesk />;
       default:
-        return <DashboardOverview setActiveTab={setActiveTab} />;
+        return <Overview setActiveTab={setActiveTab} />;
     }
   };
 
@@ -224,11 +447,27 @@ export default function CustomerDashboard() {
             window.location.href = "/";
           }}
           className="group flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-slate-400 transition hover:bg-white/10 hover:text-white lg:justify-start"
+          title={isSidebarCollapsed && !isMobile ? "Back to Website" : ""}
         >
           <FaArrowLeft className="shrink-0 text-sm transition-transform group-hover:-translate-x-1" />
           {(!isSidebarCollapsed || isMobile) && (
             <span className="ml-3.5 text-[11px] font-bold uppercase tracking-wider">
               Back to Website
+            </span>
+          )}
+        </button>
+
+        {/* LOGOUT */}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="group mt-1 flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-rose-400 transition hover:bg-rose-500/10 hover:text-rose-300 lg:justify-start"
+          title={isSidebarCollapsed && !isMobile ? "Logout" : ""}
+        >
+          <FaSignOutAlt className="shrink-0 text-sm transition-transform group-hover:translate-x-0.5" />
+          {(!isSidebarCollapsed || isMobile) && (
+            <span className="ml-3.5 text-[11px] font-bold uppercase tracking-wider">
+              Logout
             </span>
           )}
         </button>
@@ -325,19 +564,6 @@ export default function CustomerDashboard() {
               </div>
             </div>
 
-            {/* GLOBAL SEARCH */}
-            <div className="relative hidden w-72 items-center lg:flex">
-              <FaSearch className="absolute left-3.5 text-xs text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search appointments, invoices..."
-                className="w-full rounded-xl border border-slate-200/80 bg-slate-50/70 py-2 pl-10 pr-4 text-xs font-medium text-slate-800 placeholder-slate-400 transition-all focus:border-teal-500 focus:bg-white focus:outline-none shadow-2xs"
-              />
-              <span className="absolute right-3 rounded-md border border-slate-200 bg-white px-1.5 py-0.5 text-[9px] font-bold text-slate-400 shadow-2xs">
-                ⌘K
-              </span>
-            </div>
-
             {/* HEADER ACTIONS */}
             <div className="flex items-center gap-3">
               {/* NOTIFICATIONS */}
@@ -362,15 +588,15 @@ export default function CustomerDashboard() {
                     color: BRAND_COLOR,
                   }}
                 >
-                  MJ
+                  {userLoading ? "..." : getUserInitials()}
                 </div>
 
                 <div className="hidden text-left md:block">
-                  <p className="text-xs font-bold leading-tight text-slate-800">
-                    Mary Johnson
+                  <p className="max-w-40 truncate text-xs font-bold leading-tight text-slate-800">
+                    {userLoading ? "Loading..." : getUserName()}
                   </p>
-                  <p className="text-[10px] font-medium text-slate-400">
-                    Customer Account
+                  <p className="max-w-48 truncate text-[10px] font-medium text-slate-400">
+                    {userLoading ? "Loading..." : (getUserEmail() || "Customer Account")}
                   </p>
                 </div>
 

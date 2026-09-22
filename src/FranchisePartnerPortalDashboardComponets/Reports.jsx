@@ -1,44 +1,459 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  FaChartBar,
   FaFileDownload,
-  FaFilter,
   FaCalendarAlt,
-  FaDollarSign,
+  FaPoundSign,
   FaUsers,
   FaConciergeBell,
   FaShieldAlt,
-  FaCheckCircle,
   FaArrowUp,
+  FaArrowDown,
   FaTimes,
-  FaInfoCircle,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
-const BRAND_COLOR = "#0d9488";
+// TODO: point this at the axios instance your other franchise pages use
+// (the one that adds the JWT Authorization header and the API base URL).
+import api from "../api/axios";
+
+/* ------------------------------------------------------------------ */
+/* Config                                                              */
+/* The server scopes every report to the logged-in manager's           */
+/* franchise, so no franchise id is sent from this page.               */
+/* ------------------------------------------------------------------ */
+
+const TABS = [
+  {
+    key: "financial",
+    label: "Financial Reports",
+    icon: FaPoundSign,
+    heading: "Financial Performance & Revenue Logs",
+    hint: "Invoices, payments received and outstanding balances",
+    reports: ["financial"],
+  },
+  {
+    key: "operational",
+    label: "Operational & Services",
+    icon: FaConciergeBell,
+    heading: "Service Utilization & Appointment Logs",
+    hint: "Service delivery, cancellations and staff workload",
+    reports: ["operations", "staff"],
+  },
+  {
+    key: "compliance",
+    label: "Compliance & Audit",
+    icon: FaShieldAlt,
+    heading: "Compliance & Regulatory Audit Trails",
+    hint: "Licences, insurance and document expiry status",
+    reports: ["compliance"],
+  },
+];
+
+const REPORT_META = {
+  performance: { title: "Franchise Performance", usesDates: true },
+  financial: { title: "Revenue, Payments & Outstanding Invoices", usesDates: true },
+  operations: { title: "Service Delivery & Cancellations", usesDates: true },
+  staff: { title: "Staff Workload & Headcount", usesDates: true },
+  compliance: { title: "Compliance & Document Expiry", usesDates: false },
+};
+
+const EXPORT_FORMATS = [
+  { key: "csv", label: "CSV" },
+  { key: "xlsx", label: "Excel" },
+  { key: "pdf", label: "PDF" },
+];
+
+const RANGES = [
+  { key: "month", label: "This month" },
+  { key: "30d", label: "Last 30 days" },
+  { key: "90d", label: "Last 90 days" },
+  { key: "ytd", label: "Year to date" },
+  { key: "custom", label: "Custom range" },
+];
+
+const PREVIEW_ROWS = 8;
+
+/* ------------------------------------------------------------------ */
+/* Date + formatting helpers (all local time, no UTC conversion)       */
+/* ------------------------------------------------------------------ */
+
+const pad = (n) => String(n).padStart(2, "0");
+const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseISO = (v) => {
+  const [y, m, d] = v.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+const addDays = (d, n) => {
+  const c = new Date(d);
+  c.setDate(c.getDate() + n);
+  return c;
+};
+
+function resolveRange(key, custom) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  switch (key) {
+    case "30d":
+      return { start: toISO(addDays(today, -29)), end: toISO(today) };
+    case "90d":
+      return { start: toISO(addDays(today, -89)), end: toISO(today) };
+    case "ytd":
+      return { start: toISO(new Date(today.getFullYear(), 0, 1)), end: toISO(today) };
+    case "custom":
+      return { start: custom.start, end: custom.end };
+    default:
+      return {
+        start: toISO(new Date(today.getFullYear(), today.getMonth(), 1)),
+        end: toISO(new Date(today.getFullYear(), today.getMonth() + 1, 0)), // last day of the month
+      };
+  }
+}
+
+/* Future days can't have revenue yet, so trend comparisons only use elapsed days. */
+function capToToday({ start, end }) {
+  if (!start || !end) return { start, end };
+  const todayISO = toISO(new Date());
+  return { start, end: end > todayISO ? todayISO : end };
+}
+
+/* Same-length period immediately before `range`, used for the trend arrow. */
+function previousRange({ start, end }) {
+  if (!start || !end) return null;
+  const s = parseISO(start);
+  const e = parseISO(end);
+  if (e < s) return null;
+  const days = Math.round((e - s) / 86400000) + 1;
+  const prevEnd = addDays(s, -1);
+  const prevStart = addDays(prevEnd, -(days - 1));
+  return { start: toISO(prevStart), end: toISO(prevEnd) };
+}
+
+const gbp = (n) =>
+  "£" +
+  Number(n || 0).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+function fmtCell(col, value) {
+  if (value === null || value === undefined || value === "") return "—";
+  if (col.type === "currency")
+    return Number(value).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (col.type === "percent") return Number(value).toFixed(1);
+  return String(value);
+}
+
+/* ------------------------------------------------------------------ */
+/* API helpers                                                         */
+/* ------------------------------------------------------------------ */
+
+function rangeParams(slug, range) {
+  const params = {};
+  if (REPORT_META[slug]?.usesDates === false) return params;
+  if (range.start) params.start_date = range.start;
+  if (range.end) params.end_date = range.end;
+  return params;
+}
+
+/* With responseType "blob", error bodies also arrive as a Blob. */
+async function getErrorMessage(err) {
+  const fallback = "Something went wrong. Please try again.";
+  const data = err?.response?.data;
+
+  try {
+    if (data instanceof Blob) {
+      const parsed = JSON.parse(await data.text());
+      if (typeof parsed.detail === "string") return parsed.detail;
+      return Object.values(parsed).flat().join(" ") || fallback;
+    }
+    if (typeof data?.detail === "string") return data.detail;
+    if (data && typeof data === "object") {
+      const joined = Object.values(data).flat().join(" ");
+      if (joined) return joined;
+    }
+    return fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveBlob(blob, filename) {
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+}
+
+async function downloadReport(slug, format, range) {
+  const res = await api.get(`/admin/reports/${slug}/`, {
+    params: { ...rangeParams(slug, range), export: format },
+    responseType: "blob",
+  });
+  saveBlob(res.data, `${slug}-report-${toISO(new Date())}.${format}`);
+}
+
+/* ------------------------------------------------------------------ */
+/* One live report: summary, preview table and download buttons        */
+/* ------------------------------------------------------------------ */
+
+function ReportPanel({ slug, range }) {
+  const meta = REPORT_META[slug];
+  const [state, setState] = useState({ loading: true, error: "", data: null });
+  const [downloading, setDownloading] = useState("");
+  const [downloadError, setDownloadError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    setState((s) => ({ ...s, loading: true, error: "" }));
+
+    api
+      .get(`/admin/reports/${slug}/`, { params: rangeParams(slug, range) })
+      .then((res) => {
+        if (!cancelled) setState({ loading: false, error: "", data: res.data });
+      })
+      .catch(async (err) => {
+        const message = await getErrorMessage(err);
+        if (!cancelled) setState({ loading: false, error: message, data: null });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, range.start, range.end]);
+
+  const handleDownload = async (format) => {
+    setDownloading(format);
+    setDownloadError("");
+    try {
+      await downloadReport(slug, format, range);
+    } catch (err) {
+      setDownloadError(await getErrorMessage(err));
+    } finally {
+      setDownloading("");
+    }
+  };
+
+  const { loading, error, data } = state;
+  const rows = data?.rows || [];
+  const columns = data?.columns || [];
+
+  return (
+    <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
+      <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h5 className="text-sm font-black text-slate-900">{meta.title}</h5>
+          <p className="text-[11px] text-slate-400 mt-0.5">
+            {data
+              ? meta.usesDates
+                ? `Period: ${data.filters.period}`
+                : "Point-in-time audit as of today"
+              : "\u00A0"}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          {EXPORT_FORMATS.map((fmt) => (
+            <button
+              key={fmt.key}
+              type="button"
+              onClick={() => handleDownload(fmt.key)}
+              disabled={!!downloading || loading || !!error}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 text-xs font-bold border border-teal-200 hover:bg-teal-100 transition disabled:opacity-50"
+            >
+              <FaFileDownload className="text-[10px]" />
+              {downloading === fmt.key ? "Preparing…" : fmt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {downloadError && (
+        <p role="alert" className="mx-4 mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
+          {downloadError}
+        </p>
+      )}
+
+      {loading && <p className="p-6 text-xs text-slate-400">Loading report…</p>}
+
+      {!loading && error && (
+        <p role="alert" className="m-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
+          {error}
+        </p>
+      )}
+
+      {!loading && !error && data && (
+        <>
+          {data.summary.length > 0 && (
+            <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3">
+              {data.summary.map((item) => (
+                <div key={item.label} className="rounded-xl bg-slate-50 px-3 py-2.5">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{item.label}</p>
+                  <p className="text-sm font-black text-slate-900 mt-0.5 wrap-break-words">{String(item.value)}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {rows.length === 0 ? (
+            <p className="px-4 pb-6 text-xs text-slate-500">
+              No records for this period. Try a wider date range.
+            </p>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-y border-slate-200 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                      {columns.map((c) => (
+                        <th key={c.key} className="py-3 px-4 whitespace-nowrap">
+                          {c.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-xs">
+                    {rows.slice(0, PREVIEW_ROWS).map((row, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/60 transition">
+                        {columns.map((c) => (
+                          <td
+                            key={c.key}
+                            className={`py-3 px-4 whitespace-nowrap ${
+                              c.type === "text" ? "text-slate-700" : "text-slate-900 font-medium tabular-nums"
+                            }`}
+                          >
+                            {fmtCell(c, row[c.key])}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {rows.length > PREVIEW_ROWS && (
+                <p className="px-4 py-3 text-[11px] text-slate-400 border-t border-slate-100">
+                  Showing {PREVIEW_ROWS} of {rows.length} rows. Download the report for the full list.
+                </p>
+              )}
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
 
 export default function Reports() {
   const [activeTab, setActiveTab] = useState("financial");
+  const [rangeKey, setRangeKey] = useState("month");
+  const [custom, setCustom] = useState({ start: "", end: "" });
+
   const [showExportModal, setShowExportModal] = useState(false);
-  const [selectedRange, setSelectedRange] = useState("This Month");
+  const [exportForm, setExportForm] = useState({ slug: "financial", format: "csv" });
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState("");
 
-  // Sample report datasets
-  const financialReports = [
-    { id: "REP-FIN-01", name: "Monthly Revenue & Franchise Fee Summary", generated: "Mar 12, 2026", format: "CSV / PDF", status: "Ready" },
-    { id: "REP-FIN-02", name: "Outstanding Invoices & Aging Balance Ledger", generated: "Mar 10, 2026", format: "CSV", status: "Ready" },
-    { id: "REP-FIN-03", name: "Payment Gateway Reconciliation Log", generated: "Mar 01, 2026", format: "PDF", status: "Archived" },
-  ];
+  const [cards, setCards] = useState({ loading: true, error: "", current: null, previous: null, overview: null });
 
-  const operationalReports = [
-    { id: "REP-OPS-01", name: "Service Utilization & Popular Catalogue Items", generated: "Mar 11, 2026", format: "CSV / PDF", status: "Ready" },
-    { id: "REP-OPS-02", name: "Staff Utilization & Shift Hours Report", generated: "Mar 09, 2026", format: "PDF", status: "Ready" },
-    { id: "REP-OPS-03", name: "Appointment Completion & Cancellation Audit", generated: "Mar 05, 2026", format: "CSV", status: "Ready" },
-  ];
+  const range = resolveRange(rangeKey, custom);
+  const currentTab = TABS.find((t) => t.key === activeTab);
 
-  const complianceReports = [
-    { id: "REP-CMP-01", name: "Franchise Licence & Insurance Expiry Log", generated: "Mar 01, 2026", format: "PDF", status: "Up to Date" },
-    { id: "REP-CMP-02", name: "Central Policy Override & Exception Audit", generated: "Feb 28, 2026", format: "CSV", status: "Verified" },
-  ];
+  /* Top cards: performance totals for this period vs the previous one, plus compliance overview */
+  useEffect(() => {
+    let cancelled = false;
+    const prev = previousRange(capToToday(range));
+
+    setCards((c) => ({ ...c, loading: true, error: "" }));
+
+    Promise.all([
+      api.get("/admin/reports/performance/", { params: rangeParams("performance", range) }),
+      prev
+        ? api.get("/admin/reports/performance/", { params: rangeParams("performance", prev) })
+        : Promise.resolve(null),
+      api.get("/admin/reports/"),
+    ])
+      .then(([cur, pre, ov]) => {
+        if (cancelled) return;
+        setCards({
+          loading: false,
+          error: "",
+          current: cur.data,
+          previous: pre ? pre.data : null,
+          overview: ov.data,
+        });
+      })
+      .catch(async (err) => {
+        const message = await getErrorMessage(err);
+        if (!cancelled) setCards({ loading: false, error: message, current: null, previous: null, overview: null });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [range.start, range.end]);
+
+  const totals = (report) =>
+    (report?.rows || []).reduce(
+      (acc, r) => ({
+        revenue: acc.revenue + (r.revenue || 0),
+        customers: acc.customers + (r.customers || 0),
+        booked: acc.booked + (r.appointments_booked || 0),
+        delivered: acc.delivered + (r.services_delivered || 0),
+      }),
+      { revenue: 0, customers: 0, booked: 0, delivered: 0 }
+    );
+
+  const cur = totals(cards.current);
+  const prevTotals = totals(cards.previous);
+  const revenueChange =
+    cards.previous && prevTotals.revenue > 0
+      ? ((cur.revenue - prevTotals.revenue) / prevTotals.revenue) * 100
+      : null;
+  const completionRate = cur.booked ? Math.round((cur.delivered / cur.booked) * 1000) / 10 : null;
+
+  const complianceRate = cards.overview?.compliance_rate;
+  const complianceColor =
+    complianceRate == null
+      ? "text-slate-400"
+      : complianceRate >= 90
+      ? "text-emerald-600"
+      : complianceRate >= 70
+      ? "text-amber-600"
+      : "text-red-600";
+
+  const dash = cards.loading ? "…" : "—";
+
+  const openExportModal = () => {
+    setExportError("");
+    setShowExportModal(true);
+  };
+
+  const closeExportModal = () => {
+    if (exporting) return;
+    setShowExportModal(false);
+  };
+
+  const handleExport = async () => {
+    setExporting(true);
+    setExportError("");
+    try {
+      await downloadReport(exportForm.slug, exportForm.format, range);
+      setShowExportModal(false);
+    } catch (err) {
+      setExportError(await getErrorMessage(err));
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const inputClass =
+    "w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs focus:bg-white focus:border-teal-500 focus:outline-none";
 
   return (
     <motion.div
@@ -54,13 +469,14 @@ export default function Reports() {
             Reports & Analytics Hub
           </h3>
           <p className="text-xs text-slate-500 mt-1">
-            Generate, filter, and export comprehensive financial, operational, and compliance reports.
+            Generate, filter, and export financial, operational, and compliance reports for your franchise.
           </p>
         </div>
 
         <div className="flex items-center gap-2.5 flex-wrap">
           <button
-            onClick={() => setShowExportModal(true)}
+            type="button"
+            onClick={openExportModal}
             className="flex items-center gap-2 rounded-xl bg-teal-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-700 transition active:scale-95"
           >
             <FaFileDownload className="text-[10px]" />
@@ -69,16 +485,87 @@ export default function Reports() {
         </div>
       </div>
 
+      {/* DATE RANGE */}
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs sm:flex-row sm:items-end">
+        <div className="sm:w-56">
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+            Reporting period
+          </label>
+          <select value={rangeKey} onChange={(e) => setRangeKey(e.target.value)} className={inputClass}>
+            {RANGES.map((r) => (
+              <option key={r.key} value={r.key}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {rangeKey === "custom" && (
+          <>
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                From
+              </label>
+              <input
+                type="date"
+                value={custom.start}
+                max={custom.end || undefined}
+                onChange={(e) => setCustom({ ...custom, start: e.target.value })}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                To
+              </label>
+              <input
+                type="date"
+                value={custom.end}
+                min={custom.start || undefined}
+                onChange={(e) => setCustom({ ...custom, end: e.target.value })}
+                className={inputClass}
+              />
+            </div>
+          </>
+        )}
+
+        <p className="text-[11px] text-slate-500 sm:ml-auto">
+          {range.start || range.end
+            ? `${range.start || "Beginning"} to ${range.end || "today"}`
+            : "All time"}
+        </p>
+      </div>
+
+      {cards.error && (
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
+          Could not load your figures: {cards.error}
+        </p>
+      )}
+
       {/* METRICS SUMMARY CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl border border-slate-200/80 bg-white shadow-2xs">
           <div className="flex items-center justify-between">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Net Revenue</p>
-            <FaDollarSign className="text-teal-600 text-xs" />
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Revenue Received</p>
+            <FaPoundSign className="text-teal-600 text-xs" />
           </div>
-          <h4 className="text-2xl font-black text-slate-900 mt-2">$84,250.00</h4>
-          <p className="text-[11px] text-teal-600 font-semibold mt-1 flex items-center gap-1">
-            <FaArrowUp className="text-[9px]" /> +12.4% vs last month
+          <h4 className="text-2xl font-black text-slate-900 mt-2">
+            {cards.current ? gbp(cur.revenue) : dash}
+          </h4>
+          <p
+            className={`text-[11px] font-semibold mt-1 flex items-center gap-1 ${
+              revenueChange == null ? "text-slate-500" : revenueChange >= 0 ? "text-teal-600" : "text-red-600"
+            }`}
+          >
+            {revenueChange == null ? (
+              "No earlier period to compare"
+            ) : (
+              <>
+                {revenueChange >= 0 ? <FaArrowUp className="text-[9px]" /> : <FaArrowDown className="text-[9px]" />}
+                {revenueChange >= 0 ? "+" : ""}
+                {revenueChange.toFixed(1)}% vs previous period
+              </>
+            )}
           </p>
         </div>
 
@@ -87,8 +574,16 @@ export default function Reports() {
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Appointments Fulfilled</p>
             <FaCalendarAlt className="text-teal-600 text-xs" />
           </div>
-          <h4 className="text-2xl font-black text-slate-900 mt-2">1,420</h4>
-          <p className="text-[11px] text-teal-600 font-semibold mt-1">98.2% completion rate</p>
+          <h4 className="text-2xl font-black text-slate-900 mt-2">
+            {cards.current ? cur.delivered.toLocaleString("en-GB") : dash}
+          </h4>
+          <p className="text-[11px] text-teal-600 font-semibold mt-1">
+            {cards.current
+              ? completionRate == null
+                ? "No appointments in this period"
+                : `${completionRate}% completion rate`
+              : "\u00A0"}
+          </p>
         </div>
 
         <div className="p-4 rounded-2xl border border-slate-200/80 bg-white shadow-2xs">
@@ -96,8 +591,10 @@ export default function Reports() {
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Active Clients</p>
             <FaUsers className="text-teal-600 text-xs" />
           </div>
-          <h4 className="text-2xl font-black text-slate-900 mt-2">312</h4>
-          <p className="text-[11px] text-teal-600 font-semibold mt-1">High retention status</p>
+          <h4 className="text-2xl font-black text-slate-900 mt-2">
+            {cards.current ? cur.customers.toLocaleString("en-GB") : dash}
+          </h4>
+          <p className="text-[11px] text-slate-500 font-semibold mt-1">Customers on your franchise</p>
         </div>
 
         <div className="p-4 rounded-2xl border border-slate-200/80 bg-white shadow-2xs">
@@ -105,176 +602,50 @@ export default function Reports() {
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Compliance Status</p>
             <FaShieldAlt className="text-teal-600 text-xs" />
           </div>
-          <h4 className="text-2xl font-black text-slate-900 mt-2">100%</h4>
-          <p className="text-[11px] text-emerald-600 font-semibold mt-1">All audits cleared</p>
+          <h4 className={`text-2xl font-black mt-2 ${complianceColor}`}>
+            {cards.overview ? (complianceRate == null ? "No data" : `${complianceRate}%`) : dash}
+          </h4>
+          <p className="text-[11px] text-slate-500 font-semibold mt-1">
+            {cards.overview
+              ? `${cards.overview.expired_documents} expired · ${cards.overview.missing_documents} missing`
+              : "\u00A0"}
+          </p>
         </div>
       </div>
 
       {/* TABS NAVIGATION */}
       <div className="flex items-center gap-2 border-b border-slate-200 overflow-x-auto scrollbar-none">
-        {[
-          { key: "financial", label: "Financial Reports", icon: <FaDollarSign /> },
-          { key: "operational", label: "Operational & Services", icon: <FaConciergeBell /> },
-          { key: "compliance", label: "Compliance & Audit", icon: <FaShieldAlt /> },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 py-3 px-4 text-xs font-bold border-b-2 whitespace-nowrap transition shrink-0 ${
-              activeTab === tab.key
-                ? "border-teal-600 text-teal-700 bg-teal-50/40"
-                : "border-transparent text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            {tab.icon}
-            <span>{tab.label}</span>
-          </button>
-        ))}
+        {TABS.map((tab) => {
+          const TabIcon = tab.icon;
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-2 py-3 px-4 text-xs font-bold border-b-2 whitespace-nowrap transition shrink-0 ${
+                activeTab === tab.key
+                  ? "border-teal-600 text-teal-700 bg-teal-50/40"
+                  : "border-transparent text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              <TabIcon />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* TAB CONTENT: FINANCIAL */}
-      {activeTab === "financial" && (
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-700">Financial Performance & Revenue Logs</h4>
-            <span className="text-xs text-slate-400">Filterable by service, customer, and date ranges</span>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    <th className="py-3.5 px-4">Report ID & Title</th>
-                    <th className="py-3.5 px-4">Generated Date</th>
-                    <th className="py-3.5 px-4">Format</th>
-                    <th className="py-3.5 px-4">Status</th>
-                    <th className="py-3.5 px-4 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-xs">
-                  {financialReports.map((rep) => (
-                    <tr key={rep.id} className="hover:bg-slate-50/60 transition">
-                      <td className="py-3.5 px-4">
-                        <span className="font-bold text-slate-900 block">{rep.name}</span>
-                        <span className="text-[10px] text-slate-400">{rep.id}</span>
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-600">{rep.generated}</td>
-                      <td className="py-3.5 px-4 text-slate-700 font-medium">{rep.format}</td>
-                      <td className="py-3.5 px-4">
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700">
-                          {rep.status}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <button className="flex items-center gap-1.5 ml-auto px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 text-xs font-bold border border-teal-200 hover:bg-teal-100 transition">
-                          <FaFileDownload className="text-[10px]" /> Download
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      {/* TAB CONTENT */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center gap-3 flex-wrap">
+          <h4 className="text-xs font-black uppercase tracking-wider text-slate-700">{currentTab.heading}</h4>
+          <span className="text-xs text-slate-400">{currentTab.hint}</span>
         </div>
-      )}
 
-      {/* TAB CONTENT: OPERATIONAL */}
-      {activeTab === "operational" && (
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-700">Service Utilization & Appointment Logs</h4>
-            <span className="text-xs text-slate-400">Track service metrics and staff capacity</span>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    <th className="py-3.5 px-4">Report ID & Title</th>
-                    <th className="py-3.5 px-4">Generated Date</th>
-                    <th className="py-3.5 px-4">Format</th>
-                    <th className="py-3.5 px-4">Status</th>
-                    <th className="py-3.5 px-4 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-xs">
-                  {operationalReports.map((rep) => (
-                    <tr key={rep.id} className="hover:bg-slate-50/60 transition">
-                      <td className="py-3.5 px-4">
-                        <span className="font-bold text-slate-900 block">{rep.name}</span>
-                        <span className="text-[10px] text-slate-400">{rep.id}</span>
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-600">{rep.generated}</td>
-                      <td className="py-3.5 px-4 text-slate-700 font-medium">{rep.format}</td>
-                      <td className="py-3.5 px-4">
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700">
-                          {rep.status}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <button className="flex items-center gap-1.5 ml-auto px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 text-xs font-bold border border-teal-200 hover:bg-teal-100 transition">
-                          <FaFileDownload className="text-[10px]" /> Download
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* TAB CONTENT: COMPLIANCE */}
-      {activeTab === "compliance" && (
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h4 className="text-xs font-black uppercase tracking-wider text-slate-700">Compliance & Regulatory Audit Trails</h4>
-            <span className="text-xs text-slate-400">Licences, insurance logs, and policy overrides</span>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    <th className="py-3.5 px-4">Report ID & Title</th>
-                    <th className="py-3.5 px-4">Generated Date</th>
-                    <th className="py-3.5 px-4">Format</th>
-                    <th className="py-3.5 px-4">Status</th>
-                    <th className="py-3.5 px-4 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-xs">
-                  {complianceReports.map((rep) => (
-                    <tr key={rep.id} className="hover:bg-slate-50/60 transition">
-                      <td className="py-3.5 px-4">
-                        <span className="font-bold text-slate-900 block">{rep.name}</span>
-                        <span className="text-[10px] text-slate-400">{rep.id}</span>
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-600">{rep.generated}</td>
-                      <td className="py-3.5 px-4 text-slate-700 font-medium">{rep.format}</td>
-                      <td className="py-3.5 px-4">
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700">
-                          {rep.status}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <button className="flex items-center gap-1.5 ml-auto px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 text-xs font-bold border border-teal-200 hover:bg-teal-100 transition">
-                          <FaFileDownload className="text-[10px]" /> Download
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
+        {currentTab.reports.map((slug) => (
+          <ReportPanel key={`${slug}-${range.start}-${range.end}`} slug={slug} range={range} />
+        ))}
+      </div>
 
       {/* ================= EXPORT MODAL ================= */}
       <AnimatePresence>
@@ -284,7 +655,7 @@ export default function Reports() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowExportModal(false)}
+              onClick={closeExportModal}
               className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs"
             />
             <motion.div
@@ -295,49 +666,78 @@ export default function Reports() {
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h4 className="text-base font-black text-slate-900">Custom Report Export</h4>
-                <button onClick={() => setShowExportModal(false)} className="text-slate-400 hover:text-slate-600">
+                <button
+                  type="button"
+                  onClick={closeExportModal}
+                  className="text-slate-400 hover:text-slate-600"
+                  aria-label="Close"
+                >
                   <FaTimes />
                 </button>
               </div>
 
               <div className="space-y-3 text-xs text-slate-700">
-                <p className="text-slate-500">Select parameters to export filtered data across services, customers, and financial records.</p>
-                
                 <div className="space-y-2">
-                  <label className="font-bold text-slate-700 block">Date Range</label>
-                  <select className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs">
-                    <option>This Month (March 2026)</option>
-                    <option>Last 30 Days</option>
-                    <option>Year-to-Date (2026)</option>
-                    <option>Custom Range</option>
+                  <label className="font-bold text-slate-700 block">Report</label>
+                  <select
+                    value={exportForm.slug}
+                    onChange={(e) => setExportForm({ ...exportForm, slug: e.target.value })}
+                    className={inputClass}
+                  >
+                    {Object.entries(REPORT_META).map(([slug, meta]) => (
+                      <option key={slug} value={slug}>
+                        {meta.title}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 <div className="space-y-2">
                   <label className="font-bold text-slate-700 block">Export Format</label>
-                  <div className="flex gap-4">
-                    <label className="flex items-center gap-2">
-                      <input type="radio" name="format" defaultChecked /> CSV Spreadsheet
-                    </label>
-                    <label className="flex items-center gap-2">
-                      <input type="radio" name="format" /> PDF Document
-                    </label>
+                  <div className="flex gap-4 flex-wrap">
+                    {EXPORT_FORMATS.map((fmt) => (
+                      <label key={fmt.key} className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="format"
+                          checked={exportForm.format === fmt.key}
+                          onChange={() => setExportForm({ ...exportForm, format: fmt.key })}
+                        />
+                        {fmt.label}
+                      </label>
+                    ))}
                   </div>
                 </div>
+
+                <p className="rounded-xl bg-slate-50 p-3 text-slate-500">
+                  {REPORT_META[exportForm.slug].usesDates
+                    ? `Uses the reporting period selected on the page (${range.start || "beginning"} to ${range.end || "today"}).`
+                    : "This report is a point-in-time audit, so it reflects document statuses as of today."}
+                </p>
+
+                {exportError && (
+                  <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 font-medium text-red-700">
+                    {exportError}
+                  </p>
+                )}
               </div>
 
               <div className="pt-2 flex justify-end gap-2">
                 <button
-                  onClick={() => setShowExportModal(false)}
-                  className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                  type="button"
+                  onClick={closeExportModal}
+                  disabled={exporting}
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={() => setShowExportModal(false)}
-                  className="rounded-xl bg-teal-600 px-4 py-2 text-xs font-bold text-white hover:bg-teal-700 transition"
+                  type="button"
+                  onClick={handleExport}
+                  disabled={exporting}
+                  className="rounded-xl bg-teal-600 px-4 py-2 text-xs font-bold text-white hover:bg-teal-700 transition disabled:opacity-60"
                 >
-                  Generate & Download
+                  {exporting ? "Preparing…" : "Generate & Download"}
                 </button>
               </div>
             </motion.div>

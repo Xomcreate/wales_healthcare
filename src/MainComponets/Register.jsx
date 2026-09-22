@@ -35,12 +35,18 @@ function Register() {
     password: '',
     confirmPassword: '',
     accountType: 'Patient / Family Client', // fixed default, no longer user-selectable
+    franchise: '', // selected franchise/location id, fetched from backend
     serviceInterest: 'Homecare Services',
     agreeTerms: false,
   })
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  // Franchise / location options, loaded from the backend
+  const [franchises, setFranchises] = useState([])
+  const [franchisesLoading, setFranchisesLoading] = useState(true)
+  const [franchisesError, setFranchisesError] = useState('')
 
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -51,6 +57,32 @@ function Register() {
       setCurrentSlide((prev) => (prev + 1) % SLIDES.length)
     }, 5500)
     return () => clearInterval(timer)
+  }, [])
+
+  // Fetch active franchises/locations from the backend for the dropdown
+  useEffect(() => {
+    let isMounted = true
+
+    const loadFranchises = async () => {
+      try {
+        const res = await api.get('careers/franchises/')
+        if (isMounted) {
+          setFranchises(res.data)
+          setFranchisesError('')
+        }
+      } catch (err) {
+        if (isMounted) {
+          setFranchisesError('Unable to load locations. Please refresh the page.')
+        }
+      } finally {
+        if (isMounted) setFranchisesLoading(false)
+      }
+    }
+
+    loadFranchises()
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   const handleChange = (e) => {
@@ -77,6 +109,11 @@ function Register() {
     e.preventDefault()
     setError('')
 
+    if (!formData.franchise) {
+      setError('Please select your location.')
+      return
+    }
+
     if (!formData.agreeTerms) {
       setError('You must agree to the terms of service to continue.')
       return
@@ -90,6 +127,7 @@ function Register() {
         phone: formData.phone,
         password: formData.password,
         confirm_password: formData.confirmPassword,
+        franchise: formData.franchise,
         service_interest: formData.serviceInterest,
         agree_terms: formData.agreeTerms,
       })
@@ -283,6 +321,32 @@ function Register() {
                       className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all"
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Franchise / Location
+                  </label>
+                  <select
+                    name="franchise"
+                    required
+                    value={formData.franchise}
+                    onChange={handleChange}
+                    disabled={franchisesLoading || !!franchisesError}
+                    className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition-all disabled:opacity-60"
+                  >
+                    <option value="" disabled>
+                      {franchisesLoading ? 'Loading locations…' : 'Select your location'}
+                    </option>
+                    {franchises.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {f.name}{f.location ? ` — ${f.location}` : ''}
+                      </option>
+                    ))}
+                  </select>
+                  {franchisesError && (
+                    <p className="mt-1.5 text-[11px] text-red-600">{franchisesError}</p>
+                  )}
                 </div>
 
                 <div>

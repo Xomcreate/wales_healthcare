@@ -1,102 +1,345 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-  FaShieldAlt,
-  FaExclamationTriangle,
-  FaClock,
-  FaCheckCircle,
-  FaFileAlt,
   FaSearch,
-  FaFilter,
-  FaDownload,
   FaEye,
-  FaBuilding,
-  FaChartLine,
+  FaUpload,
+  FaTimes,
+  FaSpinner,
+  FaTrash,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import api from "../api/axios";
 
-const initialComplianceDocs = [
-  {
-    id: "DOC-801",
-    franchise: "North London Healthcare",
-    documentName: "Care Quality Commission (CQC) Registration Renewal",
-    category: "Regulatory",
-    expiryDate: "2026-10-12",
-    daysLeft: 30,
-    status: "Expiring in 30 Days",
-  },
-  {
-    id: "DOC-802",
-    franchise: "Birmingham West Support",
-    documentName: "Public Liability Insurance Certificate",
-    category: "Insurance",
-    expiryDate: "2026-09-08",
-    daysLeft: -4,
-    status: "Expired",
-  },
-  {
-    id: "DOC-803",
-    franchise: "Manchester Central Care",
-    documentName: "Annual Fire Safety Audit Report",
-    category: "Safety",
-    expiryDate: "Missing",
-    daysLeft: null,
-    status: "Missing Required",
-  },
-  {
-    id: "DOC-804",
-    franchise: "Edinburgh South Medical",
-    documentName: "Staff DBS Background Check Certificates (Batch #4)",
-    category: "HR Compliance",
-    expiryDate: "Pending Review",
-    daysLeft: null,
-    status: "Awaiting Review",
-  },
-  {
-    id: "DOC-805",
-    franchise: "Bristol Health Services",
-    documentName: "Data Protection & GDPR Compliance Audit",
-    category: "Legal",
-    expiryDate: "2026-11-20",
-    daysLeft: 69,
-    status: "Expiring in 90 Days",
-  },
+const CATEGORIES = [
+  "Regulatory",
+  "Insurance",
+  "Safety",
+  "HR Compliance",
+  "Legal",
 ];
 
-const franchiseScores = [
-  { franchise: "Edinburgh South Medical", score: "98%", status: "Fully Compliant" },
-  { franchise: "North London Healthcare", score: "88%", status: "Action Required" },
-  { franchise: "Manchester Central Care", score: "74%", status: "Missing Documents" },
-  { franchise: "Birmingham West Support", score: "60%", status: "Critical Expiries" },
-];
+// FIX: DRF can return either a plain array or a paginated
+// { count, results: [...] } object — same helper Messages.jsx uses.
+const unwrapList = (data) => {
+  if (Array.isArray(data)) {
+    return data;
+  }
+  return data?.results ?? [];
+};
 
-export default function Compliance() {
-  const [documents, setDocuments] = useState(initialComplianceDocs);
+const getStatusBadge = (status) => {
+  switch (status) {
+    case "Expired":
+      return "bg-rose-50 text-rose-700 ring-1 ring-rose-500/20";
+
+    case "Missing Required":
+      return "bg-red-50 text-red-800 ring-1 ring-red-500/20";
+
+    case "Expiring in 30 Days":
+      return "bg-amber-50 text-amber-700 ring-1 ring-amber-500/20";
+
+    case "Expiring in 90 Days":
+      return "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-500/20";
+
+    case "Awaiting Review":
+      return "bg-teal-50 text-teal-700 ring-1 ring-teal-500/20";
+
+    case "Valid":
+      return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500/20";
+
+    default:
+      return "bg-slate-100 text-slate-700";
+  }
+};
+
+export default function Compliance({
+  isHeadOffice = true,
+  // FIX: no longer required as a prop — kept for backwards
+  // compatibility in case a parent still passes one in, but the
+  // component now always fetches its own copy below and uses
+  // that instead.
+  franchises: franchisesProp = [],
+}) {
+  const [documents, setDocuments] = useState([]);
+
+  // FIX: franchises is now local state, fetched by this
+  // component itself — exactly like Messages.jsx does — instead
+  // of depending entirely on a parent passing it down.
+  const [franchises, setFranchises] = useState(franchisesProp);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
-  const [activeTab, setActiveTab] = useState("documents"); // 'documents' | 'franchises' | 'trends'
+  const [activeTab, setActiveTab] = useState("documents");
 
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const [form, setForm] = useState({
+    franchise: "",
+    document_name: "",
+    category: "Regulatory",
+    expiry_date: "",
+  });
+
+  const [file, setFile] = useState(null);
+
+  // ---------------------------------------------------------
+  // FETCH COMPLIANCE DOCUMENTS + FRANCHISES
+  // ---------------------------------------------------------
+  const fetchDocuments = async () => {
+    const response = await api.get("/admin/compliance/");
+    return unwrapList(response.data);
+  };
+
+  const fetchFranchises = async () => {
+    const response = await api.get("/admin/franchises/");
+    return unwrapList(response.data);
+  };
+
+  const loadData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const [documentList, franchiseList] = await Promise.all([
+        fetchDocuments(),
+        fetchFranchises(),
+      ]);
+
+      setDocuments(Array.isArray(documentList) ? documentList : []);
+
+      setFranchises(
+        Array.isArray(franchiseList)
+          ? franchiseList.filter(
+              (franchise) => franchise?.is_active !== false
+            )
+          : []
+      );
+    } catch (err) {
+      console.error("Compliance fetch error:", err);
+
+      const message =
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        "Failed to load compliance documents.";
+
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ---------------------------------------------------------
+  // SEARCH + FILTER
+  // ---------------------------------------------------------
   const filteredDocuments = documents.filter((doc) => {
+    const franchiseName = (doc.franchise_name || "").toLowerCase();
+    const documentName = (doc.document_name || "").toLowerCase();
+    const search = searchQuery.toLowerCase();
+
     const matchesSearch =
-      doc.franchise.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.documentName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterStatus === "All" || doc.status === filterStatus;
+      franchiseName.includes(search) ||
+      documentName.includes(search);
+
+    const matchesFilter =
+      filterStatus === "All" || doc.status === filterStatus;
+
     return matchesSearch && matchesFilter;
   });
 
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case "Expired":
-        return "bg-rose-50 text-rose-700 ring-1 ring-rose-500/20";
-      case "Missing Required":
-        return "bg-red-50 text-red-800 ring-1 ring-red-500/20";
-      case "Expiring in 30 Days":
-        return "bg-amber-50 text-amber-700 ring-1 ring-amber-500/20";
-      case "Expiring in 90 Days":
-        return "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-500/20";
-      case "Awaiting Review":
-        return "bg-teal-50 text-teal-700 ring-1 ring-teal-500/20";
-      default:
-        return "bg-slate-100 text-slate-700";
+  // ---------------------------------------------------------
+  // METRICS
+  // ---------------------------------------------------------
+  const metrics = useMemo(() => {
+    const counts = {
+      expired: 0,
+      expiringSoon: 0,
+      missing: 0,
+      awaiting: 0,
+    };
+
+    documents.forEach((document) => {
+      if (document.status === "Expired") {
+        counts.expired += 1;
+      } else if (
+        document.status === "Expiring in 30 Days" ||
+        document.status === "Expiring in 90 Days"
+      ) {
+        counts.expiringSoon += 1;
+      } else if (document.status === "Missing Required") {
+        counts.missing += 1;
+      } else if (document.status === "Awaiting Review") {
+        counts.awaiting += 1;
+      }
+    });
+
+    return counts;
+  }, [documents]);
+
+  // ---------------------------------------------------------
+  // FRANCHISE SCORECARD
+  // ---------------------------------------------------------
+  const franchiseScores = useMemo(() => {
+    const byFranchise = {};
+
+    documents.forEach((document) => {
+      const franchise = document.franchise_name || "Unknown";
+
+      if (!byFranchise[franchise]) {
+        byFranchise[franchise] = {
+          total: 0,
+          ok: 0,
+        };
+      }
+
+      byFranchise[franchise].total += 1;
+
+      if (document.status === "Valid") {
+        byFranchise[franchise].ok += 1;
+      }
+    });
+
+    return Object.entries(byFranchise).map(
+      ([franchise, { total, ok }]) => {
+        const score = total
+          ? Math.round((ok / total) * 100)
+          : 0;
+
+        let status = "Fully Compliant";
+
+        if (score < 60) {
+          status = "Critical Expiries";
+        } else if (score < 80) {
+          status = "Missing Documents";
+        } else if (score < 100) {
+          status = "Action Required";
+        }
+
+        return {
+          franchise,
+          score: `${score}%`,
+          status,
+        };
+      }
+    );
+  }, [documents]);
+
+  // ---------------------------------------------------------
+  // RESET FORM
+  // ---------------------------------------------------------
+  const resetForm = () => {
+    setForm({
+      franchise: "",
+      document_name: "",
+      category: "Regulatory",
+      expiry_date: "",
+    });
+
+    setFile(null);
+  };
+
+  // ---------------------------------------------------------
+  // UPLOAD DOCUMENT
+  // ---------------------------------------------------------
+  const handleUploadSubmit = async (e) => {
+    e.preventDefault();
+
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const body = new FormData();
+
+      if (isHeadOffice) {
+        body.append("franchise", form.franchise);
+      }
+
+      body.append("document_name", form.document_name);
+      body.append("category", form.category);
+
+      if (form.expiry_date) {
+        body.append("expiry_date", form.expiry_date);
+      }
+
+      if (file) {
+        body.append("file", file);
+      }
+
+      const response = await api.post(
+        "/admin/compliance/",
+        body
+      );
+
+      const created = response.data;
+
+      setDocuments((previous) => [
+        created,
+        ...previous,
+      ]);
+
+      setIsUploadModalOpen(false);
+      resetForm();
+    } catch (err) {
+      console.error("Compliance upload error:", err);
+
+      const data = err.response?.data;
+
+      let message =
+        data?.detail ||
+        data?.message ||
+        "Failed to upload document.";
+
+      if (typeof data === "object" && !data?.detail && !data?.message) {
+        const firstField = Object.keys(data)[0];
+
+        if (firstField && Array.isArray(data[firstField])) {
+          message = data[firstField][0];
+        }
+      }
+
+      setError(message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // ---------------------------------------------------------
+  // DELETE DOCUMENT
+  // ---------------------------------------------------------
+  const handleDelete = async (docId) => {
+    if (!window.confirm("Remove this compliance document?")) {
+      return;
+    }
+
+    setError(null);
+
+    try {
+      await api.delete(
+        `/admin/compliance/${docId}/`
+      );
+
+      setDocuments((previous) =>
+        previous.filter(
+          (document) => document.id !== docId
+        )
+      );
+    } catch (err) {
+      console.error("Compliance delete error:", err);
+
+      const message =
+        err.response?.data?.detail ||
+        err.response?.data?.message ||
+        "Failed to delete document.";
+
+      setError(message);
     }
   };
 
@@ -110,11 +353,14 @@ export default function Compliance() {
               Governance & Risk Management
             </span>
           </div>
+
           <h1 className="text-2xl font-black tracking-tight text-slate-900 mt-1">
             Compliance Dashboard
           </h1>
+
           <p className="text-xs text-slate-500">
-            Monitor regulatory document expiries (7/30/60/90 days), missing submissions, and franchise audit scores.
+            Monitor regulatory document expiries, missing submissions,
+            and franchise audit scores.
           </p>
         </div>
 
@@ -124,84 +370,142 @@ export default function Compliance() {
               type="button"
               onClick={() => setActiveTab("documents")}
               className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition ${
-                activeTab === "documents" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600 hover:text-slate-900"
+                activeTab === "documents"
+                  ? "bg-white text-slate-900 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Document Expiries
             </button>
+
             <button
               type="button"
               onClick={() => setActiveTab("franchises")}
               className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition ${
-                activeTab === "franchises" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600 hover:text-slate-900"
+                activeTab === "franchises"
+                  ? "bg-white text-slate-900 shadow-xs"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Compliance by Franchise
             </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("trends")}
-              className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition ${
-                activeTab === "trends" ? "bg-white text-slate-900 shadow-xs" : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              Trends & Analytics
-            </button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsUploadModalOpen(true)}
+            className="flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-teal-900/20 transition hover:bg-teal-500 active:scale-95"
+          >
+            <FaUpload className="text-xs" />
+            <span>Upload Document</span>
+          </button>
         </div>
       </div>
 
-      {/* ================= TAB 1: DOCUMENT EXPIRIES & AUDIT ================= */}
+      {/* ERROR */}
+      {error && (
+        <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-semibold text-rose-700">
+          {error}
+        </div>
+      )}
+
+      {/* ================= TAB 1: DOCUMENT EXPIRIES ================= */}
       {activeTab === "documents" && (
         <div className="space-y-6">
-          {/* QUICK METRICS CARDS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* QUICK METRICS */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Expired Documents</p>
-              <h3 className="text-xl font-black text-rose-600 mt-1">3 Files</h3>
-              <p className="text-[11px] text-rose-500 font-semibold mt-1">Requires immediate notice</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Expired Documents
+              </p>
+
+              <h3 className="mt-1 text-xl font-black text-rose-600">
+                {metrics.expired} Files
+              </h3>
+
+              <p className="mt-1 text-[11px] font-semibold text-rose-500">
+                Requires immediate notice
+              </p>
             </div>
+
             <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Expiring (7/30 Days)</p>
-              <h3 className="text-xl font-black text-amber-600 mt-1">8 Files</h3>
-              <p className="text-[11px] text-slate-500 mt-1">Automated warnings active</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Expiring Soon
+              </p>
+
+              <h3 className="mt-1 text-xl font-black text-amber-600">
+                {metrics.expiringSoon} Files
+              </h3>
+
+              <p className="mt-1 text-[11px] text-slate-500">
+                Within 30–90 days
+              </p>
             </div>
+
             <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Missing Required</p>
-              <h3 className="text-xl font-black text-red-600 mt-1">2 Files</h3>
-              <p className="text-[11px] text-red-500 font-semibold mt-1">Action pending from owners</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Missing Required
+              </p>
+
+              <h3 className="mt-1 text-xl font-black text-red-600">
+                {metrics.missing} Files
+              </h3>
+
+              <p className="mt-1 text-[11px] font-semibold text-red-500">
+                Action pending from owners
+              </p>
             </div>
+
             <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Awaiting Review</p>
-              <h3 className="text-xl font-black text-teal-600 mt-1">5 Files</h3>
-              <p className="text-[11px] text-slate-500 mt-1">Ready for head office check</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Awaiting Review
+              </p>
+
+              <h3 className="mt-1 text-xl font-black text-teal-600">
+                {metrics.awaiting} Files
+              </h3>
+
+              <p className="mt-1 text-[11px] text-slate-500">
+                Ready for head office check
+              </p>
             </div>
           </div>
 
-          {/* SEARCH & FILTER BAR */}
+          {/* SEARCH & FILTER */}
           <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
             <div className="relative flex-1">
               <FaSearch className="absolute left-3.5 top-3.5 text-xs text-slate-400" />
+
               <input
                 type="text"
                 placeholder="Search by franchise or document title..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) =>
+                  setSearchQuery(e.target.value)
+                }
                 className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:bg-white focus:outline-none"
               />
             </div>
 
             <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-              {["All", "Expired", "Missing Required", "Expiring in 30 Days", "Awaiting Review"].map((st) => (
+              {[
+                "All",
+                "Expired",
+                "Missing Required",
+                "Expiring in 30 Days",
+                "Awaiting Review",
+              ].map((status) => (
                 <button
-                  key={st}
+                  key={status}
                   type="button"
-                  onClick={() => setFilterStatus(st)}
-                  className={`rounded-lg px-3 py-2 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
-                    filterStatus === st ? "bg-slate-900 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  onClick={() => setFilterStatus(status)}
+                  className={`whitespace-nowrap rounded-lg px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition ${
+                    filterStatus === status
+                      ? "bg-slate-900 text-white shadow-sm"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}
                 >
-                  {st}
+                  {status}
                 </button>
               ))}
             </div>
@@ -210,46 +514,114 @@ export default function Compliance() {
           {/* TABLE */}
           <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="w-full border-collapse text-left">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    <th className="py-3.5 px-6">Franchise & Document</th>
-                    <th className="py-3.5 px-6">Category</th>
-                    <th className="py-3.5 px-6">Expiry / Status Date</th>
-                    <th className="py-3.5 px-6">Compliance State</th>
-                    <th className="py-3.5 px-6 text-right">Actions</th>
+                    <th className="px-6 py-3.5">
+                      Franchise & Document
+                    </th>
+
+                    <th className="px-6 py-3.5">
+                      Category
+                    </th>
+
+                    <th className="px-6 py-3.5">
+                      Expiry Date
+                    </th>
+
+                    <th className="px-6 py-3.5">
+                      Compliance State
+                    </th>
+
+                    <th className="px-6 py-3.5 text-right">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
+
                 <tbody className="divide-y divide-slate-100 text-xs">
-                  {filteredDocuments.length > 0 ? (
+                  {loading ? (
+                    <tr>
+                      <td
+                        colSpan="5"
+                        className="py-12 text-center text-slate-400"
+                      >
+                        <FaSpinner className="mr-2 inline animate-spin" />
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : filteredDocuments.length > 0 ? (
                     filteredDocuments.map((doc) => (
-                      <tr key={doc.id} className="hover:bg-slate-50/50 transition">
-                        <td className="py-4 px-6">
-                          <p className="font-bold text-slate-900">{doc.documentName}</p>
-                          <p className="text-[10px] font-medium text-slate-400">{doc.franchise}</p>
+                      <tr
+                        key={doc.id}
+                        className="transition hover:bg-slate-50/50"
+                      >
+                        <td className="px-6 py-4">
+                          <p className="font-bold text-slate-900">
+                            {doc.document_name}
+                          </p>
+
+                          <p className="text-[10px] font-medium text-slate-400">
+                            {doc.franchise_name || "No franchise"}
+                          </p>
                         </td>
-                        <td className="py-4 px-6 text-slate-600 font-medium">{doc.category}</td>
-                        <td className="py-4 px-6 font-mono text-slate-700">{doc.expiryDate}</td>
-                        <td className="py-4 px-6">
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${getStatusBadge(doc.status)}`}>
+
+                        <td className="px-6 py-4 font-medium text-slate-600">
+                          {doc.category}
+                        </td>
+
+                        <td className="px-6 py-4 font-mono text-slate-700">
+                          {doc.expiry_date || "Missing"}
+                        </td>
+
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${getStatusBadge(
+                              doc.status
+                            )}`}
+                          >
                             {doc.status}
                           </span>
                         </td>
-                        <td className="py-4 px-6 text-right">
-                          <button
-                            type="button"
-                            onClick={() => alert(`Reviewing document for ${doc.franchise}`)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-bold text-slate-700 hover:border-teal-500 hover:text-teal-600"
-                          >
-                            <FaEye className="text-[10px]" /> Review File
-                          </button>
+
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-3">
+                            {doc.file_url && (
+                              <a
+                                href={doc.file_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-bold text-slate-700 hover:border-teal-500 hover:text-teal-600"
+                              >
+                                <FaEye className="text-[10px]" />
+                                Review File
+                              </a>
+                            )}
+
+                            {isHeadOffice && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleDelete(doc.id)
+                                }
+                                className="text-slate-400 hover:text-rose-600"
+                                title="Delete document"
+                              >
+                                <FaTrash className="text-[10px]" />
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="py-12 text-center text-slate-400">
-                        No compliance documents matching your filter criteria.
+                      <td
+                        colSpan="5"
+                        className="py-12 text-center text-slate-400"
+                      >
+                        No compliance documents matching your
+                        filter criteria.
                       </td>
                     </tr>
                   )}
@@ -264,61 +636,273 @@ export default function Compliance() {
       {activeTab === "franchises" && (
         <div className="space-y-6">
           <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
-            <h3 className="text-base font-black text-slate-900 mb-1">Franchise Compliance Scorecard</h3>
-            <p className="text-xs text-slate-500 mb-6">
-              Aggregated audit scores and safety ratings across the active franchise network.
+            <h3 className="mb-1 text-base font-black text-slate-900">
+              Franchise Compliance Scorecard
+            </h3>
+
+            <p className="mb-6 text-xs text-slate-500">
+              Aggregated audit scores across the active franchise
+              network, computed live from uploaded documents.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {franchiseScores.map((fs, idx) => (
-                <div key={idx} className="rounded-xl border border-slate-200 bg-slate-50/50 p-5 flex items-center justify-between">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-teal-600">
-                      {fs.status}
-                    </span>
-                    <h4 className="text-sm font-bold text-slate-900">{fs.franchise}</h4>
+            {franchiseScores.length === 0 ? (
+              <div className="py-12 text-center text-xs text-slate-400">
+                No compliance data yet.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {franchiseScores.map((fs, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50/50 p-5"
+                  >
+                    <div className="space-y-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-teal-600">
+                        {fs.status}
+                      </span>
+
+                      <h4 className="text-sm font-bold text-slate-900">
+                        {fs.franchise}
+                      </h4>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="text-2xl font-black text-slate-900">
+                        {fs.score}
+                      </span>
+
+                      <p className="text-[10px] font-bold uppercase text-slate-400">
+                        Compliance Rate
+                      </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-2xl font-black text-slate-900">{fs.score}</span>
-                    <p className="text-[10px] text-slate-400 uppercase font-bold">Compliance Rate</p>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ================= UPLOAD DOCUMENT MODAL ================= */}
+      <AnimatePresence>
+        {isUploadModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() =>
+                !submitting &&
+                setIsUploadModalOpen(false)
+              }
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"
+            />
+
+            <motion.div
+              initial={{
+                scale: 0.95,
+                opacity: 0,
+                y: 10,
+              }}
+              animate={{
+                scale: 1,
+                opacity: 1,
+                y: 0,
+              }}
+              exit={{
+                scale: 0.95,
+                opacity: 0,
+                y: 10,
+              }}
+              className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl md:p-8"
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 pb-6">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600">
+                    Compliance
+                  </span>
+
+                  <h3 className="text-lg font-black text-slate-900">
+                    Upload Compliance Document
+                  </h3>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setIsUploadModalOpen(false)
+                  }
+                  className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <form
+                onSubmit={handleUploadSubmit}
+                className="space-y-4 py-6"
+              >
+                {/* FRANCHISE */}
+                {isHeadOffice && (
+                  <div>
+                    <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                      Franchise
+                    </label>
+
+                    <select
+                      value={form.franchise}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          franchise: e.target.value,
+                        })
+                      }
+                      required
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:border-teal-500 focus:bg-white focus:outline-none"
+                    >
+                      <option value="">
+                        Select a franchise...
+                      </option>
+
+                      {franchises.map((franchise) => (
+                        <option
+                          key={franchise.id}
+                          value={franchise.id}
+                        >
+                          {franchise.name}
+                          {franchise.location
+                            ? ` — ${franchise.location}`
+                            : ""}
+                        </option>
+                      ))}
+                    </select>
+
+                    {franchises.length === 0 && (
+                      <p className="mt-2 text-[10px] text-amber-600">
+                        No active franchises found.
+                        Add one under Franchises first.
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* DOCUMENT NAME */}
+                <div>
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Document Name
+                  </label>
+
+                  <input
+                    type="text"
+                    placeholder="e.g., Public Liability Insurance Certificate"
+                    value={form.document_name}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        document_name: e.target.value,
+                      })
+                    }
+                    required
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:border-teal-500 focus:bg-white focus:outline-none"
+                  />
+                </div>
+
+                {/* CATEGORY + EXPIRY */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                      Category
+                    </label>
+
+                    <select
+                      value={form.category}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          category: e.target.value,
+                        })
+                      }
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:border-teal-500 focus:bg-white focus:outline-none"
+                    >
+                      {CATEGORIES.map((category) => (
+                        <option
+                          key={category}
+                          value={category}
+                        >
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                      Expiry Date
+                    </label>
+
+                    <input
+                      type="date"
+                      value={form.expiry_date}
+                      onChange={(e) =>
+                        setForm({
+                          ...form,
+                          expiry_date: e.target.value,
+                        })
+                      }
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:border-teal-500 focus:bg-white focus:outline-none"
+                    />
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* ================= TAB 3: COMPLIANCE TREND OVER TIME ================= */}
-      {activeTab === "trends" && (
-        <div className="space-y-6">
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
-            <h3 className="text-base font-black text-slate-900 mb-1">Compliance Trend Analysis (2026)</h3>
-            <p className="text-xs text-slate-500 mb-6">
-              Historical compliance adherence tracking across the network over the past 4 quarters.
-            </p>
+                {/* FILE */}
+                <div>
+                  <label className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-700">
+                    File (PDF, DOC...)
+                  </label>
 
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Q1 2026</p>
-                <h4 className="text-lg font-black text-slate-900 mt-1">84.2%</h4>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Q2 2026</p>
-                <h4 className="text-lg font-black text-slate-900 mt-1">89.5%</h4>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Q3 2026 (Current)</p>
-                <h4 className="text-lg font-black text-teal-600 mt-1">92.8%</h4>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 text-center">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Q4 2026 (Target)</p>
-                <h4 className="text-lg font-black text-slate-900 mt-1">95.0%</h4>
-              </div>
-            </div>
+                  <input
+                    type="file"
+                    onChange={(e) =>
+                      setFile(
+                        e.target.files?.[0] || null
+                      )
+                    }
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 focus:border-teal-500 focus:bg-white focus:outline-none"
+                  />
+                </div>
+
+                {/* ACTIONS */}
+                <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-6">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setIsUploadModalOpen(false)
+                    }
+                    disabled={submitting}
+                    className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-60"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="flex items-center gap-2 rounded-xl bg-teal-600 px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md hover:bg-teal-500 disabled:opacity-60"
+                  >
+                    {submitting && (
+                      <FaSpinner className="animate-spin" />
+                    )}
+
+                    {submitting
+                      ? "Uploading..."
+                      : "Upload Document"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 }

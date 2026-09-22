@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import api from '../api/axios'; // adjust this path to wherever your axios.js actually lives
 
 function ContactB() {
   const [formData, setFormData] = useState({
@@ -10,15 +11,50 @@ function ContactB() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+
+    setError('');
+    setSubmitting(true);
+
+    try {
+      // baseURL already ends in "/api/", so this hits POST /api/contact/
+      await api.post('contact/', formData);
+
+      setSubmitted(true);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        service: 'homecare',
+        message: ''
+      });
+    } catch (err) {
+      const data = err.response?.data;
+      let detail = 'Unable to send your message right now. Please try again in a moment.';
+
+      if (data) {
+        // DRF validation errors come back as { field: ["message", ...] }
+        const firstKey = Object.keys(data)[0];
+        if (firstKey && Array.isArray(data[firstKey])) {
+          detail = data[firstKey][0];
+        } else if (data.detail) {
+          detail = data.detail;
+        }
+      }
+
+      setError(detail);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -117,7 +153,13 @@ function ContactB() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
-                
+
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+                    {error}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Full Name */}
                   <div className="space-y-2">
@@ -132,7 +174,8 @@ function ContactB() {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="John Doe"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 placeholder-slate-400 text-sm"
+                      disabled={submitting}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 placeholder-slate-400 text-sm disabled:opacity-60"
                     />
                   </div>
 
@@ -149,7 +192,8 @@ function ContactB() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="john@example.com"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 placeholder-slate-400 text-sm"
+                      disabled={submitting}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 placeholder-slate-400 text-sm disabled:opacity-60"
                     />
                   </div>
                 </div>
@@ -168,7 +212,8 @@ function ContactB() {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="09076084515"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 placeholder-slate-400 text-sm"
+                      disabled={submitting}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 placeholder-slate-400 text-sm disabled:opacity-60"
                     />
                   </div>
 
@@ -182,7 +227,8 @@ function ContactB() {
                       name="service"
                       value={formData.service}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 bg-white text-sm"
+                      disabled={submitting}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 bg-white text-sm disabled:opacity-60"
                     >
                       <option value="homecare">Homecare Plans</option>
                       <option value="staffing">Temporary Facility Staffing</option>
@@ -204,16 +250,18 @@ function ContactB() {
                     value={formData.message}
                     onChange={handleChange}
                     placeholder="Tell us how we can help you..."
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 placeholder-slate-400 text-sm resize-none"
+                    disabled={submitting}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-slate-800 placeholder-slate-400 text-sm resize-none disabled:opacity-60"
                   ></textarea>
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all duration-200 text-sm"
+                  disabled={submitting}
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all duration-200 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {submitting ? 'Sending...' : 'Send Message'}
                 </button>
 
               </form>

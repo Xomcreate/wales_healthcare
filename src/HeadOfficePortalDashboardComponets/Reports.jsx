@@ -1,338 +1,618 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  FaChartBar,
   FaFileDownload,
-  FaFilter,
-  FaSearch,
   FaBuilding,
   FaPoundSign,
   FaCogs,
   FaShieldAlt,
   FaUsers,
-  FaCalendarAlt,
-  FaCheckCircle,
 } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
 
-const reportCategories = [
+// TODO: point this at the axios instance your other head office pages use
+// (the one that adds the JWT Authorization header and the API base URL).
+import api from "../api/axios";
+
+/* ------------------------------------------------------------------ */
+/* Config                                                              */
+/* Every report is fetched live from /admin/reports/<slug>/.           */
+/* ------------------------------------------------------------------ */
+
+const REPORTS = [
   {
-    id: "rep-1",
+    slug: "performance",
+    tab: "Performance",
     title: "Franchise Performance",
-    category: "Performance",
-    description: "Evaluates overall franchise output, revenue generation, customer volume, and appointment counts.",
-    metrics: ["Revenue (£)", "Total Customers", "Appointments Booked", "Service Volume"],
-    filters: ["Franchise Territory", "Date Range", "Performance Tier"],
+    description: "Revenue, customers, appointments booked and completed, per franchise.",
     icon: FaBuilding,
-    color: "text-teal-600 bg-teal-50 ring-teal-500/20",
+    usesDates: true,
   },
   {
-    id: "rep-2",
+    slug: "financial",
+    tab: "Finance",
     title: "Financial Governance",
-    category: "Finance",
-    description: "Tracks incoming franchise royalties, platform fees, outstanding invoices, and agreement renewals.",
-    metrics: ["Total Revenue", "Payments Received", "Outstanding Balances", "Royalty Fees & Renewals"],
-    filters: ["Branch Location", "Invoice Status", "Payment Date Range"],
+    description: "Invoiced amounts, payments received, outstanding and overdue balances, per franchise.",
     icon: FaPoundSign,
-    color: "text-emerald-600 bg-emerald-50 ring-emerald-500/20",
+    usesDates: true,
   },
   {
-    id: "rep-3",
+    slug: "operations",
+    tab: "Operations",
     title: "Operations & Service Delivery",
-    category: "Operations",
-    description: "Monitors daily appointment requests, completed services, cancellations, and staff capacity utilization.",
-    metrics: ["Service Requests", "Completed Services", "Cancellation Rate", "Capacity Utilization"],
-    filters: ["Service Type", "Branch Location", "Specific Date"],
+    description: "Service requests, completions, cancellations and staff capacity utilisation, per franchise.",
     icon: FaCogs,
-    color: "text-blue-600 bg-blue-50 ring-blue-500/20",
+    usesDates: true,
   },
   {
-    id: "rep-4",
+    slug: "compliance",
+    tab: "Governance",
     title: "Compliance & Safety Audit",
-    category: "Governance",
-    description: "Audits regulatory document statuses across all branches (valid, expired, or missing files).",
-    metrics: ["Valid Certifications", "Expired Documents", "Missing Required Files", "Audit Scores (%)"],
-    filters: ["Franchise Unit", "Document Type", "Compliance State"],
+    description: "Valid, expiring, expired and missing regulatory documents, per franchise.",
     icon: FaShieldAlt,
-    color: "text-amber-600 bg-amber-50 ring-amber-500/20",
+    usesDates: false,
   },
   {
-    id: "rep-5",
+    slug: "staff",
+    tab: "Human Resources",
     title: "Staff Workload & Headcount",
-    category: "Human Resources",
-    description: "Analyzes active vs. inactive staff counts, role distribution, and individual workload metrics.",
-    metrics: ["Total Headcount", "Active / Inactive Status", "Assigned Workload", "Shift Utilization"],
-    filters: ["Franchise Branch", "Staff Role", "Employment Date"],
+    description: "Every employee with status, role, assigned customers and appointments handled.",
     icon: FaUsers,
-    color: "text-indigo-600 bg-indigo-50 ring-indigo-500/20",
+    usesDates: true,
   },
 ];
 
-export default function Reports() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeReportModal, setActiveReportModal] = useState(null);
+/* Report-specific filters. `key` is the query param the backend reads. */
+const EXTRA_FILTERS = {
+  performance: [
+    { key: "tier", label: "Performance tier", options: ["High", "Medium", "Low", "No Activity"] },
+  ],
+  financial: [
+    { key: "status", label: "Invoice status", options: ["Paid", "Pending", "Overdue"] },
+  ],
+  operations: [],
+  compliance: [
+    {
+      key: "document_type",
+      label: "Document type",
+      options: ["Regulatory", "Insurance", "Safety", "HR Compliance", "Legal"],
+    },
+    {
+      key: "compliance_state",
+      label: "Compliance state",
+      options: [
+        "Valid",
+        "Expiring in 30 Days",
+        "Expiring in 90 Days",
+        "Expired",
+        "Missing Required",
+        "Awaiting Review",
+      ],
+    },
+  ],
+  staff: [
+    {
+      key: "status",
+      label: "Employment status",
+      options: ["Active", "On Leave", "Inactive", "Pending Compliance"],
+    },
+    { key: "staff_role", label: "Staff role", type: "text", placeholder: "e.g. Carer" },
+  ],
+};
 
-  const filteredReports = reportCategories.filter((rep) => {
-    const matchesSearch =
-      rep.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      rep.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesTab = selectedCategory === "All" || rep.category === selectedCategory;
-    return matchesSearch && matchesTab;
+const EXPORT_FORMATS = [
+  { key: "pdf", label: "PDF" },
+  { key: "xlsx", label: "Excel" },
+  { key: "csv", label: "CSV" },
+];
+
+const RANGES = [
+  { key: "month", label: "This month" },
+  { key: "30d", label: "Last 30 days" },
+  { key: "90d", label: "Last 90 days" },
+  { key: "ytd", label: "Year to date" },
+  { key: "custom", label: "Custom range" },
+];
+
+const PREVIEW_ROWS = 10;
+
+const inputClass =
+  "w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-medium text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none";
+
+/* ------------------------------------------------------------------ */
+/* Helpers (local dates only, so nothing is a day off outside UTC)     */
+/* ------------------------------------------------------------------ */
+
+const pad = (n) => String(n).padStart(2, "0");
+const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const addDays = (d, n) => {
+  const c = new Date(d);
+  c.setDate(c.getDate() + n);
+  return c;
+};
+
+function resolveRange(key, custom) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  switch (key) {
+    case "30d":
+      return { start: toISO(addDays(today, -29)), end: toISO(today) };
+    case "90d":
+      return { start: toISO(addDays(today, -89)), end: toISO(today) };
+    case "ytd":
+      return { start: toISO(new Date(today.getFullYear(), 0, 1)), end: toISO(today) };
+    case "custom":
+      return { start: custom.start, end: custom.end };
+    default:
+      return {
+        start: toISO(new Date(today.getFullYear(), today.getMonth(), 1)),
+        end: toISO(new Date(today.getFullYear(), today.getMonth() + 1, 0)), // last day of the month
+      };
+  }
+}
+
+const asList = (data) => (Array.isArray(data) ? data : data?.results ?? []);
+
+function fmtCell(col, value) {
+  if (value === null || value === undefined || value === "") return "—";
+  if (col.type === "currency")
+    return Number(value).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (col.type === "percent") return Number(value).toFixed(1);
+  return String(value);
+}
+
+/* With responseType "blob", error bodies also arrive as a Blob. */
+async function getErrorMessage(err) {
+  const fallback = "Something went wrong. Please try again.";
+  const data = err?.response?.data;
+
+  try {
+    if (data instanceof Blob) {
+      const parsed = JSON.parse(await data.text());
+      if (typeof parsed.detail === "string") return parsed.detail;
+      return Object.values(parsed).flat().join(" ") || fallback;
+    }
+    if (typeof data?.detail === "string") return data.detail;
+    if (data && typeof data === "object") {
+      const joined = Object.values(data).flat().join(" ");
+      if (joined) return joined;
+    }
+    return fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveBlob(blob, filename) {
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+}
+
+function buildParams(report, franchise, range, filters) {
+  const params = { franchise };
+
+  if (report.usesDates) {
+    if (range.start) params.start_date = range.start;
+    if (range.end) params.end_date = range.end;
+  }
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) params[key] = value;
   });
 
-  const handleGenerateReport = (repTitle) => {
-    alert(`Generating certified CSV/PDF report for: ${repTitle}`);
-    setActiveReportModal(null);
+  return params;
+}
+
+/* ------------------------------------------------------------------ */
+/* One live report: filters, summary, preview table, downloads         */
+/* ------------------------------------------------------------------ */
+
+function ReportPanel({ report, franchise, range }) {
+  const { slug } = report;
+  const extraFilters = EXTRA_FILTERS[slug] || [];
+
+  const [filters, setFilters] = useState({});
+  const [state, setState] = useState({ loading: true, error: "", data: null });
+  const [downloading, setDownloading] = useState("");
+  const [downloadError, setDownloadError] = useState("");
+
+  const params = buildParams(report, franchise, range, filters);
+  const paramsKey = JSON.stringify(params);
+
+  useEffect(() => {
+    let cancelled = false;
+    setState((s) => ({ ...s, loading: true, error: "" }));
+
+    api
+      .get(`/admin/reports/${slug}/`, { params })
+      .then((res) => {
+        if (!cancelled) setState({ loading: false, error: "", data: res.data });
+      })
+      .catch(async (err) => {
+        const message = await getErrorMessage(err);
+        if (!cancelled) setState({ loading: false, error: message, data: null });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, paramsKey]);
+
+  const setFilter = (key, value) => setFilters((prev) => ({ ...prev, [key]: value }));
+
+  const handleDownload = async (format) => {
+    setDownloading(format);
+    setDownloadError("");
+    try {
+      const res = await api.get(`/admin/reports/${slug}/`, {
+        params: { ...params, export: format },
+        responseType: "blob",
+      });
+      saveBlob(res.data, `${slug}-report-${toISO(new Date())}.${format}`);
+    } catch (err) {
+      setDownloadError(await getErrorMessage(err));
+    } finally {
+      setDownloading("");
+    }
   };
 
+  const { loading, error, data } = state;
+  const rows = data?.rows || [];
+  const columns = data?.columns || [];
+
   return (
-    <div className="space-y-6">
-      {/* HEADER SECTION */}
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
+    <div className="rounded-2xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
+      {/* Title + downloads */}
+      <div className="flex flex-col gap-3 border-b border-slate-100 p-5 md:flex-row md:items-start md:justify-between">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-teal-600 ring-1 ring-teal-500/20">
-              Head Office Intelligence
-            </span>
-          </div>
-          <h1 className="text-2xl font-black tracking-tight text-slate-900 mt-1">
-            Network Reports & Analytics
-          </h1>
-          <p className="text-xs text-slate-500">
-            Generate and export comprehensive network-wide performance, financial, operational, compliance, and staff reports.
+          <h2 className="text-base font-black text-slate-900">{report.title}</h2>
+          <p className="text-xs text-slate-500 mt-1">{report.description}</p>
+          <p className="text-[11px] text-slate-400 mt-1">
+            {data
+              ? `${data.filters.scope} · ${report.usesDates ? data.filters.period : "Point-in-time audit as of today"}`
+              : "\u00A0"}
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => alert("Preparing custom multi-report export package...")}
-            className="flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-4 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-teal-900/20 transition hover:bg-teal-500 active:scale-95"
-          >
-            <FaFileDownload className="text-xs" />
-            <span>Export All Reports</span>
-          </button>
-        </div>
-      </div>
-
-      {/* STATS OVERVIEW */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Available Report Types</p>
-          <h3 className="text-xl font-black text-slate-900 mt-1">5 Core Modules</h3>
-          <p className="text-[11px] text-teal-600 font-semibold mt-1">Fully automated data feeds</p>
-        </div>
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Active Branches Tracked</p>
-          <h3 className="text-xl font-black text-slate-900 mt-1">14 Franchises</h3>
-          <p className="text-[11px] text-slate-500 mt-1">Real-time telemetry sync</p>
-        </div>
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Scheduled Reports</p>
-          <h3 className="text-xl font-black text-teal-600 mt-1">3 Active Schedules</h3>
-          <p className="text-[11px] text-slate-500 mt-1">Weekly executive dispatch</p>
-        </div>
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Audit Status</p>
-          <h3 className="text-xl font-black text-emerald-600 mt-1">Compliant</h3>
-          <p className="text-[11px] text-emerald-500 font-semibold mt-1">All logs secured</p>
-        </div>
-      </div>
-
-      {/* SEARCH & FILTER BAR */}
-      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1">
-          <FaSearch className="absolute left-3.5 top-3.5 text-xs text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search report titles or metrics..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-teal-500 focus:bg-white focus:outline-none"
-          />
-        </div>
-
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-          {["All", "Performance", "Finance", "Operations", "Governance", "Human Resources"].map((cat) => (
+        <div className="flex items-center gap-2 flex-wrap">
+          {EXPORT_FORMATS.map((fmt) => (
             <button
-              key={cat}
+              key={fmt.key}
               type="button"
-              onClick={() => setSelectedCategory(cat)}
-              className={`rounded-lg px-3 py-2 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
-                selectedCategory === cat ? "bg-slate-900 text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
+              onClick={() => handleDownload(fmt.key)}
+              disabled={!!downloading || loading || !!error}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-slate-800 transition disabled:opacity-50"
             >
-              {cat}
+              <FaFileDownload className="text-[10px]" />
+              {downloading === fmt.key ? "Preparing…" : fmt.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* REPORTS CARDS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredReports.map((rep) => {
-          const IconComponent = rep.icon;
-          return (
-            <div
-              key={rep.id}
-              className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs transition hover:shadow-md hover:border-slate-300"
-            >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ${rep.color}`}>
-                    <IconComponent className="text-base" />
-                  </div>
-                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-600">
-                    {rep.category}
-                  </span>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-black text-slate-900">{rep.title}</h3>
-                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">{rep.description}</p>
-                </div>
-
-                <div className="space-y-2 pt-2 border-t border-slate-100">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Typical Metrics</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {rep.metrics.map((m, idx) => (
-                      <span key={idx} className="rounded-md bg-slate-50 border border-slate-200/70 px-2 py-1 text-[10px] font-medium text-slate-700">
-                        {m}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Configured Filters</p>
-                  <p className="text-xs font-mono text-teal-700">{rep.filters.join(" • ")}</p>
-                </div>
-              </div>
-
-              <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] text-slate-400 font-medium">Ready to compile</span>
-                <button
-                  type="button"
-                  onClick={() => setActiveReportModal(rep)}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm hover:bg-slate-800 transition active:scale-95"
+      {/* Report-specific filters */}
+      {extraFilters.length > 0 && (
+        <div className="grid grid-cols-1 gap-3 border-b border-slate-100 bg-slate-50/50 p-4 sm:grid-cols-2 lg:grid-cols-3">
+          {extraFilters.map((f) => (
+            <div key={f.key}>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                {f.label}
+              </label>
+              {f.type === "text" ? (
+                <input
+                  type="text"
+                  defaultValue={filters[f.key] || ""}
+                  placeholder={f.placeholder}
+                  onBlur={(e) => setFilter(f.key, e.target.value.trim())}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") e.currentTarget.blur();
+                  }}
+                  className={inputClass}
+                />
+              ) : (
+                <select
+                  value={filters[f.key] || ""}
+                  onChange={(e) => setFilter(f.key, e.target.value)}
+                  className={inputClass}
                 >
-                  <FaFileDownload className="text-xs" /> Generate Report
-                </button>
-              </div>
+                  <option value="">All</option>
+                  {f.options.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
+          ))}
+        </div>
+      )}
+
+      {downloadError && (
+        <p role="alert" className="mx-5 mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
+          {downloadError}
+        </p>
+      )}
+
+      {loading && <p className="p-6 text-xs text-slate-400">Loading report…</p>}
+
+      {!loading && error && (
+        <p role="alert" className="m-5 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
+          {error}
+        </p>
+      )}
+
+      {!loading && !error && data && (
+        <>
+          {data.summary.length > 0 && (
+            <div className="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3">
+              {data.summary.map((item) => (
+                <div key={item.label} className="rounded-xl bg-slate-50 px-3 py-2.5">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{item.label}</p>
+                  <p className="text-sm font-black text-slate-900 mt-0.5  wrap-break-words">{String(item.value)}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {rows.length === 0 ? (
+            <p className="px-5 pb-6 text-xs text-slate-500">
+              No records match these filters. Try a wider date range or clear a filter.
+            </p>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-y border-slate-200 bg-slate-50/70 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                      {columns.map((c) => (
+                        <th key={c.key} className="py-3 px-4 whitespace-nowrap">
+                          {c.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 text-xs">
+                    {rows.slice(0, PREVIEW_ROWS).map((row, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/60 transition">
+                        {columns.map((c) => (
+                          <td
+                            key={c.key}
+                            className={`py-3 px-4 whitespace-nowrap ${
+                              c.type === "text" ? "text-slate-700" : "text-slate-900 font-medium tabular-nums"
+                            }`}
+                          >
+                            {fmtCell(c, row[c.key])}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {rows.length > PREVIEW_ROWS && (
+                <p className="px-5 py-3 text-[11px] text-slate-400 border-t border-slate-100">
+                  Showing {PREVIEW_ROWS} of {rows.length} rows. Download the report for the full list.
+                </p>
+              )}
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Page                                                                */
+/* ------------------------------------------------------------------ */
+
+export default function Reports() {
+  const [activeSlug, setActiveSlug] = useState(REPORTS[0].slug);
+  const [franchise, setFranchise] = useState("all");
+  const [franchises, setFranchises] = useState([]);
+  const [rangeKey, setRangeKey] = useState("month");
+  const [custom, setCustom] = useState({ start: "", end: "" });
+  const [overview, setOverview] = useState({ loading: true, error: "", data: null });
+
+  const range = resolveRange(rangeKey, custom);
+  const activeReport = REPORTS.find((r) => r.slug === activeSlug);
+
+  /* Franchise options for the scope dropdown */
+  useEffect(() => {
+    api
+      .get("/admin/franchises/")
+      .then((res) => setFranchises(asList(res.data)))
+      .catch(() => setFranchises([]));
+  }, []);
+
+  /* Stat cards follow the selected franchise */
+  useEffect(() => {
+    let cancelled = false;
+    setOverview((o) => ({ ...o, loading: true, error: "" }));
+
+    api
+      .get("/admin/reports/", { params: { franchise } })
+      .then((res) => {
+        if (!cancelled) setOverview({ loading: false, error: "", data: res.data });
+      })
+      .catch(async (err) => {
+        const message = await getErrorMessage(err);
+        if (!cancelled) setOverview({ loading: false, error: message, data: null });
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [franchise]);
+
+  const ov = overview.data;
+  const dash = overview.loading ? "…" : "—";
+  const complianceRate = ov?.compliance_rate;
+  const complianceColor =
+    complianceRate == null
+      ? "text-slate-400"
+      : complianceRate >= 90
+      ? "text-emerald-600"
+      : complianceRate >= 70
+      ? "text-amber-600"
+      : "text-red-600";
+
+  return (
+    <div className="space-y-6">
+      {/* HEADER SECTION */}
+      <div>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-teal-600 ring-1 ring-teal-500/20">
+            Head Office Intelligence
+          </span>
+        </div>
+        <h1 className="text-2xl font-black tracking-tight text-slate-900 mt-1">
+          Network Reports & Analytics
+        </h1>
+        <p className="text-xs text-slate-500">
+          Live network-wide performance, financial, operational, compliance, and staff reports. Preview them here or export as PDF, Excel or CSV.
+        </p>
+      </div>
+
+      {overview.error && (
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
+          Could not load the overview figures: {overview.error}
+        </p>
+      )}
+
+      {/* STATS OVERVIEW */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Active Branches Tracked</p>
+          <h3 className="text-xl font-black text-slate-900 mt-1">
+            {ov ? `${ov.active_franchises} ${ov.active_franchises === 1 ? "Franchise" : "Franchises"}` : dash}
+          </h3>
+          <p className="text-[11px] text-slate-500 mt-1">{ov ? "In the selected scope" : "\u00A0"}</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Active Customers</p>
+          <h3 className="text-xl font-black text-slate-900 mt-1">
+            {ov ? ov.total_customers.toLocaleString("en-GB") : dash}
+          </h3>
+          <p className="text-[11px] text-slate-500 mt-1">{ov ? "Across the selected scope" : "\u00A0"}</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Appointments This Month</p>
+          <h3 className="text-xl font-black text-teal-600 mt-1">
+            {ov ? ov.appointments_this_month.toLocaleString("en-GB") : dash}
+          </h3>
+          <p className="text-[11px] text-slate-500 mt-1">{ov ? "Whole month, including upcoming" : "\u00A0"}</p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Compliance Audit Score</p>
+          <h3 className={`text-xl font-black mt-1 ${complianceColor}`}>
+            {ov ? (complianceRate == null ? "No data" : `${complianceRate}%`) : dash}
+          </h3>
+          <p className="text-[11px] text-slate-500 font-semibold mt-1">
+            {ov ? `${ov.expired_documents} expired · ${ov.missing_documents} missing` : "\u00A0"}
+          </p>
+        </div>
+      </div>
+
+      {/* SCOPE + PERIOD */}
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs md:flex-row md:items-end">
+        <div className="md:w-72">
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+            Franchise / territory
+          </label>
+          <select value={franchise} onChange={(e) => setFranchise(e.target.value)} className={inputClass}>
+            <option value="all">All network franchises</option>
+            {franchises.map((f) => (
+              <option key={f.id} value={f.id}>
+                {f.name}
+                {f.location ? ` — ${f.location}` : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="md:w-48">
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+            Reporting period
+          </label>
+          <select value={rangeKey} onChange={(e) => setRangeKey(e.target.value)} className={inputClass}>
+            {RANGES.map((r) => (
+              <option key={r.key} value={r.key}>
+                {r.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {rangeKey === "custom" && (
+          <>
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">From</label>
+              <input
+                type="date"
+                value={custom.start}
+                max={custom.end || undefined}
+                onChange={(e) => setCustom({ ...custom, start: e.target.value })}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">To</label>
+              <input
+                type="date"
+                value={custom.end}
+                min={custom.start || undefined}
+                onChange={(e) => setCustom({ ...custom, end: e.target.value })}
+                className={inputClass}
+              />
+            </div>
+          </>
+        )}
+
+        <p className="text-[11px] text-slate-500 md:ml-auto">
+          {activeReport.usesDates
+            ? range.start || range.end
+              ? `${range.start || "Beginning"} to ${range.end || "today"}`
+              : "All time"
+            : "This report is a point-in-time audit, so the period is not used."}
+        </p>
+      </div>
+
+      {/* REPORT TABS */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        {REPORTS.map((r) => {
+          const TabIcon = r.icon;
+          return (
+            <button
+              key={r.slug}
+              type="button"
+              onClick={() => setActiveSlug(r.slug)}
+              className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider whitespace-nowrap transition ${
+                activeSlug === r.slug
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              <TabIcon className="text-xs" />
+              {r.tab}
+            </button>
           );
         })}
       </div>
 
-      {/* ================= GENERATE REPORT CONFIG MODAL ================= */}
-      <AnimatePresence>
-        {activeReportModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveReportModal(null)}
-              className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"
-            />
-
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 10 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 10 }}
-              className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl md:p-8 z-10 space-y-6"
-            >
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-teal-600">
-                    Report Parameters Setup
-                  </span>
-                  <h3 className="text-lg font-black text-slate-900">{activeReportModal.title}</h3>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveReportModal(null)}
-                  className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 text-xs font-bold"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <div className="space-y-4 text-xs">
-                <div>
-                  <label className="block font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Select Franchise / Territory Scope
-                  </label>
-                  <select className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 font-medium text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none">
-                    <option>All Network Franchises (Global View)</option>
-                    <option>North London Healthcare</option>
-                    <option>Manchester Central Care</option>
-                    <option>Birmingham West Support</option>
-                    <option>Edinburgh South Medical</option>
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block font-bold uppercase tracking-wider text-slate-700 mb-1">
-                      Start Date
-                    </label>
-                    <input
-                      type="date"
-                      defaultValue="2026-07-01"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 font-medium text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-bold uppercase tracking-wider text-slate-700 mb-1">
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      defaultValue="2026-09-12"
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 font-medium text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Export Format
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button type="button" className="rounded-xl border border-teal-500 bg-teal-50/50 p-2.5 font-bold text-teal-700 text-center">
-                      PDF Document
-                    </button>
-                    <button type="button" className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 font-bold text-slate-700 text-center">
-                      Excel (XLSX)
-                    </button>
-                    <button type="button" className="rounded-xl border border-slate-200 bg-slate-50 p-2.5 font-bold text-slate-700 text-center">
-                      CSV Data
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setActiveReportModal(null)}
-                  className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleGenerateReport(activeReportModal.title)}
-                  className="rounded-xl bg-teal-600 px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md hover:bg-teal-500 transition active:scale-95"
-                >
-                  Compile & Download Report
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      {/* ACTIVE REPORT (live) */}
+      <ReportPanel key={activeSlug} report={activeReport} franchise={franchise} range={range} />
     </div>
   );
 }

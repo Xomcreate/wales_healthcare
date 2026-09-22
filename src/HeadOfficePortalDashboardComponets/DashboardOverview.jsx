@@ -12,6 +12,7 @@ import {
   FaMapMarkedAlt,
   FaExclamationTriangle,
   FaUsers,
+  FaMoneyBillWave,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import api from "../api/axios";
@@ -21,6 +22,7 @@ const BRAND_COLOR = "#0d9488";
 export default function DashboardOverview({ setActiveTab }) {
   const [franchises, setFranchises] = useState([]);
   const [users, setUsers] = useState([]);
+  const [feesData, setFeesData] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,7 +39,7 @@ export default function DashboardOverview({ setActiveTab }) {
       setError("");
 
       /*
-       * Fetch franchises and users separately.
+       * Fetch franchises, users, and fees separately.
        *
        * This is intentional so a problem with one endpoint
        * does not prevent us from seeing the other data.
@@ -70,6 +72,27 @@ export default function DashboardOverview({ setActiveTab }) {
          * Don't break the entire dashboard if users fail.
          */
         setUsers([]);
+      }
+
+      /*
+       * REVENUE — derived from actual collected payments on
+       * admin/fees/ (the same endpoint FeesRenewals.js uses),
+       * not admin/reports/, which doesn't return real revenue
+       * data yet. Kept in its own try/catch so a missing/changed
+       * fees shape never breaks franchises/users from rendering.
+       */
+
+      try {
+        const feesResponse = await api.get("admin/fees/");
+
+        const feesList = Array.isArray(feesResponse.data)
+          ? feesResponse.data
+          : feesResponse.data?.results || [];
+
+        setFeesData(feesList);
+      } catch (feesError) {
+        console.error("Failed to load fees/revenue data:", feesError);
+        setFeesData([]);
       }
     } catch (err) {
       console.error(
@@ -121,6 +144,76 @@ export default function DashboardOverview({ setActiveTab }) {
 
   /*
   |--------------------------------------------------------------------------
+  | REVENUE (derived from admin/fees/)
+  |--------------------------------------------------------------------------
+  |
+  | Each fee record carries amount_paid / paid_amount — the same
+  | fields FeesRenewals.js reads. We sum those for the headline
+  | "Total Collected" figure and bucket them by month (using
+  | due_date, falling back to updated_at/created_at) for the bar
+  | chart. If admin/fees/ is paginated with a small page size,
+  | this will only reflect the fetched page — see note below.
+  |
+  */
+
+  const fallbackMonths = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+  ];
+
+  const totalCollected = feesData.reduce(
+    (sum, f) => sum + Number(f.amount_paid ?? f.paid_amount ?? 0),
+    0
+  );
+
+  const monthlyCollected = {};
+
+  feesData.forEach((f) => {
+    const paid = Number(f.amount_paid ?? f.paid_amount ?? 0);
+    if (!paid) return;
+
+    const dateStr = f.due_date || f.updated_at || f.created_at;
+    const d = dateStr ? new Date(dateStr) : null;
+    if (!d || Number.isNaN(d.getTime())) return;
+
+    const key = d.toLocaleDateString("en-US", {
+      month: "short",
+      year: "2-digit",
+    });
+
+    monthlyCollected[key] = (monthlyCollected[key] || 0) + paid;
+  });
+
+  const revenueLabels = Object.keys(monthlyCollected);
+  const revenueValues = Object.values(monthlyCollected);
+
+  const maxRevenue = revenueValues.length
+    ? Math.max(1, ...revenueValues)
+    : null;
+
+  const revenueBars = revenueValues.length
+    ? revenueLabels.map((month, i) => ({
+        month,
+        height: `${Math.max(4, (revenueValues[i] / maxRevenue) * 100)}%`,
+        value: `₦${revenueValues[i].toLocaleString()}`,
+      }))
+    : fallbackMonths.map((month) => ({
+        month,
+        height: "20%",
+        value: "—",
+      }));
+
+  const revenueConnected = revenueValues.length > 0;
+
+  /*
+  |--------------------------------------------------------------------------
   | KPI CARDS
   |--------------------------------------------------------------------------
   */
@@ -166,6 +259,17 @@ export default function DashboardOverview({ setActiveTab }) {
     },
 
     {
+      title: "Total Collected",
+      value: loading ? "—" : `₦${totalCollected.toLocaleString()}`,
+      change: loading ? "Loading..." : "From recorded payments",
+      icon: <FaMoneyBillWave />,
+      color: "text-teal-600",
+      bgColor: "bg-teal-50",
+      borderColor: "border-teal-100",
+      targetTab: "fees",
+    },
+
+    {
       title: "Suspended",
       value: loading ? "—" : suspendedFranchises,
       change: "Currently inactive",
@@ -192,27 +296,6 @@ export default function DashboardOverview({ setActiveTab }) {
     totalFranchises > 0
       ? (suspendedFranchises / totalFranchises) * 100
       : 0;
-
-  /*
-  |--------------------------------------------------------------------------
-  | REVENUE
-  |--------------------------------------------------------------------------
-  |
-  | Revenue is not yet available from the current Franchise API.
-  |
-  */
-
-  const revenueBars = [
-    { month: "Jan", height: "20%", value: "—" },
-    { month: "Feb", height: "20%", value: "—" },
-    { month: "Mar", height: "20%", value: "—" },
-    { month: "Apr", height: "20%", value: "—" },
-    { month: "May", height: "20%", value: "—" },
-    { month: "Jun", height: "20%", value: "—" },
-    { month: "Jul", height: "20%", value: "—" },
-    { month: "Aug", height: "20%", value: "—" },
-    { month: "Sep", height: "20%", value: "—" },
-  ];
 
   /*
   |--------------------------------------------------------------------------
@@ -337,7 +420,7 @@ export default function DashboardOverview({ setActiveTab }) {
           KPI METRIC CARDS
       ================================================================ */}
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
 
         {kpiCards.map((kpi, idx) => (
 
@@ -407,12 +490,13 @@ export default function DashboardOverview({ setActiveTab }) {
             <div>
 
               <h3 className="text-sm font-black uppercase tracking-wider text-slate-900">
-                Revenue by Location
+                Revenue Collected by Month
               </h3>
 
               <p className="text-xs text-slate-400">
-                Financial aggregation will appear when revenue data is
-                connected.
+                {revenueConnected
+                  ? "Live totals from recorded fee payments."
+                  : "No recorded payments yet — bars will populate once fees are paid."}
               </p>
 
             </div>
@@ -420,7 +504,7 @@ export default function DashboardOverview({ setActiveTab }) {
             <button
               type="button"
               onClick={() =>
-                setActiveTab && setActiveTab("reports")
+                setActiveTab && setActiveTab("fees")
               }
               className="text-xs font-bold text-teal-600 hover:underline"
             >
@@ -469,7 +553,9 @@ export default function DashboardOverview({ setActiveTab }) {
           <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
 
             <span className="font-medium">
-              Revenue API not connected yet
+              {revenueConnected
+                ? "Fees API connected"
+                : "No payments recorded yet"}
             </span>
 
             <span className="flex items-center gap-1.5 font-bold text-emerald-600">

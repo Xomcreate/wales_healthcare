@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaCalendarAlt,
   FaFileInvoiceDollar,
@@ -7,33 +7,224 @@ import {
   FaArrowRight,
   FaClock,
 } from "react-icons/fa";
+import api from "../api/axios"; // adjust path to wherever your axios instance lives
 
 const BRAND_COLOR = "#0d9488";
 
-const stats = [
-  { label: "Next Appointment", value: "Tomorrow, 10:00 AM", icon: <FaCalendarAlt />, key: "appointments" },
-  { label: "Outstanding Balance", value: "$140.00", icon: <FaFileInvoiceDollar />, key: "invoices" },
-  { label: "Active Service", value: "Personal Care", icon: <FaConciergeBell />, key: "services" },
-  { label: "Documents on File", value: "3", icon: <FaFolderOpen />, key: "documents" },
-];
+function formatCurrency(amount) {
+  const value = Number(amount) || 0;
+  return `$${value.toFixed(2)}`;
+}
 
-const upcoming = [
-  { time: "10:00 AM", date: "Tomorrow", service: "Personal Care", caregiver: "Sarah Lee" },
-  { time: "2:00 PM", date: "Fri, Sep 18", service: "Companionship", caregiver: "David Brown" },
-];
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return dateStr;
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
 
-const activity = [
-  { text: "Invoice #1042 was sent to you", time: "2h ago" },
-  { text: "Appointment confirmed with Sarah Lee", time: "1d ago" },
-  { text: "New message from your franchise office", time: "2d ago" },
-];
+  const isSameDay = (a, b) =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+
+  if (isSameDay(d, today)) return "Today";
+  if (isSameDay(d, tomorrow)) return "Tomorrow";
+
+  return d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+}
+
+function formatTime(timeStr) {
+  if (!timeStr) return "";
+  // scheduled_time typically comes back as "HH:MM:SS"
+  const [h, m] = timeStr.split(":");
+  if (h === undefined) return timeStr;
+  const hour = parseInt(h, 10);
+  const period = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+  return `${displayHour}:${m} ${period}`;
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return "";
+  const then = new Date(dateStr).getTime();
+  const now = Date.now();
+  const diffMs = now - then;
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+// =========================================================
+// UNWRAP LIST HELPER
+//
+// invoices/me/ returns { results: [...], outstanding_balance }
+// rather than a bare array, unlike appointments/me/ and
+// documents/me/ (customer_documents). This normalizes either
+// shape so callers don't need to know which endpoint does what.
+// =========================================================
+
+function unwrapList(data) {
+  return Array.isArray(data) ? data : data?.results || [];
+}
 
 export default function Overview({ setActiveTab }) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [me, setMe] = useState(null);
+  const [appointments, setAppointments] = useState([]);
+  const [invoices, setInvoices] = useState([]);
+  const [documents, setDocuments] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadDashboard() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const [meRes, appointmentsRes, invoicesRes, documentsRes] = await Promise.all([
+          api.get("auth/me/"),
+          api.get("appointments/me/"),
+          api.get("invoices/me/"),
+          api.get("documents/me/"),
+        ]);
+
+        if (cancelled) return;
+
+        setMe(meRes.data);
+        setAppointments(Array.isArray(appointmentsRes.data) ? appointmentsRes.data : []);
+        setInvoices(unwrapList(invoicesRes.data));
+        setDocuments(Array.isArray(documentsRes.data) ? documentsRes.data : []);
+      } catch (err) {
+        if (!cancelled) {
+          setError("We couldn't load your dashboard right now. Please try again.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadDashboard();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-40 items-center justify-center text-sm text-slate-400">
+        Loading your dashboard...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-600">
+        {error}
+      </div>
+    );
+  }
+
+  // -----------------------------------------------------------
+  // Derived data
+  // -----------------------------------------------------------
+
+  const now = new Date();
+
+  const upcomingAppointments = appointments
+    .filter((a) => {
+      if (!a.scheduled_date) return false;
+      const apptDate = new Date(`${a.scheduled_date}T${a.scheduled_time || "00:00:00"}`);
+      return apptDate >= now && a.status !== "Cancelled";
+    })
+    .sort(
+      (a, b) =>
+        new Date(`${a.scheduled_date}T${a.scheduled_time || "00:00:00"}`) -
+        new Date(`${b.scheduled_date}T${b.scheduled_time || "00:00:00"}`)
+    );
+
+  const nextAppointment = upcomingAppointments[0];
+
+  const outstandingBalance = invoices
+    .filter((inv) => inv.status && inv.status.toLowerCase() !== "paid")
+    .reduce((sum, inv) => sum + (Number(inv.amount) || 0), 0);
+
+  const activeService = me?.profile?.service_interest || "Not set";
+
+  const stats = [
+    {
+      label: "Next Appointment",
+      value: nextAppointment
+        ? `${formatDate(nextAppointment.scheduled_date)}, ${formatTime(nextAppointment.scheduled_time)}`
+        : "No upcoming appointments",
+      icon: <FaCalendarAlt />,
+      key: "appointments",
+    },
+    {
+      label: "Outstanding Balance",
+      value: formatCurrency(outstandingBalance),
+      icon: <FaFileInvoiceDollar />,
+      key: "invoices",
+    },
+    {
+      label: "Active Service",
+      value: activeService,
+      icon: <FaConciergeBell />,
+      key: "services",
+    },
+    {
+      label: "Documents on File",
+      value: String(documents.length),
+      icon: <FaFolderOpen />,
+      key: "documents",
+    },
+  ];
+
+  const upcoming = upcomingAppointments.slice(0, 2).map((a) => ({
+    time: formatTime(a.scheduled_time),
+    date: formatDate(a.scheduled_date),
+    caregiver: a.employee_name || "Unassigned",
+    status: a.status,
+  }));
+
+  // Recent activity, stitched together from what we already fetched
+  // (there's no dedicated activity-feed endpoint yet).
+  const activity = [
+    ...invoices.map((inv) => ({
+      text: `Invoice ${inv.invoice_number} — ${inv.status}`,
+      time: inv.created_at,
+    })),
+    ...appointments.map((a) => ({
+      text: `Appointment ${a.status.toLowerCase()} with ${a.employee_name || "your caregiver"}`,
+      time: a.updated_at || a.created_at,
+    })),
+    ...documents.map((d) => ({
+      text: `Document uploaded: ${d.file_name}`,
+      time: d.uploaded_at,
+    })),
+  ]
+    .filter((item) => item.time)
+    .sort((a, b) => new Date(b.time) - new Date(a.time))
+    .slice(0, 4)
+    .map((item) => ({ text: item.text, time: timeAgo(item.time) }));
+
+  const firstName = (me?.full_name || "").split(" ")[0] || "there";
+
   return (
     <div className="space-y-8">
       {/* WELCOME */}
       <div>
-        <h3 className="text-lg font-black text-slate-900">Welcome back, Mary 👋</h3>
+        <h3 className="text-lg font-black text-slate-900">Welcome back, {firstName} 👋</h3>
         <p className="text-sm text-slate-500">Here's what's happening with your care plan.</p>
       </div>
 
@@ -73,6 +264,9 @@ export default function Overview({ setActiveTab }) {
           </div>
 
           <div className="space-y-3">
+            {upcoming.length === 0 && (
+              <p className="text-xs text-slate-400">No upcoming appointments.</p>
+            )}
             {upcoming.map((a, i) => (
               <div
                 key={i}
@@ -86,7 +280,7 @@ export default function Overview({ setActiveTab }) {
                     <FaClock />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800">{a.service}</p>
+                    <p className="text-xs font-bold text-slate-800">{a.status}</p>
                     <p className="text-[11px] text-slate-400">with {a.caregiver}</p>
                   </div>
                 </div>
@@ -103,6 +297,9 @@ export default function Overview({ setActiveTab }) {
         <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
           <h4 className="mb-4 text-sm font-black text-slate-900">Recent Activity</h4>
           <div className="space-y-4">
+            {activity.length === 0 && (
+              <p className="text-xs text-slate-400">No recent activity.</p>
+            )}
             {activity.map((a, i) => (
               <div key={i} className="flex items-start gap-3">
                 <span

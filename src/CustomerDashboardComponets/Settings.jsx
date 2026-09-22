@@ -1,71 +1,151 @@
-import React from "react";
-import { FaLock, FaBell, FaTrashAlt } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaLock, FaSyncAlt, FaExclamationTriangle, FaCheckCircle, FaEye, FaEyeSlash } from "react-icons/fa";
+import api from "../api/axios";
 
-const BRAND_COLOR = "#0d9488";
+export default function ChangePassword() {
+  const [form, setForm] = useState({
+    current_password: "",
+    new_password: "",
+    confirm_password: "",
+  });
 
-function Toggle({ defaultChecked = true }) {
+  const [showPassword, setShowPassword] = useState({
+    current_password: false,
+    new_password: false,
+    confirm_password: false,
+  });
+
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const toggleShowPassword = (field) => {
+    setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
+
+  const extractErrorMessage = (err, fallback) => {
+    const backendError = err.response?.data;
+
+    if (typeof backendError === "string") return backendError;
+    if (backendError?.detail) return backendError.detail;
+
+    if (backendError) {
+      const firstError = Object.values(backendError)[0];
+      if (Array.isArray(firstError)) return firstError[0];
+      return String(firstError);
+    }
+
+    return fallback;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!form.current_password || !form.new_password || !form.confirm_password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    if (form.new_password !== form.confirm_password) {
+      setError("New password and confirmation do not match.");
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      const response = await api.post("auth/change-password/", {
+        current_password: form.current_password,
+        new_password: form.new_password,
+        confirm_password: form.confirm_password,
+      });
+
+      setSuccess(response.data?.message || "Password changed successfully.");
+      setForm({ current_password: "", new_password: "", confirm_password: "" });
+      setShowPassword({ current_password: false, new_password: false, confirm_password: false });
+    } catch (err) {
+      console.error("Change password error:", err);
+      setError(extractErrorMessage(err, "Unable to change password."));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const fields = [
+    { name: "current_password", label: "Current Password" },
+    { name: "new_password", label: "New Password" },
+    { name: "confirm_password", label: "Confirm New Password" },
+  ];
+
   return (
-    <label className="relative inline-flex cursor-pointer items-center">
-      <input type="checkbox" defaultChecked={defaultChecked} className="peer sr-only" />
-      <div
-        className="h-5 w-9 rounded-full bg-slate-200 transition peer-checked:bg-teal-600 after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition after:content-[''] peer-checked:after:translate-x-4"
-      />
-    </label>
-  );
-}
-
-export default function Settings() {
-  return (
-    <div className="space-y-6">
-      <h3 className="text-lg font-black text-slate-900">Account Settings</h3>
-
-      {/* SECURITY */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
-        <h4 className="mb-4 flex items-center gap-2 text-sm font-black text-slate-900">
-          <FaLock style={{ color: BRAND_COLOR }} /> Security
-        </h4>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <button className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50">
-            Change Password
-          </button>
-          <button className="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50">
-            Enable Two-Factor Authentication
-          </button>
-        </div>
-      </div>
-
-      {/* NOTIFICATIONS */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs">
-        <h4 className="mb-4 flex items-center gap-2 text-sm font-black text-slate-900">
-          <FaBell style={{ color: BRAND_COLOR }} /> Notification Preferences
-        </h4>
-        <div className="space-y-4">
-          {[
-            "Appointment reminders",
-            "Invoice & payment notifications",
-            "Messages from my franchise",
-            "Promotional emails",
-          ].map((label, i) => (
-            <div key={i} className="flex items-center justify-between">
-              <p className="text-xs font-semibold text-slate-700">{label}</p>
-              <Toggle defaultChecked={i !== 3} />
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* DANGER ZONE */}
-      <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6">
-        <h4 className="mb-2 flex items-center gap-2 text-sm font-black text-rose-700">
-          <FaTrashAlt /> Danger Zone
-        </h4>
-        <p className="mb-4 text-xs text-rose-600/80">
-          Requesting account deletion will notify your franchise and Head Office for processing.
+    <div className="max-w-md space-y-6">
+      <div>
+        <h3 className="text-lg font-black text-slate-900">Change Password</h3>
+        <p className="text-xs text-slate-500 mt-1">
+          Update the password you use to sign in.
         </p>
-        <button className="rounded-xl border border-rose-300 bg-white px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-100">
-          Request Account Deletion
-        </button>
       </div>
+
+      {error && (
+        <div className="flex items-center gap-2.5 rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-semibold text-rose-700">
+          <FaExclamationTriangle className="shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {success && (
+        <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-2.5 text-xs font-semibold text-emerald-700">
+          <FaCheckCircle className="shrink-0" />
+          <span>{success}</span>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4 text-xs text-slate-700">
+        {fields.map((field) => (
+          <div key={field.name}>
+            <label className="block font-bold text-slate-700 mb-1">{field.label}</label>
+            <div className="relative">
+              <input
+                type={showPassword[field.name] ? "text" : "password"}
+                name={field.name}
+                value={form[field.name]}
+                onChange={handleChange}
+                required
+                className="w-full rounded-lg border border-slate-200 px-3 py-2 pr-10 text-xs outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+              />
+              <button
+                type="button"
+                onClick={() => toggleShowPassword(field.name)}
+                tabIndex={-1}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+              >
+                {showPassword[field.name] ? (
+                  <FaEyeSlash className="text-[13px]" />
+                ) : (
+                  <FaEye className="text-[13px]" />
+                )}
+              </button>
+            </div>
+          </div>
+        ))}
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2 text-xs font-bold text-white hover:bg-teal-700 transition disabled:opacity-60"
+        >
+          {saving && <FaSyncAlt className="animate-spin text-[10px]" />}
+          <FaLock className="text-[10px]" />
+          {saving ? "Saving..." : "Change Password"}
+        </button>
+      </form>
     </div>
   );
 }

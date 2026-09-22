@@ -1,24 +1,165 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
-function Consultation() {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    serviceType: 'homecare',
-    message: '',
+// 👉 Shared axios instance. Adjust the "../" depth to match where this file lives.
+import api from '../api/axios'
+
+const INITIAL_FORM = {
+  fullName: '',
+  email: '',
+  phone: '',
+  service: '',
+  message: '',
+}
+
+const EMPTY_ERRORS = { general: '', fields: {} }
+
+// Turns a DRF error response into { general, fields: { full_name: "..." } }
+function parseApiError(err, fallback) {
+  const result = { general: '', fields: {} }
+  const data = err?.response?.data
+
+  if (!data) {
+    result.general = err?.request
+      ? 'We could not reach the server. Please check your connection and try again.'
+      : fallback
+    return result
+  }
+
+  if (typeof data === 'string') {
+    result.general = fallback
+    return result
+  }
+
+  Object.entries(data).forEach(([key, value]) => {
+    const text = Array.isArray(value)
+      ? value.join(' ')
+      : typeof value === 'string'
+      ? value
+      : ''
+
+    if (!text) return
+
+    if (['detail', 'non_field_errors', 'message'].includes(key)) {
+      result.general = text
+    } else {
+      result.fields[key] = text
+    }
   })
 
+  if (!result.general && Object.keys(result.fields).length === 0) {
+    result.general = fallback
+  }
+
+  return result
+}
+
+const inputBase =
+  'w-full bg-slate-50 border rounded-xl py-3 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:bg-white transition-all shadow-sm'
+
+const inputClass = (hasError) =>
+  `${inputBase} ${
+    hasError
+      ? 'border-red-300 focus:ring-red-400/40 focus:border-red-500'
+      : 'border-slate-200 focus:ring-teal-500/50 focus:border-teal-600'
+  }`
+
+function FieldError({ children }) {
+  if (!children) return null
+  return <p className="text-xs font-medium text-red-600">{children}</p>
+}
+
+function Consultation() {
+  const [formData, setFormData] = useState(INITIAL_FORM)
+
+  const [services, setServices] = useState([])
+  const [servicesLoading, setServicesLoading] = useState(true)
+  const [servicesError, setServicesError] = useState('')
+
+  const [submitting, setSubmitting] = useState(false)
+  const [errors, setErrors] = useState(EMPTY_ERRORS)
+
   const [submitted, setSubmitted] = useState(false)
+  const [result, setResult] = useState(null)
+
+  // Load the services customers can request a consultation for
+  useEffect(() => {
+    let cancelled = false
+
+    api
+      .get('/consultations/services/')
+      .then((res) => {
+        if (!cancelled) setServices(Array.isArray(res.data) ? res.data : [])
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setServicesError(
+            "We couldn't load our services right now. Please refresh the page or try again shortly."
+          )
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setServicesLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const selectedService = useMemo(
+    () => services.find((service) => String(service.id) === String(formData.service)),
+    [services, formData.service]
+  )
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+
+    // Clear the error for the field being edited
+    const serverField = { fullName: 'full_name' }[name] || name
+    if (errors.fields[serverField]) {
+      setErrors((prev) => ({
+        ...prev,
+        fields: { ...prev.fields, [serverField]: '' },
+      }))
+    }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    if (submitting) return
+
+    setSubmitting(true)
+    setErrors(EMPTY_ERRORS)
+
+    try {
+      const res = await api.post('/consultations/', {
+        full_name: formData.fullName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        service: formData.service ? Number(formData.service) : null,
+        message: formData.message.trim(),
+      })
+
+      setResult(res.data)
+      setSubmitted(true)
+    } catch (err) {
+      setErrors(
+        parseApiError(err, 'Something went wrong sending your request. Please try again.')
+      )
+    } finally {
+      setSubmitting(false)
+    }
   }
+
+  const handleReset = () => {
+    setFormData(INITIAL_FORM)
+    setErrors(EMPTY_ERRORS)
+    setResult(null)
+    setSubmitted(false)
+  }
+
+  const noServices = !servicesLoading && !servicesError && services.length === 0
 
   return (
     <section className="relative bg-white py-16 lg:py-24 font-sans text-slate-900 border-b border-slate-200 overflow-hidden">
@@ -116,8 +257,18 @@ function Consultation() {
                 <p className="text-slate-600 text-sm max-w-md mx-auto">
                   Thank you for reaching out to Wales Healthcare. One of our senior care advisors will review your details and contact you shortly.
                 </p>
+
+                {result?.reference && (
+                  <p className="text-xs text-slate-500">
+                    Your reference: <span className="font-bold text-slate-800">{result.reference}</span>
+                    {result.confirmation_email_sent && (
+                      <> — a confirmation has been sent to your email.</>
+                    )}
+                  </p>
+                )}
+
                 <button
-                  onClick={() => setSubmitted(false)}
+                  onClick={handleReset}
                   className="mt-6 inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-2.5 px-6 rounded-xl text-sm transition-all shadow-md cursor-pointer"
                 >
                   Send Another Request
@@ -135,8 +286,9 @@ function Consultation() {
                       value={formData.fullName}
                       onChange={handleChange}
                       placeholder="John Doe"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-600 focus:bg-white transition-all shadow-sm"
+                      className={inputClass(Boolean(errors.fields.full_name))}
                     />
+                    <FieldError>{errors.fields.full_name}</FieldError>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Phone Number</label>
@@ -147,8 +299,9 @@ function Consultation() {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="(555) 000-0000"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-600 focus:bg-white transition-all shadow-sm"
+                      className={inputClass(Boolean(errors.fields.phone))}
                     />
+                    <FieldError>{errors.fields.phone}</FieldError>
                   </div>
                 </div>
 
@@ -161,23 +314,49 @@ function Consultation() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="john@example.com"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-600 focus:bg-white transition-all shadow-sm"
+                    className={inputClass(Boolean(errors.fields.email))}
                   />
+                  <FieldError>{errors.fields.email}</FieldError>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">Support Interest</label>
                   <select
-                    name="serviceType"
-                    value={formData.serviceType}
+                    name="service"
+                    required
+                    value={formData.service}
                     onChange={handleChange}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-600 focus:bg-white transition-all shadow-sm cursor-pointer"
+                    disabled={servicesLoading || services.length === 0}
+                    className={`${inputClass(Boolean(errors.fields.service))} cursor-pointer disabled:cursor-not-allowed disabled:opacity-60`}
                   >
-                    <option value="homecare">Home Care Services</option>
-                    <option value="facility">Facility & Staffing Solutions</option>
-                    <option value="emergency">Emergency / Short-Term Cover</option>
-                    <option value="other">General Inquiry</option>
+                    <option value="">
+                      {servicesLoading
+                        ? 'Loading services…'
+                        : services.length === 0
+                        ? 'No services available right now'
+                        : 'Select a service'}
+                    </option>
+                    {services.map((service) => (
+                      <option key={service.id} value={service.id}>
+                        {service.name}
+                      </option>
+                    ))}
                   </select>
+                  <FieldError>{errors.fields.service}</FieldError>
+
+                  {selectedService?.description && (
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      {selectedService.description}
+                    </p>
+                  )}
+                  {servicesError && (
+                    <p className="text-xs font-medium text-red-600">{servicesError}</p>
+                  )}
+                  {noServices && (
+                    <p className="text-xs text-slate-500">
+                      Our services are being updated. Please call us on 09076084515 and we'll be glad to help.
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -185,23 +364,37 @@ function Consultation() {
                   <textarea
                     name="message"
                     rows="4"
+                    maxLength={5000}
                     value={formData.message}
                     onChange={handleChange}
                     placeholder="Share any specific requirements or details..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-600 focus:bg-white transition-all shadow-sm resize-none"
+                    className={`${inputClass(Boolean(errors.fields.message))} resize-none`}
                   />
+                  <FieldError>{errors.fields.message}</FieldError>
                 </div>
+
+                {errors.general && (
+                  <div
+                    role="alert"
+                    className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+                  >
+                    {errors.general}
+                  </div>
+                )}
 
                 <button
                   type="submit"
-                  className="w-full group relative inline-flex items-center justify-center p-0.5 overflow-hidden rounded-xl font-medium shadow-lg shadow-teal-600/20 transition-all duration-300 hover:shadow-teal-600/40 active:scale-[0.99] cursor-pointer mt-2"
+                  disabled={submitting || servicesLoading || services.length === 0}
+                  className="w-full group relative inline-flex items-center justify-center p-0.5 overflow-hidden rounded-xl font-medium shadow-lg shadow-teal-600/20 transition-all duration-300 hover:shadow-teal-600/40 active:scale-[0.99] cursor-pointer mt-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
                 >
                   <span className="absolute inset-0 bg-linear-to-r from-teal-600 to-emerald-600 transition-all duration-300 group-hover:from-teal-500 group-hover:to-emerald-500" />
                   <span className="relative w-full px-5 py-3.5 text-sm text-white font-bold tracking-wide flex items-center justify-center gap-2">
-                    Request Free Consultation
-                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
+                    {submitting ? 'Sending…' : 'Request Free Consultation'}
+                    {!submitting && (
+                      <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                      </svg>
+                    )}
                   </span>
                 </button>
               </form>
