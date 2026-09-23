@@ -2187,6 +2187,11 @@ function EditCustomerModal({
 
 /* =========================================================
    ASSIGN STAFF MODAL
+   Now also pulls in any staff that have been assigned via this
+   customer's APPOINTMENTS (Appointment.employee), not just the
+   explicit CustomerAssignment records — so staff who've already
+   worked with this customer via a scheduled appointment show up
+   pre-checked here too, with a small "From appointment" badge.
 ========================================================= */
 
 function AssignStaffModal({
@@ -2232,6 +2237,89 @@ function AssignStaffModal({
 
       return map;
     });
+
+  // ---- staff pulled from this customer's appointment history ----
+  const [appointmentStaffIds, setAppointmentStaffIds] =
+    useState([]);
+
+  const [loadingAppointmentStaff, setLoadingAppointmentStaff] =
+    useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadAppointmentStaff = async () => {
+      setLoadingAppointmentStaff(true);
+
+      try {
+        const res = await api.get(
+          `admin/customers/${customer.rawId}/appointments/`
+        );
+
+        const appointments =
+          getListFromResponse(res.data);
+
+        const ids = Array.from(
+          new Set(
+            appointments
+              .map((appointment) =>
+                getAppointmentEmployeeId(
+                  appointment
+                )
+              )
+              .filter(Boolean)
+              .map((id) => String(id))
+          )
+        );
+
+        if (isMounted) {
+          setAppointmentStaffIds(ids);
+        }
+      } catch (err) {
+        console.error(
+          "Failed to load this customer's appointment staff history:",
+          err
+        );
+
+        if (isMounted) {
+          setAppointmentStaffIds([]);
+        }
+      } finally {
+        if (isMounted) {
+          setLoadingAppointmentStaff(false);
+        }
+      }
+    };
+
+    loadAppointmentStaff();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [customer.rawId]);
+
+  // Once we know which staff have appointment history with this
+  // customer, pre-check any that aren't already checked. We never
+  // touch existing entries here, so an existing primary is left
+  // exactly as it was.
+  useEffect(() => {
+    if (appointmentStaffIds.length === 0) return;
+
+    setSelected((prev) => {
+      let changed = false;
+
+      const next = { ...prev };
+
+      appointmentStaffIds.forEach((employeeId) => {
+        if (!next[employeeId]) {
+          next[employeeId] = { isPrimary: false };
+          changed = true;
+        }
+      });
+
+      return changed ? next : prev;
+    });
+  }, [appointmentStaffIds]);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -2366,8 +2454,19 @@ function AssignStaffModal({
         <p className="text-[11px] text-slate-500">
           Select one or more staff members from{" "}
           {customer.franchiseName}. Mark one as
-          the primary point of contact.
+          the primary point of contact. Staff who
+          already have an appointment history with
+          this customer are pre-checked
+          automatically.
         </p>
+
+        {loadingAppointmentStaff && (
+          <p className="text-[10px] text-slate-400 italic">
+            Checking this customer's appointment
+            history for staff who've already worked
+            with them…
+          </p>
+        )}
 
         {error && (
           <div className="rounded-lg bg-red-50 border border-red-100 text-red-600 text-xs font-medium px-3 py-2">
@@ -2403,15 +2502,21 @@ function AssignStaffModal({
                 const employeeId =
                   getEmployeeId(employee);
 
+                const employeeKey =
+                  String(employeeId);
+
                 const isChecked =
-                  !!selected[
-                    String(employeeId)
-                  ];
+                  !!selected[employeeKey];
 
                 const isPrimary =
                   selected[
-                    String(employeeId)
+                    employeeKey
                   ]?.isPrimary;
+
+                const fromAppointment =
+                  appointmentStaffIds.includes(
+                    employeeKey
+                  );
 
                 return (
                   <div
@@ -2431,11 +2536,19 @@ function AssignStaffModal({
                       />
 
                       <span>
-                        <p className="font-bold text-slate-800">
-                          {getEmployeeName(
-                            employee
+                        <span className="flex items-center gap-1.5 flex-wrap">
+                          <p className="font-bold text-slate-800">
+                            {getEmployeeName(
+                              employee
+                            )}
+                          </p>
+
+                          {fromAppointment && (
+                            <span className="text-[9px] font-bold text-teal-700 bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded-full">
+                              From appointment
+                            </span>
                           )}
-                        </p>
+                        </span>
 
                         <p className="text-[10px] text-slate-400">
                           {getEmployeeRole(

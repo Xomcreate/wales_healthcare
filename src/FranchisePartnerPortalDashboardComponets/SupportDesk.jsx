@@ -89,7 +89,16 @@ const formatDate = (iso) =>
 const fieldClass =
   "w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none transition";
 
-export default function SupportDesk() {
+// -------------------------------------------------------
+// FRANCHISE SUPPORT DESK  (franchise_manager)
+//   Answers customer + employee tickets for this franchise,
+//   and raises/tracks its own tickets to head office
+//   (channel="franchise"). Fetches all three channels via
+//   GET /support/tickets/?channel=... and lets the manager
+//   reply, change status, and open a new "Ask Head Office"
+//   ticket via POST /support/tickets/.
+// -------------------------------------------------------
+export default function FranchiseSupportDesk() {
   const [tickets, setTickets] = useState([]); // both channels
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");

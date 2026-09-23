@@ -108,6 +108,8 @@ import EmployeeDashboard from './DashboardComponets/EmployeeDashboard'
 
 import ProtectedRoute from './MainComponets/ProtectedRoute'
 import SetPassword from './MainComponets/SetPassword'
+import ResetPassword from './MainComponets/ResetPassword'
+import ForgotPassword from './MainComponets/ForgotPassword'
 
 
 // ========================================
@@ -355,6 +357,9 @@ createRoot(document.getElementById('root')).render(
             path="/login"
             element={<Login />}
           />
+
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password" element={<ResetPassword />} />
 
           <Route
   path="/set-password"

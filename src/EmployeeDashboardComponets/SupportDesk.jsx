@@ -67,7 +67,14 @@ const formatDateTime = (iso) =>
 const fieldClass =
   "w-full rounded-xl border border-slate-200 px-4 py-3 text-xs font-medium focus:border-teal-500 focus:outline-none";
 
-export default function SupportDesk() {
+// -------------------------------------------------------
+// EMPLOYEE SUPPORT DESK
+//   Employee -> Franchise. POST /support/tickets/ with no
+//   channel/franchise in the body — the backend infers
+//   channel="employee" and the requester's own franchise
+//   from the authenticated user's role/profile.
+// -------------------------------------------------------
+export default function EmployeeSupportDesk() {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");

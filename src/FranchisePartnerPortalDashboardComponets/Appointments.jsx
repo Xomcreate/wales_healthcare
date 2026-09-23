@@ -25,6 +25,37 @@ import api from "../api/axios";
 
 const BRAND_COLOR = "#0d9488";
 
+const DAY_ORDER = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+const DAY_SHORT = {
+  Monday: "Mon",
+  Tuesday: "Tue",
+  Wednesday: "Wed",
+  Thursday: "Thu",
+  Friday: "Fri",
+  Saturday: "Sat",
+  Sunday: "Sun",
+};
+
+// JS Date.getDay(): 0 = Sunday ... 6 = Saturday
+const DAY_BY_JS_INDEX = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
 /* =========================================================
    DATE HELPERS
    ========================================================= */
@@ -250,6 +281,100 @@ export default function Appointments() {
 
     return `${displayHour}:${minutes} ${suffix}`;
   }, []);
+
+  const formatShortTime = useCallback((timeString) => {
+    if (!timeString) return "";
+
+    const parts = String(timeString).split(":");
+    const hours = Number(parts[0]);
+
+    if (Number.isNaN(hours)) return timeString;
+
+    const suffix = hours >= 12 ? "p" : "a";
+    const displayHour = hours % 12 || 12;
+
+    return `${displayHour}${suffix}`;
+  }, []);
+
+  /* =========================================================
+     STAFF AVAILABILITY
+     ========================================================= */
+
+  const getAvailabilitySlotForDay = useCallback(
+    (employee, dayName) => {
+      if (!employee?.availability?.length) return null;
+
+      return (
+        employee.availability.find(
+          (slot) => slot.day === dayName
+        ) || null
+      );
+    },
+    []
+  );
+
+  const getAvailabilitySlotForDate = useCallback(
+    (employee, dateString) => {
+      if (!dateString) return null;
+
+      const date = parseDateOnly(dateString);
+
+      if (!date) return null;
+
+      const dayName = DAY_BY_JS_INDEX[date.getDay()];
+
+      return getAvailabilitySlotForDay(employee, dayName);
+    },
+    [getAvailabilitySlotForDay]
+  );
+
+  // Short label for a staff dropdown option, relative to a specific date
+  // (the appointment's date, or the date being picked in the new-
+  // appointment form). Returns null when there's no date yet to check
+  // against, so the option just falls back to name/role.
+  const getAvailabilityLabelForDate = useCallback(
+    (employee, dateString) => {
+      if (!dateString) return null;
+
+      const slot = getAvailabilitySlotForDate(employee, dateString);
+
+      if (!slot || !slot.is_available) {
+        return "Unavailable this day";
+      }
+
+      return `Available ${formatTime(
+        slot.start_time
+      )}–${formatTime(slot.end_time)}`;
+    },
+    [getAvailabilitySlotForDate, formatTime]
+  );
+
+  // Full Mon–Sun pattern for the Staff Availability tab.
+  const getWeeklyAvailabilityBadges = useCallback(
+    (employee) => {
+      return DAY_ORDER.map((day) => {
+        const slot = getAvailabilitySlotForDay(employee, day);
+        const isAvailable = Boolean(slot?.is_available);
+
+        return {
+          day,
+          label: DAY_SHORT[day],
+          isAvailable,
+          tooltip: isAvailable
+            ? `${day}: ${formatTime(slot.start_time)} – ${formatTime(
+                slot.end_time
+              )}`
+            : `${day}: Unavailable`,
+          shortRange: isAvailable
+            ? `${formatShortTime(
+                slot.start_time
+              )}–${formatShortTime(slot.end_time)}`
+            : "Off",
+        };
+      });
+    },
+    [getAvailabilitySlotForDay, formatTime, formatShortTime]
+  );
 
   /* =========================================================
      LOAD CUSTOMERS
@@ -1840,6 +1965,16 @@ export default function Appointments() {
                               )
                           ).length;
 
+                        const weeklyBadges =
+                          getWeeklyAvailabilityBadges(
+                            employee
+                          );
+
+                        const hasAnyAvailability =
+                          weeklyBadges.some(
+                            (badge) => badge.isAvailable
+                          );
+
                         return (
                           <div
                             key={
@@ -1878,6 +2013,41 @@ export default function Appointments() {
                                 ? ""
                                 : "s"}{" "}
                               assigned
+                            </div>
+
+                            <div className="pt-2 border-t border-slate-100">
+                              <p className="text-[9px] font-black uppercase tracking-wider text-slate-400 mb-1.5">
+                                Weekly Availability
+                              </p>
+
+                              {hasAnyAvailability ? (
+                                <div className="flex flex-wrap gap-1">
+                                  {weeklyBadges.map(
+                                    (badge) => (
+                                      <span
+                                        key={badge.day}
+                                        title={badge.tooltip}
+                                        className={`text-[9px] font-bold px-1.5 py-1 rounded-lg text-center leading-tight ${
+                                          badge.isAvailable
+                                            ? "bg-teal-50 text-teal-700 border border-teal-100"
+                                            : "bg-slate-50 text-slate-300 border border-slate-100"
+                                        }`}
+                                      >
+                                        {badge.label}
+                                        {badge.isAvailable && (
+                                          <span className="block text-[8px] font-semibold text-teal-500">
+                                            {badge.shortRange}
+                                          </span>
+                                        )}
+                                      </span>
+                                    )
+                                  )}
+                                </div>
+                              ) : (
+                                <p className="text-[10px] text-slate-400">
+                                  No availability set yet.
+                                </p>
+                              )}
                             </div>
                           </div>
                         );
@@ -2075,17 +2245,28 @@ export default function Appointments() {
                           <option value="">
                             Select staff member
                           </option>
-                          {employees.map((employee) => (
-                            <option
-                              key={employee.id}
-                              value={employee.id}
-                            >
-                              {getEmployeeName(employee)}
-                              {employee.job_role
-                                ? ` — ${employee.job_role}`
-                                : ""}
-                            </option>
-                          ))}
+                          {employees.map((employee) => {
+                            const availabilityLabel =
+                              getAvailabilityLabelForDate(
+                                employee,
+                                selectedAppointment.scheduled_date
+                              );
+
+                            return (
+                              <option
+                                key={employee.id}
+                                value={employee.id}
+                              >
+                                {getEmployeeName(employee)}
+                                {employee.job_role
+                                  ? ` — ${employee.job_role}`
+                                  : ""}
+                                {availabilityLabel
+                                  ? ` (${availabilityLabel})`
+                                  : ""}
+                              </option>
+                            );
+                          })}
                         </select>
 
                         <button
@@ -2102,6 +2283,44 @@ export default function Appointments() {
                             : "Assign"}
                         </button>
                       </div>
+
+                      {selectedStaffId &&
+                        (() => {
+                          const chosenEmployee = employees.find(
+                            (employee) =>
+                              String(employee.id) ===
+                              String(selectedStaffId)
+                          );
+
+                          const label = getAvailabilityLabelForDate(
+                            chosenEmployee,
+                            selectedAppointment.scheduled_date
+                          );
+
+                          if (!label) return null;
+
+                          const isUnavailable =
+                            label === "Unavailable this day";
+
+                          return (
+                            <p
+                              className={`text-[10px] font-semibold flex items-center gap-1 ${
+                                isUnavailable
+                                  ? "text-amber-600"
+                                  : "text-teal-700"
+                              }`}
+                            >
+                              {isUnavailable && (
+                                <FaExclamationTriangle className="text-[9px]" />
+                              )}
+                              {getEmployeeName(chosenEmployee)} is {label.toLowerCase()} on{" "}
+                              {formatDate(
+                                selectedAppointment.scheduled_date
+                              )}
+                              .
+                            </p>
+                          );
+                        })()}
 
                       {assignError && (
                         <p className="text-[10px] font-semibold text-rose-600">
@@ -2591,26 +2810,73 @@ export default function Appointments() {
                       </option>
 
                       {employees.map(
-                        (employee) => (
-                          <option
-                            key={
-                              employee.id
-                            }
-                            value={
-                              employee.id
-                            }
-                          >
-                            {getEmployeeName(
-                              employee
-                            )}
+                        (employee) => {
+                          const availabilityLabel =
+                            getAvailabilityLabelForDate(
+                              employee,
+                              newAppointment.date
+                            );
 
-                            {employee.job_role
-                              ? ` — ${employee.job_role}`
-                              : ""}
-                          </option>
-                        )
+                          return (
+                            <option
+                              key={
+                                employee.id
+                              }
+                              value={
+                                employee.id
+                              }
+                            >
+                              {getEmployeeName(
+                                employee
+                              )}
+
+                              {employee.job_role
+                                ? ` — ${employee.job_role}`
+                                : ""}
+
+                              {availabilityLabel
+                                ? ` (${availabilityLabel})`
+                                : ""}
+                            </option>
+                          );
+                        }
                       )}
                     </select>
+
+                    {newAppointment.staff &&
+                      (() => {
+                        const chosenEmployee = employees.find(
+                          (employee) =>
+                            String(employee.id) ===
+                            String(newAppointment.staff)
+                        );
+
+                        const label = getAvailabilityLabelForDate(
+                          chosenEmployee,
+                          newAppointment.date
+                        );
+
+                        if (!label) return null;
+
+                        const isUnavailable =
+                          label === "Unavailable this day";
+
+                        return (
+                          <p
+                            className={`text-[10px] font-semibold mt-1 flex items-center gap-1 ${
+                              isUnavailable
+                                ? "text-amber-600"
+                                : "text-teal-700"
+                            }`}
+                          >
+                            {isUnavailable && (
+                              <FaExclamationTriangle className="text-[9px]" />
+                            )}
+                            {getEmployeeName(chosenEmployee)} is{" "}
+                            {label.toLowerCase()} on this date.
+                          </p>
+                        );
+                      })()}
                   </div>
 
                   {/* BUTTONS */}

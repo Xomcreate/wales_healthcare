@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaHome,
   FaUserCircle,
@@ -15,8 +15,11 @@ import {
   FaChevronLeft,
   FaHeadset,
   FaArrowLeft,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+
+import api from "../api/axios";
 
 // EMPLOYEE DASHBOARD COMPONENTS
 import Overview from "../EmployeeDashboardComponets/DashboardOverview";
@@ -47,6 +50,235 @@ export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // ============================================================
+  // LOGGED-IN EMPLOYEE
+  // ============================================================
+
+  const [employee, setEmployee] = useState(null);
+  const [employeeLoading, setEmployeeLoading] = useState(true);
+
+  // ============================================================
+  // CLEAR AUTH STORAGE
+  // ============================================================
+
+  const clearAuthStorage = () => {
+    // Local storage
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("currentUser");
+
+    // Session storage
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("refresh_token");
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("currentUser");
+  };
+
+  // ============================================================
+  // FETCH CURRENT LOGGED-IN EMPLOYEE
+  // ============================================================
+
+  useEffect(() => {
+    const fetchCurrentEmployee = async () => {
+      try {
+        setEmployeeLoading(true);
+
+        const response = await api.get("auth/me/");
+
+        console.log("Logged-in employee:", response.data);
+
+        setEmployee(response.data);
+      } catch (error) {
+        console.error("Unable to fetch logged-in employee:", error);
+
+        // If token is invalid/expired, send user back to login.
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          clearAuthStorage();
+
+          setEmployee(null);
+
+          window.dispatchEvent(new Event("authChanged"));
+
+          window.location.href = "/login";
+        }
+      } finally {
+        setEmployeeLoading(false);
+      }
+    };
+
+    fetchCurrentEmployee();
+  }, []);
+
+  // ============================================================
+  // GET EMPLOYEE NAME
+  // ============================================================
+
+  const getEmployeeName = () => {
+    if (!employee) {
+      return "Staff Member";
+    }
+
+    const firstName =
+      employee.first_name ||
+      employee.firstName ||
+      employee.user?.first_name ||
+      employee.user?.firstName ||
+      "";
+
+    const lastName =
+      employee.last_name ||
+      employee.lastName ||
+      employee.user?.last_name ||
+      employee.user?.lastName ||
+      "";
+
+    const fullName =
+      employee.full_name ||
+      employee.fullName ||
+      employee.name ||
+      employee.user?.full_name ||
+      employee.user?.fullName ||
+      employee.user?.name ||
+      "";
+
+    const username = employee.username || employee.user?.username || "";
+
+    const combinedName = `${firstName} ${lastName}`.trim();
+
+    if (combinedName) {
+      return combinedName;
+    }
+
+    if (fullName) {
+      return fullName;
+    }
+
+    if (username) {
+      return username;
+    }
+
+    return "Staff Member";
+  };
+
+  // ============================================================
+  // GET EMPLOYEE EMAIL
+  // ============================================================
+
+  const getEmployeeEmail = () => {
+    if (!employee) {
+      return "";
+    }
+
+    return employee.email || employee.user?.email || "";
+  };
+
+  // ============================================================
+  // GET EMPLOYEE ROLE
+  // ============================================================
+
+  const getEmployeeRole = () => {
+    if (!employee) {
+      return "Personal Support Worker";
+    }
+
+    const role =
+      employee.role ||
+      employee.job_title ||
+      employee.profile?.role ||
+      employee.user?.role ||
+      employee.user?.profile?.role ||
+      "";
+
+    if (role) {
+      return role.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+    }
+
+    return "Personal Support Worker";
+  };
+
+  // ============================================================
+  // GET INITIALS
+  // ============================================================
+
+  const getEmployeeInitials = () => {
+    const name = getEmployeeName();
+
+    if (!name || name === "Staff Member") {
+      return "SM";
+    }
+
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+
+    return parts[0].substring(0, 2).toUpperCase();
+  };
+
+  // ============================================================
+  // LOGOUT HANDLER
+  // ============================================================
+
+  const handleLogout = async () => {
+    const confirmed = window.confirm("Are you sure you want to log out?");
+
+    if (!confirmed) return;
+
+    /*
+     * Try to get refresh token from either localStorage
+     * or sessionStorage.
+     */
+
+    const refreshToken =
+      localStorage.getItem("refresh_token") ||
+      localStorage.getItem("refreshToken") ||
+      sessionStorage.getItem("refresh_token") ||
+      sessionStorage.getItem("refreshToken");
+
+    try {
+      /*
+       * Tell Django that the current refresh token
+       * should be invalidated/blacklisted.
+       */
+
+      if (refreshToken) {
+        await api.post("auth/logout/", {
+          refresh: refreshToken,
+        });
+      }
+    } catch (error) {
+      /*
+       * Even if backend logout fails,
+       * clear local tokens below.
+       */
+
+      console.error("Backend logout request failed:", error);
+    } finally {
+      // Clear every authentication key used by the app.
+      clearAuthStorage();
+
+      // Clear dashboard state.
+      setEmployee(null);
+
+      // Close mobile menu.
+      setIsMobileMenuOpen(false);
+
+      // Tell public Header that authentication changed.
+      window.dispatchEvent(new Event("authChanged"));
+
+      // Return to login page.
+      window.location.href = "/login";
+    }
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -231,6 +463,20 @@ export default function EmployeeDashboard() {
             </span>
           )}
         </button>
+
+        {/* LOGOUT */}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="group flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-rose-400 transition hover:bg-rose-500/10 hover:text-rose-300 lg:justify-start"
+        >
+          <FaSignOutAlt className="shrink-0 text-sm transition-transform group-hover:translate-x-0.5" />
+          {(!isSidebarCollapsed || isMobile) && (
+            <span className="ml-3.5 text-[11px] font-bold uppercase tracking-wider">
+              Logout
+            </span>
+          )}
+        </button>
       </div>
     </>
   );
@@ -361,15 +607,15 @@ export default function EmployeeDashboard() {
                     color: BRAND_COLOR,
                   }}
                 >
-                  SL
+                  {employeeLoading ? "..." : getEmployeeInitials()}
                 </div>
 
                 <div className="hidden text-left md:block">
-                  <p className="text-xs font-bold leading-tight text-slate-800">
-                    Sarah Lee
+                  <p className="max-w-40 truncate text-xs font-bold leading-tight text-slate-800">
+                    {employeeLoading ? "Loading..." : getEmployeeName()}
                   </p>
-                  <p className="text-[10px] font-medium text-slate-400">
-                    Personal Support Worker
+                  <p className="max-w-48 truncate text-[10px] font-medium text-slate-400">
+                    {employeeLoading ? "Loading..." : getEmployeeRole()}
                   </p>
                 </div>
 

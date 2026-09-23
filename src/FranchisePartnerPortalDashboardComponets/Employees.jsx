@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
   FaSearch,
@@ -72,6 +71,18 @@ export default function Employees() {
   const [editEmployee, setEditEmployee] = useState(null);
 
   // =========================================================
+  // ASSIGNED CUSTOMERS (sourced from appointments)
+  // =========================================================
+
+  const [customers, setCustomers] = useState([]);
+  const [assignedCustomers, setAssignedCustomers] = useState([]);
+  const [loadingAssignedCustomers, setLoadingAssignedCustomers] =
+    useState(false);
+  const [assignedCustomersError, setAssignedCustomersError] = useState("");
+  const [assignedCustomersLoadedFor, setAssignedCustomersLoadedFor] =
+    useState(null);
+
+  // =========================================================
   // GET CURRENT USER
   // =========================================================
 
@@ -131,6 +142,104 @@ export default function Employees() {
   };
 
   // =========================================================
+  // GET CUSTOMERS (used to derive assigned customers per employee)
+  // =========================================================
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await api.get("/admin/customers/");
+
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data?.results || [];
+
+      setCustomers(data);
+
+      return data;
+    } catch (error) {
+      console.error("Unable to load customers:", error);
+      return [];
+    }
+  };
+
+  // =========================================================
+  // GET CUSTOMERS ASSIGNED TO AN EMPLOYEE
+  // (derived from each customer's appointments, filtered by employee)
+  // =========================================================
+
+  const fetchAssignedCustomers = async (employee) => {
+    if (!employee) return;
+
+    const employeeId = employee.id;
+
+    try {
+      setLoadingAssignedCustomers(true);
+      setAssignedCustomersError("");
+
+      let customerList = customers;
+
+      if (!customerList || customerList.length === 0) {
+        customerList = await fetchCustomers();
+      }
+
+      const results = await Promise.all(
+        customerList.map(async (customer) => {
+          try {
+            const response = await api.get(
+              `/admin/customers/${customer.id}/appointments/`
+            );
+
+            const data = Array.isArray(response.data)
+              ? response.data
+              : response.data?.results || [];
+
+            const employeeAppointments = data.filter(
+              (appointment) =>
+                Number(appointment.employee) === Number(employeeId)
+            );
+
+            if (employeeAppointments.length === 0) {
+              return null;
+            }
+
+            employeeAppointments.sort((a, b) =>
+              `${b.scheduled_date || ""} ${b.scheduled_time || ""}`.localeCompare(
+                `${a.scheduled_date || ""} ${a.scheduled_time || ""}`
+              )
+            );
+
+            return {
+              customer,
+              appointments: employeeAppointments,
+            };
+          } catch (err) {
+            console.error(
+              `Unable to load appointments for customer ${customer.id}:`,
+              err
+            );
+
+            return null;
+          }
+        })
+      );
+
+      setAssignedCustomers(results.filter(Boolean));
+      setAssignedCustomersLoadedFor(employeeId);
+    } catch (error) {
+      console.error(
+        "Unable to load assigned customers:",
+        error
+      );
+
+      setAssignedCustomersError(
+        "Unable to load customers assigned to this employee."
+      );
+    } finally {
+      setLoadingAssignedCustomers(false);
+    }
+  };
+
+  // =========================================================
   // INITIAL LOAD
   // =========================================================
 
@@ -139,6 +248,21 @@ export default function Employees() {
     fetchEmployees();
     fetchFranchises();
   }, []);
+
+  // =========================================================
+  // LOAD ASSIGNED CUSTOMERS WHEN THE CUSTOMERS TAB IS OPENED
+  // =========================================================
+
+  useEffect(() => {
+    if (
+      activeEmployee &&
+      activeTab === "customers" &&
+      assignedCustomersLoadedFor !== activeEmployee.id
+    ) {
+      fetchAssignedCustomers(activeEmployee);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeEmployee, activeTab]);
 
   // =========================================================
   // SUCCESS MESSAGE
@@ -309,6 +433,12 @@ export default function Employees() {
     setEditingEmployee(false);
     setEditEmployee(null);
     setError("");
+
+    // Reset the assigned-customers cache so switching between
+    // employee profiles doesn't show a stale/previous employee's data.
+    setAssignedCustomers([]);
+    setAssignedCustomersLoadedFor(null);
+    setAssignedCustomersError("");
   };
 
   // =========================================================
@@ -583,6 +713,20 @@ export default function Employees() {
     );
 
     return franchise?.name || "Assigned";
+  };
+
+  const getCustomerName = (customer) => {
+    if (!customer) return "Unknown Customer";
+
+    return (
+      customer.full_name ||
+      customer.name ||
+      `${customer.first_name || ""} ${
+        customer.last_name || ""
+      }`.trim() ||
+      customer.email ||
+      `Customer #${customer.id}`
+    );
   };
 
   // =========================================================
@@ -1784,28 +1928,114 @@ export default function Employees() {
                   </div>
                 )}
 
-                {/* CUSTOMERS */}
-                {activeTab ===
-                  "customers" && (
+                {/* CUSTOMERS (derived from appointments) */}
+                {activeTab === "customers" && (
                   <div className="space-y-3">
-                    <h5 className="text-xs font-black uppercase text-slate-400">
-                      Assigned Customers &
-                      Care Services
-                    </h5>
+                    <div className="flex items-center justify-between">
+                      <h5 className="text-xs font-black uppercase text-slate-400">
+                        Assigned Customers & Care Services
+                      </h5>
 
-                    <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs">
-                      <p className="font-bold text-slate-800">
-                        Customer assignments
-                      </p>
-
-                      <p className="text-slate-500 mt-1">
-                        Customer/staff assignment
-                        functionality will be
-                        connected when the
-                        scheduling and customer
-                        modules are implemented.
-                      </p>
+                      {!loadingAssignedCustomers &&
+                        assignedCustomers.length > 0 && (
+                          <span className="text-[10px] font-bold text-teal-700">
+                            {assignedCustomers.length} customer
+                            {assignedCustomers.length === 1
+                              ? ""
+                              : "s"}
+                          </span>
+                        )}
                     </div>
+
+                    {loadingAssignedCustomers ? (
+                      <div className="p-8 text-center rounded-xl border border-slate-200 bg-slate-50">
+                        <FaSpinner className="animate-spin text-lg text-teal-600 mx-auto mb-2" />
+
+                        <p className="text-xs font-semibold text-slate-500">
+                          Loading assigned customers...
+                        </p>
+                      </div>
+                    ) : assignedCustomersError ? (
+                      <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-xs text-red-700 font-semibold">
+                        {assignedCustomersError}
+                      </div>
+                    ) : assignedCustomers.length === 0 ? (
+                      <div className="p-8 text-center rounded-xl border border-slate-200 bg-slate-50">
+                        <FaUsers className="text-2xl text-slate-300 mx-auto mb-2" />
+
+                        <p className="text-xs font-semibold text-slate-500">
+                          This employee has no customers
+                          assigned via appointments yet.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {assignedCustomers.map(
+                          ({ customer, appointments }) => {
+                            const nextAppointment =
+                              appointments[0];
+
+                            return (
+                              <div
+                                key={customer.id}
+                                className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 space-y-2 text-xs"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="font-bold text-slate-900 text-sm">
+                                    {getCustomerName(customer)}
+                                  </p>
+
+                                  <span className="text-[10px] font-bold text-teal-700 bg-teal-50 border border-teal-200 rounded-full px-2 py-0.5 shrink-0">
+                                    {appointments.length}{" "}
+                                    appointment
+                                    {appointments.length === 1
+                                      ? ""
+                                      : "s"}
+                                  </span>
+                                </div>
+
+                                {customer.email && (
+                                  <p className="text-slate-500 break-all">
+                                    {customer.email}
+                                  </p>
+                                )}
+
+                                {nextAppointment && (
+                                  <div className="mt-2 pt-2 border-t border-slate-200 flex flex-wrap items-center gap-2">
+                                    <span className="text-[10px] text-slate-400 font-bold uppercase">
+                                      Most recent:
+                                    </span>
+
+                                    <span className="font-semibold text-slate-700">
+                                      {nextAppointment.scheduled_date ||
+                                        "No date"}{" "}
+                                      {nextAppointment.scheduled_time
+                                        ? `at ${nextAppointment.scheduled_time}`
+                                        : ""}
+                                    </span>
+
+                                    <span
+                                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                        nextAppointment.status ===
+                                        "Completed"
+                                          ? "bg-blue-50 text-blue-700 border-blue-100"
+                                          : nextAppointment.status ===
+                                            "Cancelled"
+                                          ? "bg-red-50 text-red-700 border-red-100"
+                                          : "bg-emerald-50 text-emerald-700 border-emerald-100"
+                                      }`}
+                                    >
+                                      {nextAppointment.status ||
+                                        "Scheduled"}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          }
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -2514,4 +2744,3 @@ export default function Employees() {
     </motion.div>
   );
 }
-
