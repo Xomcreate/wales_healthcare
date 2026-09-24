@@ -688,6 +688,32 @@ export default function Employees() {
     employee.role ||
     "Staff";
 
+  const getEmployeeAvailability = (employee) => {
+    const availability = employee?.availability;
+
+    if (!availability) return "Not configured";
+
+    if (typeof availability === "string") {
+      return availability;
+    }
+
+    if (typeof availability === "object") {
+      const { day, is_available, start_time, end_time } = availability;
+
+      if (!is_available) {
+        return `${day || "Schedule"}: Unavailable`;
+      }
+
+      if (start_time && end_time) {
+        return `${day || "Schedule"}: ${start_time} - ${end_time}`;
+      }
+
+      return day || "Configured";
+    }
+
+    return "Not configured";
+  };
+
   const getEmployeeId = (employee) =>
     employee.employee_id ||
     employee.id ||
@@ -1137,8 +1163,7 @@ export default function Employees() {
                       <strong>
                         Availability:
                       </strong>{" "}
-                      {emp.availability ||
-                        "Not configured"}
+                      {getEmployeeAvailability(emp)}
                     </p>
                   </div>
 
@@ -1897,8 +1922,7 @@ export default function Employees() {
 
                     <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 text-xs">
                       <p className="font-bold text-slate-800">
-                        {activeEmployee.availability ||
-                          "Not configured"}
+                        {getEmployeeAvailability(activeEmployee)}
                       </p>
 
                       <p className="text-slate-500 mt-2">
