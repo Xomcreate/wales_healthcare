@@ -10,7 +10,7 @@ function ResourceAbout() {
     {
       id: 1,
       slug: "guides/developmental-support",
-      title: "Empowering Growth: The Importance of Developmental Support?",
+      title: "Understanding Developmental Support: Fostering Lifelong Independence",
       image: "https://i.pinimg.com/1200x/f2/91/8d/f2918dba9993260327d6b33966a5b786.jpg",
       category: "Memory Care"
     },
@@ -79,7 +79,6 @@ function ResourceAbout() {
     },
     {
       id: 11,
-
       slug: "guides/safespace",
       title: "Creating a Safe and Accessible Home Environment for Seniors",
       image: "https://images.unsplash.com/photo-1762955911769-d652ceaa94bb?q=80&w=821&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -130,7 +129,7 @@ function ResourceAbout() {
           </h2>
 
           <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-            Choosing care for yourself or a loved one can feel overwhelming. Our Guidance & Resources hub is designed to provide helpful, practical information on home care services, funding options, caregiver support, and navigating care decisions in Ontario. Whether you’re just starting your research or looking for specific answers, you’ll find trusted insights to help you move forward with confidence.
+            Deciding on the right care path for someone you love can feel uncertain at first. Our Guidance & Resources hub offers clear, practical insights into Ontario support services, financial planning, caregiver wellness, and everyday home safety. Explore our expert articles to find trusted guidance tailored to your family's needs.
           </p>
         </div>
 

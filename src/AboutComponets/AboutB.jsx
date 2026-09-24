@@ -50,19 +50,19 @@ function AboutB() {
 
             {/* Paragraph 2 */}
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-              We were founded with a simple yet powerful goal: to help people care for the ones they love with dignity, professionalism, and uncompromised respect. Our certified caregivers and healthcare professionals are dedicated to supporting clients and facilities every single day.
+              We were founded with a simple yet powerful mission: to empower individuals to care for their loved ones with dignity, clinical professionalism, and uncompromised respect. Our certified caregivers and healthcare professionals are dedicated to supporting clients and facilities every single day.
             </p>
 
             {/* Paragraph 3 */}
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-              We believe that exceptional care is deeply personal. By taking the time to understand individual requirements and facility standards, we create customized solutions that promote safety, comfort, and peace of mind.
+              We believe that exceptional care is deeply personal. By taking the time to understand individual requirements and facility standards, we craft customized support solutions that promote safety, comfort, and enduring peace of mind.
             </p>
 
             {/* Closing Tagline / Accent Box */}
             <div className="pt-2 w-full max-w-xl">
               <div className="bg-slate-50 border border-slate-200/80 p-4 rounded-2xl shadow-xs">
                 <p className="text-xs sm:text-sm font-semibold text-slate-800">
-                  At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we’re more than a service provider—we’re your reliable partner in care.
+                  At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we’re more than a service provider—we’re your reliable partner in care continuity.
                 </p>
               </div>
             </div>

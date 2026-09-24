@@ -4,7 +4,7 @@ function Privacy() {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-800">
       
-      {/* 1. HERO SECTION (Matched to your DevelopmentalSupport style) */}
+      {/* 1. HERO SECTION */}
       <section className="relative bg-slate-900 text-white py-12 lg:py-20 overflow-hidden font-sans border-b border-slate-800">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
@@ -18,17 +18,16 @@ function Privacy() {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-          {/* Centered on mobile, left-aligned from small screens up */}
           <div className="max-w-xl mx-auto sm:mx-0 text-center sm:text-left space-y-4">
             
             {/* Title */}
             <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
-              Privacy Policy & Data Security
+              Privacy Policy & Information Security
             </h1>
 
             {/* Small Writeup */}
             <p className="text-sm sm:text-base text-slate-100 leading-relaxed font-normal">
-              Your trust is our priority. Discover how Wales Healthcare strictly protects, handles, and secures your personal and medical information.
+              Your trust means everything to us. Learn how Wales Healthcare upholds rigorous confidentiality standards to protect and manage your personal and medical information.
             </p>
 
           </div>
@@ -45,45 +44,45 @@ function Privacy() {
             <span>Our Commitment</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            Safeguarding Your Personal Information
+            Protecting Your Confidential Information
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            Wales Healthcare is deeply dedicated to maintaining the absolute confidentiality and security of all personal and medical information entrusted to us. Our privacy framework complies with the Personal Information Protection and Electronic Documents Act (PIPEDA) alongside all provincial and professional healthcare standards. Every inquiry is handled with the utmost respect and privacy, ensuring your data is used exclusively to deliver exceptional home health care services. Both clients and caregivers can expect the highest standards of privacy regarding their personal details.
+            At Wales Healthcare, we are deeply committed to maintaining absolute security and privacy across all personal and medical records entrusted to our care. Our privacy program strictly adheres to the Personal Information Protection and Electronic Documents Act (PIPEDA) alongside all applicable provincial and healthcare sector standards. Every inquiry is handled with the utmost discretion, ensuring that your details are utilized solely to provide exceptional home health and support services. Both our clients and care staff can rely on complete confidentiality.
           </p>
         </div>
 
         {/* Accountability */}
         <div className="space-y-4 bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-100">
           <h3 className="text-lg sm:text-xl font-bold text-slate-900">
-            Our Organizational Accountability
+            Team Accountability & Compliance
           </h3>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            Every member of the Wales Healthcare team—including coordinators, schedulers, administrators, officers, and directors—is held strictly accountable for keeping your personal data in the strictest confidence. Our team undergoes comprehensive training on current privacy practices to ensure continuous compliance and protection across all operations.
+            Every member of the Wales Healthcare team—including our care coordinators, field supervisors, administrative personnel, and executive leadership—is held strictly responsible for safeguarding your personal data. Our team regularly participates in privacy education sessions to guarantee continuous adherence to data protection guidelines across all regional operations.
           </p>
         </div>
 
         {/* What We Collect & Why */}
         <div className="space-y-4 text-center sm:text-left">
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-            Information We Collect & Its Purpose
+            What Data We Collect and Why We Need It
           </h3>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            We only request information that is directly necessary to design, coordinate, and deliver your specialized care. Our nursing coordinators perform thorough health evaluations in alignment with provincial professional licensing standards. We take active measures to keep your records accurate and current. Additionally, our website does not use tracking cookies, and we never sell, rent, or distribute your email address or contact details for unsolicited promotional marketing.
+            We collect only the information necessary to plan, coordinate, and deliver customized support services safely. Our clinical coordinators conduct detailed health assessments in strict alignment with professional practice standards. We maintain proactive measures to ensure your files remain accurate and up to date. Furthermore, our website does not utilize invasive tracking cookies, and we never sell, lease, or distribute your email or contact information for external commercial marketing.
           </p>
         </div>
 
         {/* Your Rights & Permission */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-2 text-center sm:text-left">
-            <h4 className="text-sm font-bold text-slate-900">Right to Correct Information</h4>
+            <h4 className="text-sm font-bold text-slate-900">Right to Access and Correct</h4>
             <p className="text-xs text-slate-600 leading-relaxed">
-              You have the full right to contact us to update or correct any errors or omissions in your personal records, and we will execute updates promptly.
+              You maintain the right to review your personal records and request updates or corrections for any inaccuracies, which our team will address promptly.
             </p>
           </div>
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 space-y-2 text-center sm:text-left">
-            <h4 className="text-sm font-bold text-slate-900">Expressed Consent</h4>
+            <h4 className="text-sm font-bold text-slate-900">Informed Consent</h4>
             <p className="text-xs text-slate-600 leading-relaxed">
-              When care commences, we ask you to sign a Service Agreement providing clear written consent for assessments and care services, including specifying any restrictions on information sharing.
+              When onboarding begins, we provide a transparent Service Agreement detailing our assessment procedures and care delivery, giving you full control over shared information.
             </p>
           </div>
         </div>
@@ -91,28 +90,28 @@ function Privacy() {
         {/* Data Usage & Sharing */}
         <div className="space-y-4 text-center sm:text-left">
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900">
-            How Your Data is Used & Shared
+            How Information Is Used and Shared
           </h3>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            Your information is restricted exclusively to your multidisciplinary care team members involved directly in your treatment. Internal reviews and quality improvement audits are conducted securely without referencing specific identities to maintain high performance standards. Information is never shared for commercial purposes. In rare legal scenarios—such as a court order or subpoena—we verify lawful authority and disclose only the absolute minimum required data.
+            Your personal details are restricted exclusively to the professional team members directly involved in your care plan. Internal evaluations and quality assurance reviews are conducted securely with anonymized records to uphold our high performance standards. We never disclose data for commercial profit. In exceptional legal situations, such as a formal court order or subpoena, we verify proper legal jurisdiction and share only the minimum required information.
           </p>
         </div>
 
         {/* Retention & Security Safeguards */}
         <div className="space-y-4 bg-teal-50/50 p-6 sm:p-8 rounded-3xl border border-teal-500/20">
           <h3 className="text-lg sm:text-xl font-bold text-slate-900">
-            Data Retention and Advanced Security Safeguards
+            Data Retention Periods and Security Safeguards
           </h3>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-            In accordance with regulations, we securely retain discontinued client records for a minimum of 7 years. Electronic information is strictly protected by advanced firewalls, strict user authentication, and secure encryption. Physical files are stored securely on-site within restricted-access office areas, featuring alarmed protection during off-hours.
+            In compliance with healthcare regulations, we securely maintain archived client files for a minimum period of 7 years. Digital records are protected using robust firewalls, multi-factor authentication, and modern encryption technologies. Physical documentation is securely stored in on-site locked storage rooms equipped with alarm systems during non-business hours.
           </p>
         </div>
 
         {/* Contact & Inquiries Callout */}
         <div className="bg-slate-900 text-white p-6 sm:p-8 rounded-3xl space-y-3 text-center sm:text-left">
-          <h3 className="text-lg sm:text-xl font-bold">Questions or Privacy Concerns?</h3>
+          <h3 className="text-lg sm:text-xl font-bold">Have Questions or Privacy Concerns?</h3>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            If you have any questions, complaints, or require further information regarding our privacy practices, please reach out directly to the Wales Healthcare office. We are committed to investigating all inquiries thoroughly and working collaboratively with you, including assisting you in contacting your provincial Privacy Commissioner's Office if needed.
+            If you have questions, feedback, or concerns regarding our privacy practices, please contact the Wales Healthcare administrative team directly. We are dedicated to addressing all inquiries thoroughly and assisting you with any further guidance you may require.
           </p>
         </div>
 

@@ -3,27 +3,27 @@ import React, { useState, useEffect } from 'react';
 function TestimonialSection() {
   const testimonials = [
     {
-      quote: "Thank you so much for assigning Aminat and Miriam to my Mother care. Both of these women are outstanding caregivers. If Miriam hadn’t been able to get my Mom up and ready, and if Aminat hadn’t been able to assist her in getting in and out of the wheelchair, taxis, etc., we would not have been able to get Mom to the medical appointment today. I am not exaggerating. I would not have been able to manage on my own, and Mom would have missed extremely important medical attention. They were also able to provide very valuable feedback regarding how she has been recently, which contributed to the validity of the assessment.",
+      quote: "We are deeply grateful for Aminat and Miriam's assistance with my mother’s care. Their exceptional dedication ensured she arrived safely at her medical appointment. Without their reliable support, physical assistance, and valuable clinical observations, managing this successfully would have been impossible.",
       author: "Claudia T."
     },
     {
-      quote: "The level of professionalism and genuine warmth shown by the Wales Healthcare team has been life-changing for our family. Knowing that dependable, certified caregivers are there to support my father gives us ultimate peace of mind every single day.",
+      quote: "The professionalism and compassionate care provided by the Wales Healthcare team have brought remarkable comfort to our family. Knowing we have certified, dependable professionals looking after my father provides daily peace of mind.",
       author: "Robert M."
     },
     {
-      quote: "Finding consistent, long-term support for a relative in a care facility used to feel overwhelming. Wales Healthcare bridged that gap seamlessly, providing wonderful advocacy and personalized attention that makes all the difference.",
+      quote: "Navigating consistent support for a relative within a care facility used to feel challenging. Wales Healthcare bridged that gap seamlessly, offering wonderful advocacy, professionalism, and personalized attention.",
       author: "Susan L."
     },
     {
-      quote: "When we faced unexpected staffing shortages at our facility, Wales Healthcare responded immediately. Their deployed personnel integrated seamlessly with our existing team and maintained exceptional care quality without skipping a beat.",
+      quote: "During unexpected staffing shortages, Wales Healthcare stepped in immediately. Their personnel integrated smoothly into our facility environment and maintained our high standards of care without missing a beat.",
       author: "Director of Care, Long-Term Care Facility"
     },
     {
-      quote: "The 24/7 on-call support and compassionate approach truly sets them apart. Every caregiver who has visited our home treats my mother with the utmost dignity, respect, and kindness.",
+      quote: "Their round-the-clock availability and empathetic approach make all the difference. Every professional who visits our home treats my mother with absolute dignity and respect.",
       author: "David & Eleanor K."
     },
     {
-      quote: "From Windsor to Ottawa, their commitment to reliable, high-standard healthcare is evident in everything they do. We are deeply grateful for their ongoing partnership and dedication.",
+      quote: "From regional expansions to everyday operations, their commitment to dependable, high-standard healthcare is evident. We deeply value our ongoing partnership.",
       author: "Administrator, Care Community"
     }
   ];

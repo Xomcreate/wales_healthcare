@@ -5,44 +5,44 @@ function FaqC() {
 
   const categories = [
     {
-      category: "In-Home Care",
+      category: "In-Home Care Essentials",
       faqs: [
         {
-          question: "How quickly can support be arranged?",
-          answer: "Support can typically be arranged within 24 to 48 hours following your initial assessment and care planning consultation."
+          question: "How soon can care services be set up?",
+          answer: "We can usually get care started within 24 to 48 hours following your initial consultation and personalized care assessment."
         },
         {
-          question: "Is this service flexible?",
-          answer: "Yes, our in-home care schedules are fully flexible and can be adjusted as your family's needs or routine changes."
+          question: "Are your care schedules adaptable?",
+          answer: "Yes, our in-home schedules are completely flexible and can be modified at any time as your family's routines or needs evolve."
         },
         {
-          question: "Do you work with facility staff?",
-          answer: "Yes, we collaborate closely with existing facility staff and external healthcare providers to ensure seamless, coordinated care."
+          question: "Can your team coordinate with other facility staff?",
+          answer: "Yes, we work closely alongside existing facility staff and outside medical practitioners to ensure clear communication and cohesive support."
         },
         {
-          question: "What services are included in homecare?",
-          answer: "Homecare includes personal daily assistance, companionship, medication reminders, meal preparation, and specialized nursing care."
+          question: "What types of tasks are covered under standard home care?",
+          answer: "Our standard home care covers everyday support like personal hygiene, friendly companionship, medication prompts, meal preparation, and general nursing assistance."
         }
       ]
     },
     {
-      category: "Specialized In-Home Care Services",
+      category: "Specialized Support Services",
       faqs: [
         {
-          question: "What conditions do your specialized caregivers support?",
-          answer: "We provide tailored support for individuals dealing with Alzheimer's, dementia, stroke recovery, palliative needs, and chronic illnesses."
+          question: "What specific medical conditions do your specialized caregivers support?",
+          answer: "We provide dedicated care plans customized for individuals managing Alzheimer's, various forms of dementia, stroke recovery, palliative care needs, and chronic illnesses."
         },
         {
-          question: "Are specialized nurses available around the clock?",
-          answer: "Yes, we offer both hourly and 24/7 live-in specialized nursing care options to match medical requirements."
+          question: "Are 24/7 or live-in nursing professionals available?",
+          answer: "Yes, we provide flexible options ranging from periodic hourly visits to full round-the-clock live-in nursing care depending on your medical situation."
         },
         {
-          question: "How do you train caregivers for specialized needs?",
-          answer: "Our caregivers undergo rigorous specialized training programs focusing on memory care, safety protocols, and compassionate patient management."
+          question: "How do you prepare and train your care team for complex needs?",
+          answer: "Our care professionals undergo specialized education programs focusing heavily on memory support, advanced safety protocols, and compassionate patient management."
         },
         {
-          question: "Can specialized care plans be modified over time?",
-          answer: "As medical conditions evolve, our clinical team regularly reviews and updates care plans to ensure optimal health and comfort."
+          question: "Can our specialized care plan change if health needs progress?",
+          answer: "As health conditions shift, our clinical coordinators routinely evaluate and update your care framework to guarantee ongoing safety and comfort."
         }
       ]
     }

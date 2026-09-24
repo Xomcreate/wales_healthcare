@@ -28,7 +28,7 @@ function ServiceLast() {
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            Have questions about care options or where to begin? Our Care Advisors are here to listen, provide guidance, and help you find the right support for your situation.
+            Unsure about your options or where to start? Our compassionate specialists are here to listen and guide you toward the ideal care plan for your family.
           </p>
 
           {/* Action Button styled in Teal */}

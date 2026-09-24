@@ -20,11 +20,11 @@ function ContactD() {
         <div className="space-y-6 max-w-2xl mx-auto">
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-950 drop-shadow-sm">
-            Looking to Join Our Team?
+            Ready to Make a Real Impact?
           </h2>
           
           <p className="text-base sm:text-lg text-slate-700 leading-relaxed font-medium">
-            Explore career opportunities and learn what it's like to work with Wales Healthcare.
+            Join our dedicated network of professionals and take the next meaningful step in your healthcare career with Wales Healthcare.
           </p>
           
           <div className="pt-4">
@@ -32,7 +32,7 @@ function ContactD() {
               href="/careers"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-700 text-white font-semibold px-8 py-3.5 rounded-xl text-sm transition-all shadow-lg hover:shadow-teal-500/25 transform hover:-translate-y-0.5 duration-200"
             >
-              View Careers
+              Browse Available Roles
             </a>
           </div>
 

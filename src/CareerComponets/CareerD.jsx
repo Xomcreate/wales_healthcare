@@ -11,7 +11,6 @@ function CareerD() {
           {/* Left Column: Image */}
           <div className="relative w-full">
             <img
-              // Using a high-quality relevant Unsplash image 
               src="https://i.pinimg.com/736x/1d/c5/da/1dc5dae45b5c254b053be333e87f7246.jpg"
               alt="Compassionate caregiver smiling with a senior patient"
               className="w-full h-auto max-h-125 object-cover rounded-3xl shadow-lg"
@@ -26,18 +25,18 @@ function CareerD() {
             </h2>
             
             <p className="text-base text-slate-700 leading-relaxed">
-              With decades of experience and a strong reputation across Ontario, Wales Healthcare offers stability, professionalism, and meaningful career opportunities. When you join our team, you become part of an organization known for quality standards, strong leadership, and a commitment to doing care the right way.
+              With a strong reputation and deep roots across Ontario, Wales Healthcare offers stability, professionalism, and meaningful career opportunities. When you join our team, you become part of an organization known for exceptional quality standards, strong leadership, and a genuine commitment to doing care the right way.
             </p>
             
             {/* Bulleted List */}
             <ul className="list-disc pl-5 space-y-3 text-slate-700 text-sm sm:text-base font-medium marker:text-teal-600">
-              <li>25+ years serving Ontario communities</li>
-              <li>700+ caregivers across the province</li>
+              <li>Trusted healthcare partner serving communities across Ontario</li>
+              <li>A growing network of 700+ dedicated caregivers province-wide</li>
               <li>Established relationships with families and healthcare organizations</li>
-              <li>Commitment to respectful, professional care environments</li>
+              <li>A deep commitment to respectful, professional work environments</li>
             </ul>
             
-            {/* Action Buttons (Pill shape to match screenshot) */}
+            {/* Action Buttons */}
             <div className="pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
               <a
                 href="/about"

@@ -23,23 +23,23 @@ function TestimonialAbout() {
         {/* Top Badge */}
         <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-500/20 px-3.5 py-1.5 rounded-full text-xs font-semibold text-teal-700">
           <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-          <span>Family Testimonials & Stories</span>
+          <span>Client Testimonials & Feedback</span>
         </div>
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Hear From the Families We Support
+          Perspectives from the Families and Facilities We Support
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Choosing care for a loved one is an important decision, and trust plays a vital role in that process. Over the years, Staff Relief has had the privilege of supporting individuals and families across Ontario with compassionate, dependable care. Read what our clients and their families have to say about their experiences and the difference our caregivers have made in their lives.
+          Selecting healthcare support for a loved one or an institution is a vital choice rooted in trust. Wales Healthcare takes pride in consistently delivering compassionate, high-reliability care across Ontario. Read how our dedicated professionals make a meaningful difference every single day.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we remain deeply dedicated to building lasting trust and exceptional experiences.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we remain steadfastly committed to cultivating enduring trust and clinical excellence.
           </p>
         </div>
 

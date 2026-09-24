@@ -22,14 +22,14 @@ function AboutMatters() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="space-y-6">
           
-          {/* Main Title */}
+          {/* Main Title (Shortened) */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
-            We believe care should feel supportive, not complicated.
+            Healthcare made seamless and compassionate.
           </h2>
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            That’s why we continue to provide thoughtful, flexible solutions that help people live comfortably and work confidently — at home, in care facilities, and throughout the communities we serve. It’s this commitment that has made Staff Relief a preferred choice for families and healthcare providers across Ontario for over two decades.
+            That is why we consistently deliver agile, person-centered support solutions that empower individuals to live with dignity and enable care teams to operate with confidence—whether at home, within long-term facilities, or across the communities we support. It is this unwavering commitment to excellence that establishes Wales Healthcare as a trusted partner for families and institutions across Ontario.
           </p>
 
           {/* Action Button styled in Teal */}

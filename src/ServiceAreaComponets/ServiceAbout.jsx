@@ -33,7 +33,7 @@ function ServiceAbout() {
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Staff Relief provides high-quality personal care, home care, and relief staffing support to individuals, families, and healthcare organizations throughout Ontario. With 25+ years of experience, we deliver compassionate, professional services wherever you call home.
+          Wales Healthcare provides comprehensive personal support, home care, and dependable healthcare staffing solutions to individuals, families, and organizations throughout Ontario. With a steadfast commitment to clinical excellence, we deliver compassionate, professional services right where you need them.
         </p>
 
         {/* Brand Accent Box */}
@@ -49,7 +49,7 @@ function ServiceAbout() {
             href="/about"
             className="inline-flex items-center justify-center space-x-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all"
           >
-            <span>Learn More About Staff Relief</span>
+            <span>Learn More About Us</span>
           </a>
           <a
             href="/contact"

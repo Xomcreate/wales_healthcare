@@ -8,7 +8,7 @@ function AboutHero() {
       <div className="absolute inset-0 z-0">
         <img
           src="https://i.pinimg.com/736x/3d/e6/bc/3de6bcd1b20e001c659576cc57cc286a.jpg"
-          alt="Staff Relief healthcare background"
+          alt="Wales Healthcare background"
           className="w-full h-full object-cover object-center"
         />
         {/* Very light transparent veil so text is legible while the image stays clear */}
@@ -26,17 +26,17 @@ function AboutHero() {
             {/* Medical Badge */}
             <div className="inline-flex items-center space-x-2 bg-slate-900/40 backdrop-blur-md border border-teal-500/30 px-3 py-1 rounded-md text-xs font-medium text-teal-300 shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-              <span>Staff Relief • Trusted Partner for Over 25 Years</span>
+              <span>Wales Healthcare • Ontario-Wide Clinical Support</span>
             </div>
 
             {/* Headline */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white drop-shadow-md leading-tight">
-              About <span className="text-teal-400">Staff Relief</span>
+              About <span className="text-teal-400">Wales Healthcare</span>
             </h1>
 
             {/* Description */}
             <p className="text-sm sm:text-base text-slate-100 drop-shadow leading-relaxed max-w-2xl font-medium">
-              For more than 25 years, Staff Relief has been a trusted partner for families and healthcare facilities across Ontario, providing dependable, compassionate care when it’s needed most.
+              Wales Healthcare serves as a premier, trusted partner for families and healthcare institutions across Ontario, delivering dependable, compassionate care when it matters most.
             </p>
 
           </div>
@@ -56,8 +56,8 @@ function AboutHero() {
 
               <div className="space-y-2 pt-2 border-t border-white/10 text-xs text-slate-200">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300">Experience</span>
-                  <span className="text-teal-300 font-semibold">25+ Years</span>
+                  <span className="text-slate-300">Standard</span>
+                  <span className="text-teal-300 font-semibold">Fully Credentialed</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-300">Coverage</span>

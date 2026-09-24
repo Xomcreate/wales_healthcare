@@ -8,28 +8,28 @@ function FaqD() {
       category: "Specialized On-Site Services",
       faqs: [
         {
-          question: "How quickly can support be arranged?",
-          answer: "On-site and facility support personnel can often be deployed rapidly within 24 hours to cover urgent staffing needs."
+          question: "How quickly can your staff be dispatched to a facility?",
+          answer: "Our staffing coordinators can mobilize qualified professionals within 24 hours to address urgent short-term coverage gaps."
         },
         {
-          question: "Is this service flexible?",
-          answer: "Yes, our facility staffing solutions adapt seamlessly to short-term shifts, emergency coverages, or long-term placements."
+          question: "Are your facility staffing agreements flexible?",
+          answer: "Yes, our workforce solutions accommodate everything from single emergency shift coverages to extended seasonal or long-term contracts."
         },
         {
-          question: "Do you work with facility staff?",
-          answer: "Our professionals integrate smoothly with your existing internal teams, administrative leads, and nursing supervisors."
+          question: "How well do your workers integrate with existing internal teams?",
+          answer: "Our professionals are trained to collaborate smoothly alongside your core administrative leads, head nurses, and facility personnel."
         },
         {
-          question: "Is support ongoing?",
-          answer: "We offer both temporary relief staffing and continuous, long-term on-site care contracts depending on facility demands."
+          question: "Do you offer both temporary relief and long-term placement options?",
+          answer: "Yes, we provide flexible arrangements ranging from immediate interim relief staff to stable, long-term on-site staffing partnerships."
         },
         {
-          question: "How fast can staff be deployed?",
-          answer: "For emergency requirements, our rapid response team coordinates immediate shift coverage across Ontario facilities."
+          question: "What is your process for handling sudden, urgent scheduling needs?",
+          answer: "Our rapid-response task force acts immediately to coordinate emergency shift coverage for healthcare facilities across Ontario."
         },
         {
-          question: "Are caregivers trained for facility environments?",
-          answer: "All deployed personnel undergo strict facility protocol training, compliance background checks, and professional credential reviews."
+          question: "Are your caregivers certified and prepared for institutional settings?",
+          answer: "Every deployed team member undergoes rigorous orientation for institutional protocols, rigorous background checks, and license verification."
         }
       ]
     },
@@ -37,12 +37,12 @@ function FaqD() {
       category: "On-Site Care",
       faqs: [
         {
-          question: "What types of facilities do you support?",
-          answer: "We provide qualified staff and support services to long-term care homes, assisted living facilities, and rehabilitation centers."
+          question: "Which types of healthcare facilities do you partner with?",
+          answer: "We supply qualified nursing and support personnel to long-term care homes, assisted living communities, and specialized rehabilitation centers."
         },
         {
-          question: "How do you ensure quality of care on-site?",
-          answer: "We maintain consistent performance evaluations, supervisor check-ins, and open communication lines with facility management."
+          question: "How do you maintain high quality standards while staff are on-site?",
+          answer: "We uphold consistent performance reviews, regular supervisor touchpoints, and open communication channels with your facility management team."
         }
       ]
     }

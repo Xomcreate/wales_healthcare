@@ -33,7 +33,7 @@ function CaregiverAbout() {
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          At Staff Relief, exceptional care starts with exceptional people. Our caregivers, nurses, and healthcare professionals are passionate about making a positive impact every day. These stories offer a glimpse into their experiences, the meaningful relationships they build, and the dedication they bring to supporting clients and families throughout Ontario.
+          At Wales Healthcare, exceptional care starts with exceptional people. Our caregivers, nurses, and healthcare professionals are deeply passionate about making a positive impact every day. These stories offer a glimpse into their hands-on experiences, the meaningful relationships they build, and the dedication they bring to supporting clients and families throughout Ontario.
         </p>
 
         {/* Brand Accent Box */}

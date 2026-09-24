@@ -5,20 +5,20 @@ function FaqB() {
 
   const faqs = [
     {
-      question: "How quickly can you start providing care?",
-      answer: "We can often initiate care services within 24 to 48 hours following an initial assessment. For urgent or emergency facility relief staffing, our team is equipped to respond even sooner."
+      question: "How soon can we arrange care services to begin?",
+      answer: "We can typically start care within 24 to 48 hours following your initial consultation. If you need urgent or emergency assistance, our team is prepared to mobilize even faster."
     },
     {
-      question: "What qualifications do your caregivers have?",
-      answer: "All our care professionals are fully licensed, certified, reference-checked, and undergo extensive background screenings as well as specialized training in senior care and medical support."
+      question: "What background checks and training do your caregivers undergo?",
+      answer: "Every caregiver on our team is fully licensed, rigorously reference-checked, and cleared through comprehensive background screenings. They also complete specialized training in elder care, safety protocols, and personalized health support."
     },
     {
-      question: "What are the costs and payment options?",
-      answer: "Our care plans are customized based on the level and frequency of support required. We offer transparent pricing structures and can guide you through available private and public funding options in Ontario."
+      question: "How do your care plans and pricing structures work?",
+      answer: "Our care plans are entirely customized based on your family's exact requirements and schedule. We provide clear, transparent pricing and will help you explore all available private insurance or public funding options."
     },
     {
-      question: "What type of nursing care is provided at home?",
-      answer: "We provide a wide range of professional medical care including chronic disease management, post-operative care, medication administration, wound care, and daily personal support."
+      question: "What kinds of specialized medical care can be delivered at home?",
+      answer: "We offer comprehensive professional nursing services, including chronic condition management, post-surgery recovery, medication tracking, wound care, and everyday personal assistance."
     }
   ];
 

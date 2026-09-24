@@ -20,7 +20,7 @@ function ContactC() {
           </h2>
           
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-            Wales Healthcare provides home care and relief staffing services across Ontario including the Greater Toronto Area, Peel Region, York Region, Hamilton, Southwestern Ontario, and surrounding communities.
+            Wales Healthcare proudly delivers trusted in-home care and professional healthcare staffing solutions throughout the Greater Toronto Area, Peel and York Regions, Hamilton, Southwestern Ontario, and nearby neighborhoods.
           </p>
         </div>
 
@@ -28,7 +28,7 @@ function ContactC() {
         <div className="max-w-5xl mx-auto">
           <div className="bg-slate-800 p-2.5 sm:p-3 rounded-2xl border border-slate-700 shadow-2xl overflow-hidden relative">
             
-            {/* Map Frame / iframe Container - Height reduced to ~70% (approx 260px - 380px) */}
+            {/* Map Frame / iframe Container */}
             <div className="relative w-full h-65 sm:h-80 lg:h-92.5 rounded-xl overflow-hidden bg-slate-900">
               <iframe
                 title="Ontario Service Areas Map"

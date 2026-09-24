@@ -8,21 +8,21 @@ function TestimonialReview() {
       role: "Family Member",
       avatarBg: "bg-teal-600",
       initial: "C",
-      text: "The caregivers assigned to my mother were absolute professionals. They ensured she made it to her medical appointments safely and provided us with incredible peace of mind."
+      text: "The caregivers assigned to my mother demonstrated absolute professionalism. They ensured safe transit to every medical appointment and provided our entire family with incredible peace of mind."
     },
     {
       name: "Robert M.",
       role: "Family Caregiver",
       avatarBg: "bg-slate-700",
       initial: "R",
-      text: "Knowing that certified, dependable caregivers are there to support my father has been life-changing. The level of genuine warmth and reliability is unmatched."
+      text: "Knowing that fully credentialed, dependable professionals are there to support my father has been truly life-changing. The combination of clinical skill and genuine warmth is exceptional."
     },
     {
       name: "Susan L.",
       role: "Facility Partner",
       avatarBg: "bg-teal-700",
       initial: "S",
-      text: "When our facility faced staffing shortages, Wales Healthcare stepped in immediately. Their personnel integrated seamlessly and maintained our high standard of care."
+      text: "When our facility faced unexpected staffing gaps, Wales Healthcare stepped in immediately. Their personnel integrated seamlessly and upheld our rigorous standards of care without missing a beat."
     }
   ];
 
@@ -38,11 +38,11 @@ function TestimonialReview() {
           </div>
           
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-            Trusted by Families and Care Facilities
+            Trusted by Families and Healthcare Institutions
           </h2>
           
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Read how our dedicated support and professional caregiving services make a meaningful difference every single day.
+            Read how our dedicated support and professional caregiving solutions foster comfort, safety, and clinical continuity.
           </p>
         </div>
 
