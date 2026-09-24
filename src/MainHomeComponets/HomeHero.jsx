@@ -25,20 +25,20 @@ function HomeHero() {
             {/* Top Tag */}
             <span className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/30 text-teal-300 font-medium px-4 py-1.5 rounded-full text-xs uppercase tracking-wider mb-5 backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-teal-400"></span>
-              Trusted Care & Staffing Solutions
+              Compassionate Care, Reliable Staffing
             </span>
 
             {/* Headline */}
             <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 leading-[1.15]">
-              Care you can trust, <br className="hidden sm:inline" />
+              Quality care, <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-400 to-teal-200">
-                support you can rely on.
+                delivered with heart.
               </span>
             </h1>
 
             {/* Subtext */}
             <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8">
-              Professional home care for families and dependable staffing support for healthcare organizations across Ontario.
+              We provide compassionate in-home care for families and reliable staffing solutions for healthcare organizations throughout Ontario.
             </p>
 
             {/* Action Buttons */}
@@ -47,7 +47,7 @@ function HomeHero() {
                 to="/consultation" 
                 className="w-full sm:w-auto bg-teal-600 hover:bg-teal-500 text-white font-medium px-7 py-3.5 rounded-xl shadow-lg hover:shadow-teal-500/25 transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-2.5 group"
               >
-                Request a Free Consultation
+                Book Your Free Consultation
                 <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                 </svg>
@@ -57,7 +57,7 @@ function HomeHero() {
                 to="/careers" 
                 className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium px-7 py-3.5 rounded-xl backdrop-blur-md transition-all duration-300 text-sm sm:text-base flex items-center justify-center gap-2"
               >
-                Apply For A Role
+                Join Our Team
               </Link>
             </div>
 

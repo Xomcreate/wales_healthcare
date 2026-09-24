@@ -26,7 +26,7 @@ function HomeCareC() {
           {/* Main Header with reduced text size */}
           <div className="text-center max-w-3xl mx-auto mb-10">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-slate-900 leading-tight">
-              Where We <span className="text-teal-600">Care</span> For Your Loved Ones
+              How We <span className="text-teal-600">Support</span> Your Loved Ones
             </h2>
           </div>
 
@@ -45,7 +45,7 @@ function HomeCareC() {
                   In-Home Care
                 </h3>
                 <p className="text-slate-700 text-sm sm:text-base leading-relaxed max-w-md">
-                  Our compassionate caregivers come directly to your home to provide personalized support. We help your loved ones maintain independence, comfort, and dignity in the familiar surroundings they know and love.
+                  Our caregivers come to you, offering personalized, one-on-one support in the comfort of home. We help your loved ones stay independent and live with dignity in the surroundings they know best.
                 </p>
               </div>
 
@@ -68,7 +68,7 @@ function HomeCareC() {
                   On-Site Care
                 </h3>
                 <p className="text-slate-700 text-sm sm:text-base leading-relaxed max-w-md">
-                  If your loved one is in a hospital, retirement home, or long-term care facility, we can provide additional support and specialized care on-site. Our team works seamlessly with facility staff to ensure continuity of care.
+                  Whether your loved one is in a hospital, retirement home, or long-term care facility, our team provides hands-on support that works alongside existing staff to keep care consistent and connected.
                 </p>
               </div>
 

@@ -12,22 +12,22 @@ function HomeCareE() {
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-teal-800 shadow-sm mx-auto lg:mx-0">
               <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse" />
-              <span>The Difference Home Makes</span>
+              <span>Why Home Matters</span>
             </div>
             
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-              Why Homecare is <span className="text-teal-600">Important</span>
+              The Value of <span className="text-teal-600">Homecare</span>
             </h2>
 
             <div className="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
               <p>
-                Staying at home means staying connected to what matters most—familiar surroundings, cherished memories, and the comfort of routine. Homecare allows individuals to maintain their independence while receiving professional support in an environment where they feel most secure.
+                There's something irreplaceable about familiar surroundings — the routines, the memories, the comfort of home. Homecare lets people hold onto that while still getting the professional support they need, in the place where they feel most at ease.
               </p>
               <p>
-                Research shows that seniors who receive care at home experience better health outcomes, improved emotional well-being, and a higher quality of life. Homecare also provides peace of mind for families, knowing their loved ones are safe, supported, and living life on their own terms.
+                Care at home is often linked to better health outcomes, stronger emotional wellbeing, and a fuller quality of life. For families, it also means peace of mind — knowing a loved one is safe, supported, and living life their own way.
               </p>
               <p className="font-medium text-slate-900 pt-2">
-                Homecare empowers individuals to age in place with dignity, maintaining their independence while receiving the support they need to thrive.
+                It's about aging with dignity — staying independent while getting exactly the support needed to keep thriving.
               </p>
             </div>
           </div>
@@ -44,8 +44,8 @@ function HomeCareE() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-slate-900/40 via-transparent to-transparent flex items-end p-6">
                   <div className="bg-white/95 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg border border-slate-100 w-full">
-                    <p className="text-xs font-bold text-slate-900">Comfort & Independence</p>
-                    <p className="text-[11px] text-slate-600">Thriving securely in familiar surroundings.</p>
+                    <p className="text-xs font-bold text-slate-900">Comfort, Meet Independence</p>
+                    <p className="text-[11px] text-slate-600">Living well in the surroundings they know.</p>
                   </div>
                 </div>
               </div>
@@ -69,8 +69,8 @@ function HomeCareE() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-slate-900/40 via-transparent to-transparent flex items-end p-6">
                   <div className="bg-white/95 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg border border-slate-100 w-full">
-                    <p className="text-xs font-bold text-slate-900">Professional Daily Living Support</p>
-                    <p className="text-[11px] text-slate-600">Tailored assistance with dignity and respect.</p>
+                    <p className="text-xs font-bold text-slate-900">Everyday Support, Done Right</p>
+                    <p className="text-[11px] text-slate-600">Care that respects independence and dignity.</p>
                   </div>
                 </div>
               </div>
@@ -81,22 +81,22 @@ function HomeCareE() {
           <div className="lg:col-span-7 lg:order-2 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-teal-800 shadow-sm mx-auto lg:mx-0">
               <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse" />
-              <span>Compassionate Care For Daily Living</span>
+              <span>Support For Everyday Life</span>
             </div>
             
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-              What is <span className="text-teal-600">Homecare?</span>
+              What Does <span className="text-teal-600">Homecare</span> Mean?
             </h2>
 
             <div className="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
               <p>
-                Homecare services provide essential assistance with activities of daily living (ADLs) to help individuals maintain their independence, dignity, and quality of life at home.
+                Homecare covers the everyday support people need to stay independent, comfortable, and safe — all without leaving home.
               </p>
               <p>
-                Our trained caregivers offer personalized support tailored to each client’s unique needs, preferences, and routines. From bathing and grooming to meal preparation and mobility assistance, we’re here to help your loved one live comfortably and safely.
+                Our caregivers get to know each client personally, adapting to their routines, preferences, and needs. Whether it's help with bathing and grooming, preparing meals, or getting around safely, we're there to make daily life easier.
               </p>
               <p className="font-medium text-slate-900 pt-2">
-                Whether you need a few hours of support each week or around-the-clock care, our flexible service plans adapt to changing needs over time.
+                From a few hours a week to full-time care, our plans flex as needs change — so support always fits the moment.
               </p>
             </div>
           </div>

@@ -6,20 +6,20 @@ function HomeCareFaq() {
 
   const faqData = [
     {
-      question: "How quickly can support be arranged?",
-      answer: "We can typically arrange support within 24 to 48 hours following an initial care assessment."
+      question: "How soon can care start?",
+      answer: "In most cases, we can get support in place within 24 to 48 hours after your initial care assessment."
     },
     {
-      question: "Is this service flexible?",
-      answer: "Yes, our care plans are fully adaptable. You can increase, decrease, or modify your schedule as needs change."
+      question: "Can the plan change over time?",
+      answer: "Yes — your care plan is built to flex with you. We can scale it up, down, or adjust it entirely as your needs shift."
     },
     {
-      question: "Do you work with facility staff?",
-      answer: "Absolutely. We coordinate closely with doctors, nurses, and facility staff to ensure seamless integrated care."
+      question: "Do you coordinate with facility staff?",
+      answer: "Yes. We work closely alongside doctors, nurses, and facility teams so care stays consistent and connected."
     },
     {
-      question: "What services are included in homecare?",
-      answer: "Our services cover personal care, medication reminders, companionship, light housekeeping, and mobility support."
+      question: "What does homecare actually include?",
+      answer: "It covers personal care, medication reminders, companionship, light housekeeping, and help getting around safely."
     }
   ];
 
@@ -34,13 +34,13 @@ function HomeCareFaq() {
         {/* Header Section */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block bg-teal-50 text-teal-700 font-medium px-3.5 py-1 rounded-full text-xs uppercase tracking-wider mb-3">
-            Frequently Asked Questions
+            FAQs
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Common questions about our home care services
+            Answers to your homecare questions
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our care coordination, schedule flexibility, and available services.
+            A quick look at how we coordinate care, adjust schedules, and what's included in our services.
           </p>
         </div>
 
@@ -86,7 +86,7 @@ function HomeCareFaq() {
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            See All FAQs
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

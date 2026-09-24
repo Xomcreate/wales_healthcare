@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom';
 function HomeCareGuide() {
   const guides = [
     {
-      title: "Empowering Growth: The Importance of Developmental Support",
-      description: "In the journey of life, growth is not just a physical process but also a mental, emotional, and social one. Developmental support plays a crucial role in nurturing individuals...",
+      title: "Understanding Developmental Support: Fostering Lifelong Independence",
+      description: "Discover how personalized developmental support nurtures physical, mental, and social growth, empowering individuals of all ages to thrive.",
       readTime: "2-3 minutes",
       link: "/guides/developmental-support"
     },
     {
-      title: "Exploring the Heart of Healthcare: Understanding the Role of a Personal Support Worker",
-      description: "In the realm of healthcare, there are many unsung heroes whose contributions often go unnoticed despite their profound impact on the lives of individuals in need. Among these dedicated...",
+      title: "The Heart of Care: What a Personal Support Worker Really Does",
+      description: "Take a closer look at the daily impact of Personal Support Workers (PSWs) and how their dedicated care transforms lives at home.",
       readTime: "3-4 minutes",
       link: "/guides/personal-support-worker"
     }
@@ -30,10 +30,10 @@ function HomeCareGuide() {
               Guidance Hub
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-              Helpful guides & resources
+              Expert advice for your home care journey
             </h2>
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-8">
-              Explore expert advice, articles, and educational insights to help you navigate your home care journey with confidence.
+              Explore trusted insights, practical tips, and professional resources designed to help you make informed decisions with confidence.
             </p>
             
             <div className="flex justify-center lg:justify-start">
@@ -55,7 +55,7 @@ function HomeCareGuide() {
               <Link 
                 key={index}
                 to={guide.link}
-                className="group bg-slate-50/50 rounded-2xl p-6 sm:p-8 border border-slate-200/60 transition-all duration-300 hover:bg-white hover:border-teal-300 hover:shadow-md flex flex-col justify-between"
+                className="group bg-slate-50/50 rounded-2xl p-6 sm:p-8 border border-slate-200/65 transition-all duration-300 hover:bg-white hover:border-teal-300 hover:shadow-md flex flex-col justify-between"
               >
                 <div>
                   <h3 className="text-lg sm:text-xl font-semibold text-slate-900 group-hover:text-teal-700 transition-colors mb-3">

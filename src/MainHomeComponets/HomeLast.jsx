@@ -80,7 +80,7 @@ function HomeLast() {
 
                 <div className="flex flex-wrap justify-center lg:justify-start items-center gap-4">
                   <Link 
-                    to="/contact" 
+                    to="/careers" 
                     className="inline-block bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all duration-200"
                   >
                     Get in Touch

@@ -22,7 +22,7 @@ function HomeLogo() {
                   Fully Accredited
                 </h3>
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-1 text-xs sm:text-sm font-semibold text-teal-600 mt-0.5">
-                  <span>25+ Years Experience</span>
+                  <span>Trusted Care Provider</span>
                   <span className="hidden sm:inline text-slate-300">•</span>
                   <span>700+ Caregivers</span>
                 </div>

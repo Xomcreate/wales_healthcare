@@ -3,8 +3,8 @@ import React from 'react';
 function HomeCareF() {
   const features = [
     {
-      title: "Assistance with bathing, dressing, grooming",
-      description: "Dignified homecare support for daily hygiene and appearance",
+      title: "Bathing, dressing & grooming help",
+      description: "Respectful support that keeps daily routines comfortable and dignified",
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
@@ -12,8 +12,8 @@ function HomeCareF() {
       )
     },
     {
-      title: "Meal preparation & nutrition support",
-      description: "Nutritious meals planned and prepared according to dietary needs",
+      title: "Meals & nutrition support",
+      description: "Home-cooked meals planned around individual dietary needs",
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -21,8 +21,8 @@ function HomeCareF() {
       )
     },
     {
-      title: "Mobility and fall prevention",
-      description: "Safe movement assistance and home safety assessments",
+      title: "Mobility & fall prevention",
+      description: "Careful support moving around, plus home safety checks",
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
@@ -30,8 +30,8 @@ function HomeCareF() {
       )
     },
     {
-      title: "Companionship and emotional support",
-      description: "Friendly conversation, activities, and meaningful engagement",
+      title: "Companionship & emotional support",
+      description: "Real conversation, shared activities, and genuine connection",
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -67,10 +67,10 @@ function HomeCareF() {
             <div className="space-y-2 flex flex-col items-center lg:items-start">
               <div className="inline-flex items-center space-x-2 bg-teal-500/10 border border-teal-500/30 px-3 py-0.5 rounded-full text-xs font-semibold tracking-wider uppercase text-teal-300">
                 <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
-                <span>Daily Assistance</span>
+                <span>Everyday Support</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Supporting daily life with <span className="text-[#E65C00]">compassion</span>
+                Helping with everyday life, with <span className="text-[#E65C00]">heart</span>
               </h2>
             </div>
 

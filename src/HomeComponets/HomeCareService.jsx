@@ -5,8 +5,8 @@ function HomeCareService() {
   const steps = [
     {
       step: "01",
-      title: "Assessment",
-      description: "Complimentary consultation to understand your unique needs and preferences.",
+      title: "Get in Touch",
+      description: "A free, no-pressure conversation to understand what you or your loved one needs.",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012-2m-6 9l2 2 4-4"></path>
@@ -15,8 +15,8 @@ function HomeCareService() {
     },
     {
       step: "02",
-      title: "Tailored Care Plan",
-      description: "Customized plan designed around your schedule, budget, and care requirements.",
+      title: "Build Your Care Plan",
+      description: "A plan shaped around your schedule, budget, and specific care needs.",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
@@ -25,8 +25,8 @@ function HomeCareService() {
     },
     {
       step: "03",
-      title: "Matching",
-      description: "Carefully paired with a qualified caregiver who matches your needs and personality.",
+      title: "Meet Your Caregiver",
+      description: "We match you with a caregiver whose skills and personality are the right fit.",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -35,8 +35,8 @@ function HomeCareService() {
     },
     {
       step: "04",
-      title: "Ongoing Support",
-      description: "Continuous monitoring and check-ins to ensure exceptional care quality.",
+      title: "Stay Supported",
+      description: "We check in regularly to make sure care stays consistent and on point.",
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
@@ -52,13 +52,13 @@ function HomeCareService() {
         {/* Header Section */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block bg-teal-50 text-teal-700 font-medium px-3.5 py-1 rounded-full text-xs uppercase tracking-wider mb-3">
-            Seamless Onboarding
+            Getting Started
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            How Our Homecare Service Works
+            How Homecare Works With Us
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            From first contact to ongoing care, we're with you every step of the way with transparency and compassion.
+            From that first call to ongoing care, we walk with you every step — honestly and with heart.
           </p>
         </div>
 

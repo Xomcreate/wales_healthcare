@@ -53,10 +53,10 @@ function HomeCareStories() {
         {/* Section Header */}
         <div className="mb-8">
           <span className="text-[#C4B5FD] font-semibold text-xs uppercase tracking-widest block mb-1">
-            Home Care Stories
+            Caregiver Spotlights
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-            Hear from our dedicated team
+            Voices from our compassionate team
           </h2>
         </div>
 
@@ -73,20 +73,20 @@ function HomeCareStories() {
           {/* Testimonial Content */}
           <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-700 pt-2 max-w-2xl mx-auto">
             <p>
-              Joining this agency two years ago completely changed my perspective on healthcare support. The scheduling flexibility allows me to balance my personal life while delivering meaningful care to elderly clients.
+              Being part of this amazing team over the last three years has redefined what professional caregiving means to me. The flexible scheduling allows me to maintain a wonderful work-life balance while making a true impact.
             </p>
             <p>
-              Management genuinely listens to our feedback and ensures we have the proper training and resources needed in the field. It feels less like a traditional job and more like a supportive community.
+              The leadership team genuinely values our well-being and provides ongoing training and tools so we always feel confident on the job. It feels much more like a supportive extended family than a workplace.
             </p>
             <p className="font-medium text-slate-900">
-              Knowing that I make a tangible difference in my clients' daily lives every single day is deeply rewarding.
+              Knowing that my presence brings comfort, safety, and joy to my clients every day is the most rewarding part of what I do.
             </p>
           </div>
 
           {/* Author Details */}
           <div className="mt-6 pt-2">
-            <h4 className="font-bold text-slate-900 text-sm">Marcus Vance</h4>
-            <span className="text-xs text-slate-500 font-medium block mt-0.5">Senior Caregiver</span>
+            <h4 className="font-bold text-slate-900 text-sm">Elena Rostova</h4>
+            <span className="text-xs text-slate-500 font-medium block mt-0.5">Lead Personal Support Worker</span>
           </div>
 
         </div>

@@ -3,8 +3,8 @@ import React from 'react';
 function HomeChoose() {
   const features = [
     {
-      title: "No Long Term Contracts",
-      description: "No obligations or commitments. Start, pause, or adjust services whenever you need.",
+      title: "No Long-Term Commitments",
+      description: "Stay in control — start, pause, or change your care plan anytime, no strings attached.",
       icon: (
         <svg className="w-5 h-5 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -12,8 +12,8 @@ function HomeChoose() {
       )
     },
     {
-      title: "Complete Flexibility",
-      description: "Customize your care schedule and services to fit your unique lifestyle and needs.",
+      title: "Care That Adapts to You",
+      description: "Build a schedule and service plan around your routine, not the other way around.",
       icon: (
         <svg className="w-5 h-5 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -21,8 +21,8 @@ function HomeChoose() {
       )
     },
     {
-      title: "Professional Excellence",
-      description: "Highly trained, certified caregivers committed to the highest standards of care.",
+      title: "Skilled, Caring Staff",
+      description: "Every caregiver is trained, certified, and held to a high standard of care.",
       icon: (
         <svg className="w-5 h-5 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -30,8 +30,8 @@ function HomeChoose() {
       )
     },
     {
-      title: "24/7 Availability",
-      description: "Round-the-clock support and care coordination, whenever you need us most.",
+      title: "Here When You Need Us",
+      description: "Our team is available around the clock for support and care coordination.",
       icon: (
         <svg className="w-5 h-5 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -58,7 +58,7 @@ function HomeChoose() {
               />
               <div className="absolute inset-0 bg-linear-to-t from-slate-950/60 via-transparent to-transparent flex items-end p-5">
                 <p className="text-white text-xs font-medium tracking-wide">
-                  Trusted by hundreds of families nationwide
+                  Caring for families across Ontario
                 </p>
               </div>
             </div>
@@ -69,10 +69,10 @@ function HomeChoose() {
               {/* Header Elements (Centered) */}
               <div className="mb-6 flex flex-col items-center">
                 <div className="inline-block bg-teal-50 border border-teal-200 px-3 py-1 rounded-full text-teal-700 font-bold text-[11px] uppercase tracking-wider mb-2">
-                  Why Choose Us
+                  Why Families Choose Us
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                  Flexible care on your terms
+                  Care designed around your life
                 </h2>
               </div>
 

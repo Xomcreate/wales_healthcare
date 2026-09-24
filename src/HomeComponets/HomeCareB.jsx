@@ -61,10 +61,8 @@ function HomeCareB() {
 
         </div>
 
-        {/* Experience & Caregivers Statistics Line */}
+        {/* Caregivers Statistic Line */}
         <div className="flex items-center justify-center space-x-3 text-sm sm:text-base font-semibold text-slate-800 mb-10">
-          <span className="text-teal-600">25+ Years Experience</span>
-          <span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span>
           <span className="text-teal-600">700+ Caregivers</span>
         </div>
 
@@ -76,6 +74,7 @@ function HomeCareB() {
           >
             Request a Free Consultation
           </button>
+          
           <a
             href="tel:9057091767"
             className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-semibold px-8 py-4 rounded-xl text-sm sm:text-base shadow-md transition-all text-center"

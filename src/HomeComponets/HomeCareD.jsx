@@ -4,27 +4,27 @@ function HomeCareD() {
   const services = [
     {
       title: "Personal Care",
-      description: "Respectful, professional, and hands-on assistance ensuring daily hygiene, mobility, and patient safety at home.",
+      description: "Compassionate, hands-on help with daily hygiene, mobility, and safety in the comfort of home.",
       icon: "🤝"
     },
     {
       title: "Nursing Support",
-      description: "Advanced healthcare delivered by licensed professionals, covering medication management and vital monitoring.",
+      description: "Skilled care from licensed nurses, including medication management and regular health monitoring.",
       icon: "🩺"
     },
     {
       title: "Dementia Care",
-      description: "Evidence-based, patient-centered cognitive support tailored for individuals managing progressive memory loss.",
+      description: "Patient-centered support designed around the unique needs of those living with memory loss.",
       icon: "🧠"
     },
     {
       title: "Hospice / End-of-Life Care",
-      description: "Specialized palliative support focused on symptom management, pain relief, and family comfort.",
+      description: "Gentle palliative care focused on comfort, dignity, and support for the whole family.",
       icon: "🕊️"
     },
     {
       title: "Companionship / Daily Support",
-      description: "Structured daily assistance promoting mental wellness, social engagement, and independent living.",
+      description: "Friendly, consistent support that encourages independence, connection, and everyday wellbeing.",
       icon: "☀️"
     }
   ];
@@ -37,13 +37,13 @@ function HomeCareD() {
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-teal-800 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse" />
-            <span>Healthcare Solutions</span>
+            <span>Care Services</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-            Our Specialized <span className="text-teal-600">Medical Services</span>
+            Care Tailored to <span className="text-teal-600">Every Need</span>
           </h2>
           <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
-            Professional healthcare services and medical assistance delivered to meet rigorous standards for every patient.
+            From everyday support to specialized medical care, we're here for your family every step of the way.
           </p>
         </div>
 

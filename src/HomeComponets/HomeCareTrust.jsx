@@ -3,20 +3,20 @@ import React from 'react';
 function HomeCareTrust() {
   const trustPoints = [
     {
-      title: "Certified & Experiences Caregivers",
-      description: "Trained professionals with extensive backgrounds in personal care, dementia support, and specialized health needs."
+      title: "Certified & Experienced Caregivers",
+      description: "Trained professionals with extensive backgrounds in personal support, specialized health needs, and elder care."
     },
     {
       title: "Safety & Compliance Standards",
-      description: "Recovery support following surgery, including wound care and mobility assistance."
+      description: "Rigorous protocols, comprehensive background checks, and adherence to top healthcare regulatory frameworks."
     },
     {
       title: "Personalized & Flexible Care Plans",
-      description: "Specialized support for memory loss, behavioral changes, and cognitive decline."
+      description: "Tailored schedules and customized care strategies designed to match each unique client and family situation."
     },
     {
       title: "Emotional Support",
-      description: "Compassionate care focused on comfort, dignity, and emotional support."
+      description: "Compassionate companionship and dedicated care focused on preserving client dignity, comfort, and happiness."
     }
   ];
 

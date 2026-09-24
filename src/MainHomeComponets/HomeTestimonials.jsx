@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function HomeTestimonials() {
+  const navigate = useNavigate();
+
   const testimonials = [
     {
-      text: "The caregivers assigned to my mother were truly outstanding, professional, and compassionate. They ensured she never missed her essential medical appointments and kept us well-informed throughout.",
-      author: "Claudia T"
+      text: "The caregivers who looked after my mother were kind, dependable, and genuinely attentive. They made sure she never missed an appointment and kept us in the loop every step of the way.",
+      author: "Margaret O"
     },
     {
-      text: "The care and compassion shown by the entire team have been nothing short of extraordinary. They treated our family like their own and gave us complete peace of mind.",
-      author: "David M"
+      text: "The warmth and dedication this team showed our family went above and beyond anything we expected. They treated my father like family, and that gave us real peace of mind.",
+      author: "James A"
     },
     {
-      text: "Finding reliable and professional care seemed impossible until we connected with this agency. The caregivers are punctual, warm, and highly skilled.",
-      author: "Sarah L"
+      text: "We searched for a long time before finding a care team we could truly trust. Every caregiver has been reliable, friendly, and clearly skilled at what they do.",
+      author: "Priya K"
     }
   ];
 
@@ -40,10 +43,10 @@ function HomeTestimonials() {
         
         {/* Section Header */}
         <span className="text-xs sm:text-sm font-bold tracking-[0.2em] text-teal-700 uppercase block mb-2">
-          Family Testimonials
+          What Families Say
         </span>
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 tracking-tight mb-8">
-          Hear from families we've helped
+          Stories from the families we care for
         </h2>
 
         {/* Testimonial Card Wrapper with Navigation Arrows */}
@@ -111,8 +114,11 @@ function HomeTestimonials() {
 
         {/* Action Button */}
         <div>
-          <button className="bg-[#132A3E] hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-700">
-            Read More Family Stories
+          <button 
+            onClick={() => navigate('/about/testimonials')}
+            className="bg-[#132A3E] hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-700"
+          >
+            Read More Stories
           </button>
         </div>
 

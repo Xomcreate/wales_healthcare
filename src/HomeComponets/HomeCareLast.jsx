@@ -20,12 +20,12 @@ function HomeCareLast() {
         
         {/* Heading */}
         <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 tracking-tight mb-6 leading-tight">
-          Get started with homecare today
+          Ready to experience compassionate home care?
         </h2>
 
         {/* Subtext */}
         <p className="text-slate-700 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-10 font-medium">
-          Our initial consultations are complimentary and obligation-free. Let's discuss how we can support your loved one.
+          Take the first step with a complimentary, zero-obligation consultation. Let's create a customized care plan tailored to your family's needs.
         </p>
 
         {/* Action Button */}
@@ -34,7 +34,7 @@ function HomeCareLast() {
             to="/contact" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-8 py-4 rounded-xl shadow-lg transition-all duration-300 text-base flex items-center gap-3 group"
           >
-            Request A Care Assessment
+            Schedule Your Free Consultation
             <svg className="w-5 h-5 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
