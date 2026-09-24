@@ -28,18 +28,18 @@ function TemporaryAbout() {
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Flexible support when additional care is needed for a limited time.
+          Dependable interim coverage whenever supplementary care is required.
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Healthcare facilities often face changing staffing needs due to vacations, leaves of absence, seasonal demands, or unexpected shortages. Our Temporary & Short-Term Coverage services provide qualified healthcare professionals who can step in quickly to help maintain continuity of care and support daily operations. Staff Relief works closely with facilities to provide flexible staffing solutions that ensure residents and patients continue to receive the high standard of care they deserve.
+          Care facilities frequently navigate fluctuating staffing demands driven by planned leaves, seasonal spikes, or unexpected absences. Our Temporary & Short-Term Coverage solutions deploy credentialed professionals who integrate seamlessly to protect continuity of care and support day-to-day operations. Wales Healthcare works closely with your facility to deliver agile staffing models that ensure residents and patients consistently receive exceptional standards of attention.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we ensure seamless coverage and dependable staffing solutions when you need them most.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we guarantee seamless coverage and reliable workforce solutions right when you need them most.
           </p>
         </div>
 

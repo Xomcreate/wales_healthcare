@@ -41,11 +41,11 @@ function LongTermServices() {
 
             {/* Description Text */}
             <p className="text-sm text-slate-600 leading-relaxed">
-              We offer flexible support solutions for facilities and families across Ontario, from Windsor to Ottawa.
+              We deliver flexible, scalable staffing solutions and tailored care programs for healthcare facilities and families across Ontario, spanning from Windsor to Ottawa.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              We provide consistent, long-term support for individuals living in care facilities, ensuring their needs are met beyond standard services.
+              Our continuous, relationship-driven placements provide dependable, extended support for individuals in long-term care, safeguarding their well-being far beyond routine care schedules.
             </p>
 
           </div>
@@ -69,28 +69,28 @@ function LongTermServices() {
                 <ul className="space-y-2.5 text-sm text-teal-100">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Ongoing companionship</span>
+                    <span className="text-left">Dedicated ongoing companionship</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Daily routine assistance</span>
+                    <span className="text-left">Personalized daily routine assistance</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Family communication support</span>
+                    <span className="text-left">Transparent family communication support</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Personalized attention</span>
+                    <span className="text-left">Attentive, individualized care protocols</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Advocacy within the facility</span>
+                    <span className="text-left">Strong resident advocacy within the facility</span>
                   </li>
                 </ul>
 
                 <p className="text-xs text-teal-200 pt-2 italic border-t border-teal-600/60">
-                  Fostering stable relationships and enduring support for residents and facilities.
+                  Fostering stable professional relationships and enduring support for residents and facilities.
                 </p>
               </div>
             </div>
@@ -111,15 +111,15 @@ function LongTermServices() {
                 <ul className="space-y-3 text-sm text-slate-300">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Residents in long-term care</span>
+                    <span className="text-left">Residents residing in long-term care homes</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Families seeking ongoing involvement</span>
+                    <span className="text-left">Families seeking active, ongoing involvement</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Individuals needing extra attention</span>
+                    <span className="text-left">Individuals requiring specialized personal attention</span>
                   </li>
                 </ul>
 

@@ -12,22 +12,22 @@ function FacilityMatters() {
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-teal-800 shadow-sm mx-auto lg:mx-0">
               <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse" />
-              <span>Staying Connected Beyond Transition</span>
+              <span>Sustaining Connection Beyond Transition</span>
             </div>
             
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-              Why Facility Care Support <span className="text-teal-600">Matters</span>
+              Why Dedicated Facility Care Support <span className="text-teal-600">Matters</span>
             </h2>
 
             <div className="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
               <p>
-                When a loved one moves into a care facility, it can bring peace of mind — but also new concerns. Families may not always be present, and residents can benefit from additional personalized attention, companionship, and advocacy.
+                Transitioning a loved one into a care facility brings structural safety, yet families frequently encounter a profound gap in personalized oversight. Without continuous independent attention, subtle personal nuances can easily be overlooked.
               </p>
               <p>
-                Facility care support helps bridge that gap, ensuring your loved one continues to feel seen, heard, and cared for in a meaningful way. It provides reassurance that someone is there to support their comfort, well-being, and quality of life.
+                Our specialized facility support model bridges this precise divide. We guarantee your loved one remains actively heard, valued, and individually prioritized, giving families absolute peace of mind through rigorous oversight and compassionate engagement.
               </p>
               <p className="font-medium text-slate-900 pt-2">
-                Empowering residents with consistent care and dedicated advocacy to ensure dignity and connection every single day.
+                Safeguarding individual agency and protecting daily dignity through proactive, hands-on resident advocacy.
               </p>
             </div>
           </div>
@@ -44,8 +44,8 @@ function FacilityMatters() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-slate-900/40 via-transparent to-transparent flex items-end p-6">
                   <div className="bg-white/95 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg border border-slate-100 w-full">
-                    <p className="text-xs font-bold text-slate-900">Comfort, Dignity & Connection</p>
-                    <p className="text-[11px] text-slate-600">Ensuring loved ones feel seen and heard.</p>
+                    <p className="text-xs font-bold text-slate-900">Empowerment & Continuous Oversight</p>
+                    <p className="text-[11px] text-slate-600">Ensuring residents always feel uniquely valued.</p>
                   </div>
                 </div>
               </div>
@@ -69,8 +69,8 @@ function FacilityMatters() {
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-slate-900/40 via-transparent to-transparent flex items-end p-6">
                   <div className="bg-white/95 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg border border-slate-100 w-full">
-                    <p className="text-xs font-bold text-slate-900">Personalized Support & Advocacy</p>
-                    <p className="text-[11px] text-slate-600">Enhancing care alongside facility teams.</p>
+                    <p className="text-xs font-bold text-slate-900">Collaborative Advocacy</p>
+                    <p className="text-[11px] text-slate-600">Enhancing institutional routines with personal care.</p>
                   </div>
                 </div>
               </div>
@@ -81,22 +81,22 @@ function FacilityMatters() {
           <div className="lg:col-span-7 lg:order-2 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-200 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase text-teal-800 shadow-sm mx-auto lg:mx-0">
               <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse" />
-              <span>Personalized Support Within Care Settings</span>
+              <span>Harmonious Clinical Collaboration</span>
             </div>
             
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-tight">
-              What is <span className="text-teal-600">Facility Care?</span>
+              What Is Professional <span className="text-teal-600">Facility Advocacy?</span>
             </h2>
 
             <div className="space-y-4 text-slate-600 text-sm sm:text-base leading-relaxed">
               <p>
-                Facility care services are designed to complement the care already provided within hospitals, long-term care homes, or assisted living environments.
+                Our facility advocacy programs are engineered to organically enhance the operational foundation established by institutional medical teams, senior living networks, and clinical staff.
               </p>
               <p>
-                Our team works alongside facility staff to offer one-on-one support tailored to your loved one’s unique needs — whether that’s companionship, assistance with daily routines, or simply being a consistent, caring presence.
+                Rather than replacing core institutional structures, our professional care partners work directly within the facility ecosystem—providing supplemental attention, safeguarding individual care standards, and acting as a dedicated bridge for the family.
               </p>
               <p className="font-medium text-slate-900 pt-2">
-                It’s about enhancing care, not replacing it, and helping residents feel more comfortable and connected.
+                A collaborative framework focused entirely on optimizing daily comfort, protecting rights, and deepening human connection.
               </p>
             </div>
           </div>

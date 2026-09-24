@@ -41,11 +41,11 @@ function EmergencyServices() {
 
             {/* Description Text */}
             <p className="text-sm text-slate-600 leading-relaxed">
-              We offer flexible support solutions for facilities and families across Ontario, from Windsor to Ottawa.
+              We deliver agile, high-reliability staffing solutions for healthcare facilities across Ontario, extending seamlessly from Windsor to Ottawa.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              Our emergency staffing services provide immediate, dependable support to care facilities facing unexpected shortages or urgent care demands.
+              Our rapid-response personnel provide immediate, steadfast reinforcement to healthcare institutions managing sudden staff absences, escalating care requirements, or critical operational challenges.
             </p>
 
           </div>
@@ -69,28 +69,28 @@ function EmergencyServices() {
                 <ul className="space-y-2.5 text-sm text-teal-100">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Rapid deployment of trained staff</span>
+                    <span className="text-left">Rapid deployment of vetted practitioners</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Coverage for unexpected absences</span>
+                    <span className="text-left">Immediate coverage for unexpected absences</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Support during high-demand periods</span>
+                    <span className="text-left">Scalable support during peak demand surges</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Reliable caregivers</span>
+                    <span className="text-left">Highly dependable, credentialed professionals</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Seamless team integration</span>
+                    <span className="text-left">Frictionless integration into existing care teams</span>
                   </li>
                 </ul>
 
                 <p className="text-xs text-teal-200 pt-2 italic border-t border-teal-600/60">
-                  Ensuring uninterrupted resident safety and operational stability when it matters most.
+                  Securing absolute resident safety and clinical operational continuity when it matters most.
                 </p>
               </div>
             </div>
@@ -111,15 +111,15 @@ function EmergencyServices() {
                 <ul className="space-y-3 text-sm text-slate-300">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Facilities facing urgent staffing shortages</span>
+                    <span className="text-left">Facilities managing critical staffing shortages</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">High-demand or crisis situations</span>
+                    <span className="text-left">Institutions navigating high-acuity or crisis scenarios</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Teams needing immediate reinforcement</span>
+                    <span className="text-left">Care teams requiring immediate clinical reinforcement</span>
                   </li>
                 </ul>
 

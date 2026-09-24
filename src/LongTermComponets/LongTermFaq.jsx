@@ -6,12 +6,12 @@ function LongTermFaq() {
 
   const faqData = [
     {
-      question: "Do you work with facility staff?",
-      answer: "Yes, our Team meets the requirements as governed by the Fixing Long-Term Care Act, 2021. In addition to meeting the requirements Staff Relief Healthcare can also support longer term solutions, or specialized positions and roles."
+      question: "How do your professionals integrate with internal facility teams?",
+      answer: "Our clinical care team fully satisfies and exceeds all compliance mandates governed by the Fixing Long-Term Care Act, 2021. Beyond core regulatory standards, Wales Healthcare seamlessly embeds personnel into extended-term solutions and specialized institutional roles."
     },
     {
-      question: "Is support ongoing?",
-      answer: "Yes, services can be long term to support continuity of care, there are no penalties or fees for cancelation which can be done 7 days a week, holidays and weekends included."
+      question: "Are long-term care arrangements structured continuously?",
+      answer: "Yes, our services are specifically designed for long-term engagements to protect clinical continuity of care. We maintain completely flexible scheduling with zero cancellation penalties or extra fees, operating 7 days a week including weekends and holidays."
     }
   ];
 
@@ -32,11 +32,11 @@ function LongTermFaq() {
             Common questions about our long-term placement support
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our regulatory compliance, facility staff collaboration, and ongoing care flexibility.
+            Find prompt answers regarding regulatory alignment, multi-disciplinary staff integration, and ongoing care continuity.
           </p>
         </div>
 
-        {/* FAQ Grid Cards Layout (Set to 2 columns for the 2 items) */}
+        {/* FAQ Grid Cards Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           {faqData.map((item, index) => (
             <div 
@@ -77,7 +77,7 @@ function LongTermFaq() {
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            Explore Complete FAQ Hub
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

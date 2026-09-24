@@ -23,12 +23,12 @@ function TemporaryMatters() {
           
           {/* Main Title */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
-            Why It Matters
+            Why Continuity Matters
           </h2>
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            Temporary support ensures continuity of care and minimizes disruptions for residents.
+            Reliable interim staffing safeguards clinical consistency, mitigates burnout, and preserves a stable, familiar environment for every resident.
           </p>
 
           {/* Action Button styled in Teal */}
@@ -37,7 +37,7 @@ function TemporaryMatters() {
               href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
-              <span>Contact us to arrange short-term support</span>
+              <span>Connect with our team for short-term staffing solutions</span>
             </a>
           </div>
 

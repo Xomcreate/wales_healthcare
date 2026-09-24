@@ -23,23 +23,23 @@ function EmergencyAbout() {
         {/* Top Badge */}
         <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-500/20 px-3.5 py-1.5 rounded-full text-xs font-semibold text-teal-700">
           <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-          <span>Rapid-Response Support</span>
+          <span>Immediate-Response Workforce Support</span>
         </div>
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Rapid-response support to maintain quality care during urgent staffing needs.
+          Rapid-deployment solutions to preserve clinical excellence during urgent staffing shortages.
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Unexpected staffing shortages can place significant pressure on healthcare facilities and care teams. Our Emergency Staffing services are designed to provide rapid access to qualified healthcare professionals when immediate support is needed. Whether responding to last-minute absences, increased patient demands, or unforeseen circumstances, Staff Relief helps facilities maintain safe staffing levels and uninterrupted care with dependable, experienced personnel.
+          Unforeseen scheduling gaps and emergency absences can place immense strain on healthcare teams and institutional operations. Our Emergency Staffing services provide immediate access to fully credentialed healthcare professionals when urgent support is critical. Whether handling sudden vacancies, surging patient acuities, or unexpected crises, Wales Healthcare equips facilities with dependable practitioners to maintain safe staffing ratios and seamless care delivery.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we ensure uninterrupted resident safety, care continuity, and operational stability.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we safeguard absolute resident safety, clinical continuity, and total operational stability.
           </p>
         </div>
 

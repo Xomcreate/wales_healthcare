@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 function LongTermMatters() {
   return (
@@ -23,12 +23,12 @@ function LongTermMatters() {
           
           {/* Main Title */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
-            Why It Matters
+            Why Long-Term Stability Matters
           </h2>
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            Long-term support enhances quality of life by ensuring residents receive consistent, personalized care and connection.
+            Sustained care staffing dramatically elevates quality of life by guaranteeing residents dependable, familiar faces and highly personalized, relationship-driven support.
           </p>
 
           {/* Action Button styled in Teal */}
@@ -37,14 +37,14 @@ function LongTermMatters() {
               href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
-              <span>Learn more about long-term support options</span>
+              <span>Explore our long-term care staffing options</span>
             </a>
           </div>
 
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default LongTermMatters
+export default LongTermMatters;

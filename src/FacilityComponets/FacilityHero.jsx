@@ -26,17 +26,17 @@ function FacilityHero() {
             {/* Medical Badge */}
             <div className="inline-flex items-center space-x-2 bg-slate-900/40 backdrop-blur-md border border-teal-500/30 px-3 py-1 rounded-md text-xs font-medium text-teal-300 shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-              <span>Wales Healthcare • Professional Facility Care & Advocacy</span>
+              <span>Wales Healthcare • Resident Advocacy & Specialized Facility Care</span>
             </div>
 
             {/* Headline */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white drop-shadow-md leading-tight">
-              Compassionate Support Rooted in <span className="text-teal-400">Dignity & Advocacy</span>
+              Uncompromising Quality Care Rooted in <span className="text-teal-400">Dignity & Advocacy</span>
             </h1>
 
             {/* Description */}
             <p className="text-sm sm:text-base text-slate-100 drop-shadow leading-relaxed max-w-2xl font-medium">
-              Compassionate support and advocacy for loved ones living in care facilities — ensuring comfort, dignity, and connection every day.
+              Championing the rights, comfort, and emotional well-being of residents in care facilities—providing expert oversight and unwavering personal connection every day.
             </p>
 
           </div>
@@ -50,18 +50,18 @@ function FacilityHero() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-white">Facility Advocacy</h3>
-                  <p className="text-xs text-slate-200">Dedicated resident oversight</p>
+                  <p className="text-xs text-slate-200">Independent resident oversight</p>
                 </div>
               </div>
 
               <div className="space-y-2 pt-2 border-t border-white/10 text-xs text-slate-200">
                 <div className="flex items-center justify-between">
                   <span className="text-slate-300">Care Standard</span>
-                  <span className="text-teal-300 font-semibold">Quality & Protection</span>
+                  <span className="text-teal-300 font-semibold">Excellence & Protection</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-300">Family Updates</span>
-                  <span className="text-white font-semibold">Regular & Transparent</span>
+                  <span className="text-white font-semibold">Transparent & Real-Time</span>
                 </div>
               </div>
             </div>

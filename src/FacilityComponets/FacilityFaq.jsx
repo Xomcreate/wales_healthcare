@@ -6,16 +6,16 @@ function FacilityFaq() {
 
   const faqData = [
     {
-      question: "Is support ongoing?",
-      answer: "Yes, services can be long term to support continuity of care, there are no penalties or fees for cancelation which can be done 7 days a week, holidays and weekends included."
+      question: "Are your facility support services structured on an ongoing basis?",
+      answer: "Yes, our support services are fully customizable for long-term consistency and seamless continuity of care. We maintain flexible arrangements with absolutely zero cancellation fees or penalties, operating 7 days a week including weekends and holidays."
     },
     {
-      question: "How fast can staff be deployed?",
-      answer: "We respond as quickly as possible based on availability and skill set. Having pre-existing contingency plans in place can also help expedite response time."
+      question: "How rapidly can care professionals be deployed?",
+      answer: "We mobilize with maximum urgency depending on clinical skill sets and immediate care facility availability. Establishing proactive contingency plans with our team further streamlines rapid response times when sudden needs arise."
     },
     {
-      question: "Are caregivers trained for facility environments?",
-      answer: "Yes, all staff meet the standards of Ministry of Long-Term Care including resident rights, infection control, certifications and licenses."
+      question: "Are caregivers specifically certified for institutional care environments?",
+      answer: "Absolutely. Every member of our care team meets or exceeds strict Ministry of Long-Term Care standards—rigorously trained in resident rights, rigorous infection control protocols, professional licensing, and specialized institutional safety."
     }
   ];
 
@@ -33,10 +33,10 @@ function FacilityFaq() {
             Frequently Asked Questions
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Common questions about our facility care services
+            Common questions about our specialized facility care
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our care support continuity, staff deployment, and specialized training.
+            Find transparent answers regarding care continuity, rapid staffing deployment, and our rigorous professional training standards.
           </p>
         </div>
 
@@ -75,13 +75,13 @@ function FacilityFaq() {
           ))}
         </div>
 
-        {/* Footer Action Button routed to Contact Page */}
+        {/* Footer Action Button routed to FAQ Page */}
         <div className="flex items-center justify-center">
           <Link 
             to="/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            Explore Complete FAQ Hub
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

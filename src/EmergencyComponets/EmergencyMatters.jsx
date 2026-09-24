@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 function EmergencyMatters() {
   return (
@@ -23,12 +23,12 @@ function EmergencyMatters() {
           
           {/* Main Title */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
-            Why It Matters
+            Why Rapid Response Matters
           </h2>
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            Quick access to experienced caregivers ensures residents continue receiving safe, uninterrupted care during critical moments.
+            Instant deployment of experienced practitioners guarantees that residents experience zero disruption in safety, clinical oversight, or individualized attention during critical moments.
           </p>
 
           {/* Action Button styled in Teal */}
@@ -37,14 +37,14 @@ function EmergencyMatters() {
               href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
-              <span>Reach out for immediate staffing support</span>
+              <span>Connect with our team for emergency coverage</span>
             </a>
           </div>
 
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-export default EmergencyMatters
+export default EmergencyMatters;

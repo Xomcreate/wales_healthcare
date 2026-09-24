@@ -6,12 +6,12 @@ function TemporaryFaq() {
 
   const faqData = [
     {
-      question: "How quickly can support be arranged?",
-      answer: "Staff Relief Healthcare operates 24/7 to ensure timely support of our Clients and Team, however, to meet compliance under Ontario’s Personal Health Information Protection Act permission must first be granted to initiate a service, which can then be actioned within 24 hours of initial inquiry."
+      question: "How rapidly can temporary support be deployed?",
+      answer: "Wales Healthcare coordinates around the clock to support our clients and care teams. To maintain strict compliance under Ontario's Personal Health Information Protection Act (PHIPA), formal authorization must first be established, after which staffing can be mobilized within 24 hours of your initial inquiry."
     },
     {
-      question: "Is this service flexible?",
-      answer: "Yes, care can be arranged for short durations as needed."
+      question: "Are these short-term care arrangements fully flexible?",
+      answer: "Yes, our services are entirely customizable, allowing you to secure professional care for exact durations and shifts tailored to your immediate operational requirements."
     }
   ];
 
@@ -32,11 +32,11 @@ function TemporaryFaq() {
             Common questions about our temporary care services
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our swift deployment timelines, compliance, and service flexibility.
+            Find prompt answers regarding our rapid deployment timelines, regulatory compliance, and scheduling flexibility.
           </p>
         </div>
 
-        {/* FAQ Grid Cards Layout (Set to 2 columns for the 2 items) */}
+        {/* FAQ Grid Cards Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           {faqData.map((item, index) => (
             <div 
@@ -71,13 +71,13 @@ function TemporaryFaq() {
           ))}
         </div>
 
-        {/* Footer Action Button routed to Contact Page */}
+        {/* Footer Action Button routed to FAQ Page */}
         <div className="flex items-center justify-center">
           <Link 
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            Explore Complete FAQ Hub
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

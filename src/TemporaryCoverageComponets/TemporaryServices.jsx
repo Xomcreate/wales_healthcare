@@ -31,21 +31,21 @@ function TemporaryServices() {
 
             {/* Sub-heading / Overline */}
             <h3 className="text-xs sm:text-sm font-bold tracking-widest text-teal-700 uppercase">
-              About Our Specialized Service
+              Specialized Workforce Solutions
             </h3>
 
             {/* Main Title */}
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Temporary & Short-Term Support
+              Temporary & Short-Term Coverage
             </h2>
 
             {/* Description Text */}
             <p className="text-sm text-slate-600 leading-relaxed">
-              We offer flexible support solutions for facilities and families across Ontario, from Windsor to Ottawa.
+              We deliver agile, professional staffing solutions for healthcare facilities and care coordinators across Ontario—spanning from Windsor to Ottawa.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              Short-term care services provide reliable support during transitions, recovery periods, or temporary staffing gaps within care facilities.
+              Our short-term deployment services bridge critical scheduling gaps during unexpected vacancies, seasonal surges, and medical leaves of absence.
             </p>
 
           </div>
@@ -69,28 +69,28 @@ function TemporaryServices() {
                 <ul className="space-y-2.5 text-sm text-teal-100">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Coverage during staff shortages</span>
+                    <span className="text-left">Rapid coverage for unexpected staffing shortages</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Post-hospital transition support</span>
+                    <span className="text-left">Seamless post-hospital transition assistance</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Short-term resident assistance</span>
+                    <span className="text-left">Targeted short-term resident care support</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Flexible scheduling</span>
+                    <span className="text-left">Adaptable shift-based scheduling models</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Supplemental care during peak periods</span>
+                    <span className="text-left">Supplemental expertise during peak census periods</span>
                   </li>
                 </ul>
 
                 <p className="text-xs text-teal-200 pt-2 italic border-t border-teal-600/60">
-                  We work closely with facilities to maintain continuity of care and support daily operations.
+                  We collaborate closely with administrative leaders to guarantee uncompromised care standards and operational stability.
                 </p>
               </div>
             </div>
@@ -111,15 +111,15 @@ function TemporaryServices() {
                 <ul className="space-y-3 text-sm text-slate-300">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Facilities experiencing temporary staffing gaps</span>
+                    <span className="text-left">Care facilities managing acute scheduling gaps</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Residents needing short-term support</span>
+                    <span className="text-left">Residents requiring short-term recovery aid</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Families seeking transitional care</span>
+                    <span className="text-left">Families navigating complex transitional phases</span>
                   </li>
                 </ul>
 

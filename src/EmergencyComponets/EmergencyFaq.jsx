@@ -6,12 +6,12 @@ function EmergencyFaq() {
 
   const faqData = [
     {
-      question: "How fast can staff be deployed?",
-      answer: "We respond as quickly as possible based on availability and skill set. Having pre-existing contingency plans in place can also help expedite response time."
+      question: "How rapidly can emergency personnel be deployed?",
+      answer: "We mobilize immediately upon request, matching available credentialed professionals to your precise clinical requirements. Establishing proactive contingency protocols with our team further streamlines and accelerates emergency placement times."
     },
     {
-      question: "Are caregivers trained for facility environments?",
-      answer: "Yes, all staff meet the standards of Ministry of Long-Term Care including resident rights, infection control, certifications and licenses."
+      question: "Are deployed caregivers fully qualified for clinical facility environments?",
+      answer: "Yes, all deployed personnel strictly adhere to Ministry of Long-Term Care standards, maintaining complete compliance in resident rights, infection prevention and control (IPAC), professional certifications, and current licensure."
     }
   ];
 
@@ -29,10 +29,10 @@ function EmergencyFaq() {
             Frequently Asked Questions
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Common questions about our emergency staffing services
+            Common inquiries regarding our rapid-response staffing solutions
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our emergency deployment speed, caregiver qualifications, and facility standards.
+            Explore clear insights regarding our deployment speed, clinician credentials, and facility compliance standards.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ function EmergencyFaq() {
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            Explore all FAQs
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

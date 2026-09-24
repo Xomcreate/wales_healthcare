@@ -23,23 +23,23 @@ function LongTermAbout() {
         {/* Top Badge */}
         <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-500/20 px-3.5 py-1.5 rounded-full text-xs font-semibold text-teal-700">
           <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-          <span>Ongoing Care & Advocacy</span>
+          <span>Sustained Care & Resident Advocacy</span>
         </div>
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Ongoing care and advocacy for residents in long-term care settings.
+          Dedicated, enduring care and strong advocacy for long-term residents.
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Finding the right healthcare professionals for ongoing roles is essential to maintaining a stable, high-performing care environment. Our Long-Term Placement Support services help healthcare facilities connect with experienced caregivers and healthcare professionals who are well-suited to their team, culture, and care requirements. By providing dependable staffing solutions, Staff Relief helps organizations build consistency, strengthen resident relationships, and maintain quality care over the long term.
+          Securing credentialed professionals for permanent roles is vital to cultivating a stable, high-performing healthcare environment. Our Long-Term Placement Support services match healthcare facilities with seasoned practitioners whose expertise aligns with your organizational culture and clinical standards. By providing dependable workforce solutions, Wales Healthcare helps facilities build lasting team consistency, foster deeper resident relationships, and sustain uncompromised clinical excellence over the long term.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we are dedicated to fostering stable relationships and enduring support for residents and facilities.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we are committed to building stable professional relationships and reliable, enduring support for both residents and facilities.
           </p>
         </div>
 
