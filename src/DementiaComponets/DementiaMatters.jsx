@@ -24,12 +24,12 @@ function DementiaMatters() {
           
           {/* Main Title */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
-            Why It Matters
+            The Impact of Specialized Memory Care
           </h2>
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            Specialized dementia care helps reduce confusion and anxiety while promoting a sense of stability and security.
+            Expert memory support minimizes anxiety and confusion, creating an environment of emotional calm, predictability, and safety for your loved one.
           </p>
 
           {/* Action Button styled in Teal */}
@@ -38,7 +38,7 @@ function DementiaMatters() {
               href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
-              <span>Contact us to learn more about dementia care support</span>
+              <span>Speak With Our Dementia Care Specialists</span>
             </a>
           </div>
 

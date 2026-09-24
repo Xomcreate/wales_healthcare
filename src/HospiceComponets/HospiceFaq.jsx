@@ -6,12 +6,12 @@ function HospiceFaq() {
 
   const faqData = [
     {
-      question: "What is hospice care at home?",
-      answer: "It focuses on comfort and quality of life rather than curative treatment."
+      question: "What does in-home hospice care involve?",
+      answer: "It centers primarily on symptom management, personal dignity, and overall quality of life, prioritizing comfort and peace rather than curative treatments."
     },
     {
-      question: "Do you support families as well?",
-      answer: "Yes, emotional support and practical support is provided for families. Our 25+ years serving in the industry can provide valuable insight into other services unrelated to Staff Relief Healthcare."
+      question: "How do you support family members during this time?",
+      answer: "We offer continuous emotional and practical guidance for the entire family. Drawing from decades of specialized care experience, our team provides reliable support, reassurance, and resource navigation."
     }
   ];
 
@@ -29,10 +29,10 @@ function HospiceFaq() {
             Frequently Asked Questions
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Common questions about our hospice care services
+            Common Questions About Our Hospice Support
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our comfort-focused end-of-life support and family guidance.
+            Find clear insights regarding our comfort-driven end-of-life services and family guidance.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ function HospiceFaq() {
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            Explore Complete FAQ Center
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

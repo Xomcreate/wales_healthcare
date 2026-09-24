@@ -31,21 +31,21 @@ function DailyServices() {
 
             {/* Sub-heading / Overline */}
             <h3 className="text-xs sm:text-sm font-bold tracking-widest text-teal-700 uppercase">
-              About Our Specialized Service
+              Our Core Expertise
             </h3>
 
             {/* Main Title */}
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              We Support Individuals with Daily Care
+              Empowering Independent Living With Compassionate Daily Care
             </h2>
 
             {/* Description Text */}
             <p className="text-sm text-slate-600 leading-relaxed">
-              We support individuals with reliable, compassionate companionship services.
+              We empower individuals to thrive safely and comfortably at home through dedicated, person-centered support.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              Companionship services provide meaningful social interaction and light daily support to help individuals stay engaged and connected.
+              Our professional companion services foster meaningful engagement, mental stimulation, and seamless day-to-day assistance tailored to unique lifestyle needs.
             </p>
 
           </div>
@@ -69,28 +69,28 @@ function DailyServices() {
                 <ul className="space-y-2.5 text-sm text-teal-100">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Conversation and companionship</span>
+                    <span className="text-left">Meaningful conversation and active companionship</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Light housekeeping</span>
+                    <span className="text-left">Light housekeeping and tidy home maintenance</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Meal preparation</span>
+                    <span className="text-left">Nutritious meal preparation and planning</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Errands and outings</span>
+                    <span className="text-left">Assisted errands, appointments, and community outings</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Routine support</span>
+                    <span className="text-left">Structured daily routine and wellness support</span>
                   </li>
                 </ul>
 
                 <p className="text-xs text-teal-200 pt-2 italic border-t border-teal-600/60">
-                  Our nursing team works closely with healthcare providers to ensure coordinated care.
+                  Our professional care team coordinates seamlessly with broader healthcare providers to ensure holistic wellbeing.
                 </p>
               </div>
             </div>
@@ -111,15 +111,15 @@ function DailyServices() {
                 <ul className="space-y-3 text-sm text-slate-300">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Seniors living alone</span>
+                    <span className="text-left">Older adults maintaining independence at home</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Individuals needing social interaction</span>
+                    <span className="text-left">Individuals seeking enriching social connection</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Families seeking regular check-ins</span>
+                    <span className="text-left">Families looking for dependable routine check-ins</span>
                   </li>
                 </ul>
 

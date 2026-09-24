@@ -24,12 +24,12 @@ function HospiceMatters() {
           
           {/* Main Title */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
-            Why It Matters
+            The Value of Compassionate Presence
           </h2>
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            End-of-life care is about ensuring comfort, dignity, and peace — while supporting families through a deeply emotional time.
+            Quality end-of-life care centers on cultivating profound comfort, absolute dignity, and peace—while gently carrying families through vulnerable moments.
           </p>
 
           {/* Action Button styled in Teal */}
@@ -38,7 +38,7 @@ function HospiceMatters() {
               href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
-              <span>We are here to support you — reach out to speak with our team</span>
+              <span>We Are Here For You — Connect With Our Care Team</span>
             </a>
           </div>
 

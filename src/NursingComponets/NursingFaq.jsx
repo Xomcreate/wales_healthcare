@@ -6,12 +6,12 @@ function NursingFaq() {
 
   const faqData = [
     {
-      question: "What type of nursing care is provided at home?",
-      answer: "Services include medication management, wound care, and health monitoring."
+      question: "What kinds of nursing services are offered at home?",
+      answer: "Our professional nurses provide comprehensive care, including expert medication administration, professional wound care, chronic condition monitoring, and personalized recovery support right in your home."
     },
     {
-      question: "Is care flexible as needs change?",
-      answer: "Yes, care plans evolve as needs change. Our Coordination Team is available 24/7 to cancel or modify scheduled care with no additional fees or penalties."
+      question: "Can our care plan adapt if health needs change?",
+      answer: "Absolutely. Our care plans are fully flexible, and our 24/7 coordination team is always ready to adjust schedules or services seamlessly at no extra cost."
     }
   ];
 
@@ -26,13 +26,13 @@ function NursingFaq() {
         {/* Header Section */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block bg-teal-50 text-teal-700 font-medium px-3.5 py-1 rounded-full text-xs uppercase tracking-wider mb-3">
-            Frequently Asked Questions
+            Got Questions?
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Common questions about our nursing care services
+            Frequently Asked Questions
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our clinical approach and care flexibility.
+            Get clear answers about our personalized home nursing services and support.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ function NursingFaq() {
             <div 
               key={index}
               onClick={() => toggleFAQ(index)}
-              className={`group bg-white/80 backdrop-blur-sm rounded-xl p-6 border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
+              className={`group bg-white/85 backdrop-blur-sm rounded-xl p-6 border transition-all duration-200 cursor-pointer flex flex-col justify-between ${
                 activeIndex === index 
                   ? 'bg-white border-teal-300 shadow-md ring-2 ring-teal-50' 
                   : 'border-slate-200/60 hover:bg-white hover:border-teal-200 hover:shadow-md'
@@ -77,7 +77,7 @@ function NursingFaq() {
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            View Full FAQ Center
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

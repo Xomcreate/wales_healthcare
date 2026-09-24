@@ -6,12 +6,12 @@ function DailyFaq() {
 
   const faqData = [
     {
-      question: "What makes daily support services different?",
-      answer: "Daily support focuses on meaningful companionship, consistency, and personalized engagement to help individuals stay active and connected at home."
+      question: "How do Wales Healthcare's daily support services differ from medical care?",
+      answer: "While clinical care focuses primarily on medical treatments and health monitoring, our daily support services center around personal companionship, lifestyle assistance, and promoting social and emotional engagement to ensure comfort and independence at home."
     },
     {
-      question: "Can caregivers accompany outings?",
-      answer: "Yes, outings, events and supporting appointments are part of the service."
+      question: "Can assigned caregivers assist with community outings and transportation?",
+      answer: "Yes, our caregivers are fully available to accompany clients on scheduled outings, attend community activities, and support transportation needs for personal appointments and social visits safely."
     }
   ];
 
@@ -29,10 +29,10 @@ function DailyFaq() {
             Frequently Asked Questions
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Common questions about our daily support services
+            Common questions regarding our companion care services
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our companionship approach and service flexibility.
+            Get clear, prompt insights into our supportive approach, scheduling flexibility, and professional standards.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ function DailyFaq() {
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            Explore All FAQs
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

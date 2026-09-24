@@ -28,18 +28,18 @@ function HospiceAbout() {
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Compassionate care focused on comfort, dignity, and support during life’s final stages.
+          Honoring life's final journey with deep comfort, respect, and unwavering support.
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Our hospice and end-of-life care services provide compassionate support during one of life’s most difficult journeys. We focus on comfort, dignity, and quality of life while offering emotional and practical assistance for both individuals and their families. Working alongside healthcare providers and loved ones, our caregivers provide personalized care that helps create a peaceful and supportive environment during this important time.
+          Our hospice and end-of-life care services provide gentle, dignified support during life's most tender moments. We center our approach on comfort, symptom management, and emotional reassurance—not just for our clients, but for their entire circle of family and loved ones. Collaborating closely with medical teams, our dedicated caregivers foster a tranquil, safe environment where peace and presence come first.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we focus on delivering comfort and reassurance to ensure a peaceful environment families can rely on.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we offer serene reassurance and dedicated comfort that families can lean on with complete trust.
           </p>
         </div>
 

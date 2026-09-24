@@ -31,21 +31,21 @@ function DementiaService() {
 
             {/* Sub-heading / Overline */}
             <h3 className="text-xs sm:text-sm font-bold tracking-widest text-teal-700 uppercase">
-              About Our Specialized Service
+              Our Specialized Approach
             </h3>
 
             {/* Main Title */}
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              We Offer Dementia Care
+              Dedicated Memory & Cognitive Care
             </h2>
 
             {/* Description Text */}
             <p className="text-sm text-slate-600 leading-relaxed">
-              We offer dementia care services to families, helping individuals remain comfortable in a familiar environment.
+              We provide expert memory support designed to help clients thrive safely within the sanctuary of their own homes.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              Caring for someone with dementia requires understanding, patience, and consistency. Our caregivers provide structured, supportive care that prioritizes safety, familiarity, and emotional wellbeing.
+              Navigating cognitive changes requires a calm, structured routine. Our professional caregivers offer gentle reassurance and continuous supervision to foster emotional security.
             </p>
 
           </div>
@@ -64,33 +64,33 @@ function DementiaService() {
               </div>
 
               <div className="p-6 sm:p-7 space-y-4">
-                <h3 className="text-xl font-bold tracking-tight">What We Provide</h3>
+                <h3 className="text-xl font-bold tracking-tight">Core Support Services</h3>
                 
                 <ul className="space-y-2.5 text-sm text-teal-100">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Structured daily routines</span>
+                    <span className="text-left">Calming daily habit structures</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Memory care support</span>
+                    <span className="text-left">Specialized cognitive exercises</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Safety monitoring</span>
+                    <span className="text-left">Proactive safety monitoring</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Gentle redirection and engagement</span>
+                    <span className="text-left">Empathetic redirection & engagement</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Support with daily activities</span>
+                    <span className="text-left">Assistance with routine daily tasks</span>
                   </li>
                 </ul>
 
                 <p className="text-xs text-teal-200 pt-2 italic border-t border-teal-600/60">
-                  Care is tailored to each stage of dementia and individual needs.
+                  Care plans evolve gracefully alongside changing stages of memory requirements.
                 </p>
               </div>
             </div>
@@ -106,20 +106,20 @@ function DementiaService() {
               </div>
 
               <div className="p-6 sm:p-7 space-y-4">
-                <h3 className="text-xl font-bold tracking-tight">Who This Is For</h3>
+                <h3 className="text-xl font-bold tracking-tight">Who Benefits Most</h3>
                 
                 <ul className="space-y-3 text-sm text-slate-300">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Individuals with Alzheimer’s or dementia</span>
+                    <span className="text-left">Individuals diagnosed with Alzheimer's or dementia</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Families needing specialized support</span>
+                    <span className="text-left">Families seeking reliable respite and guidance</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Loved ones experiencing memory-related challenges</span>
+                    <span className="text-left">Loved ones experiencing early memory shifts</span>
                   </li>
                 </ul>
 

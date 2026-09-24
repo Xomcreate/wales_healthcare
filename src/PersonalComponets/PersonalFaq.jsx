@@ -6,12 +6,12 @@ function PersonalFaq() {
 
   const faqData = [
     {
-      question: "Can personal care be combined with other services?",
-      answer: "Yes, personal care is often tailored to combine with other services like subsidized care through Ontario Health at Home, or family's personal schedules."
+      question: "Can personal care services be coordinated with other care options?",
+      answer: "Yes, our personal care plans are fully flexible and can be seamlessly integrated with supplementary health programs, community services, or your family's existing care routine."
     },
     {
-      question: "How often can care be provided?",
-      answer: "Staff Relief requires no commitments for frequency of weekly visits. Services can be scheduled based on your needs — from a few hours a week, daily visits, up to 24 hours per day."
+      question: "How frequently can care visits be scheduled?",
+      answer: "We offer complete scheduling flexibility with no rigid long-term minimum commitments. Care can be arranged precisely to your needs—ranging from a few scheduled hours a week up to 24/7 round-the-clock support."
     }
   ];
 
@@ -26,13 +26,13 @@ function PersonalFaq() {
         {/* Header Section */}
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block bg-teal-50 text-teal-700 font-medium px-3.5 py-1 rounded-full text-xs uppercase tracking-wider mb-3">
-            Frequently Asked Questions
+            Got Questions?
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Common questions about our personal care services
+            Answers About Our Personal Care
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our service flexibility and scheduling options.
+            Find clear insights into our scheduling flexibility, service integration, and care options.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ function PersonalFaq() {
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            Explore Complete FAQ Center
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

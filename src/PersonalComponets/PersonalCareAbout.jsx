@@ -23,23 +23,23 @@ function PersonalCareAbout() {
         {/* Top Badge */}
         <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-500/20 px-3.5 py-1.5 rounded-full text-xs font-semibold text-teal-700">
           <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-          <span>Dedicated Home Support</span>
+          <span>Compassionate Companion & Daily Care</span>
         </div>
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Respectful, hands-on support to help your loved one feel comfortable and confident at home.
+          Empowering your loved ones to live safely, comfortably, and independently at home.
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Personal care services provide essential day-to-day assistance that helps individuals remain safe, comfortable, and independent in their own homes. Whether support is needed with bathing, grooming, dressing, mobility, or daily routines, our compassionate caregivers deliver respectful, personalized care tailored to each individual’s needs.
+          Our daily living assistance ensures individuals maintain their routine with confidence and ease. Whether it is reliable help with bathing, grooming, dressing, or safe mobility, our dedicated caregivers deliver gentle, tailored support that respects personal habits and preserves autonomy.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we focus on preserving dignity while providing the support families can rely on for peace of mind.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we champion personal dignity while giving families complete peace of mind through dependable care.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ function PersonalCareAbout() {
             href="/contact"
             className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-md hover:shadow-teal-500/20"
           >
-            <span>Request Care Services</span>
+            <span>Book a Care Consultation</span>
           </a>
         </div>
 

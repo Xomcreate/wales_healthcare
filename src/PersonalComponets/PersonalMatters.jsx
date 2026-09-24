@@ -24,12 +24,12 @@ function PersonalMatters() {
           
           {/* Main Title */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md">
-            Why It Matters
+            Why Trusted In-Home Care Matters
           </h2>
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            Receiving personal care at home allows individuals to maintain their dignity while staying in a familiar environment. With the right support, daily routines become easier, safer, and more comfortable — providing peace of mind for both individuals and their families.
+            Receiving professional care at home empowers individuals to preserve their independence and dignity within familiar, comforting surroundings. With tailored support, everyday routines become safer and smoother, granting families complete peace of mind.
           </p>
 
           {/* Action Button styled in Teal */}
@@ -38,7 +38,7 @@ function PersonalMatters() {
               href="/contact"
               className="inline-flex items-center justify-center bg-teal-600 hover:bg-teal-500 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-teal-600/20"
             >
-              <span>Get in touch to learn how we can support your loved one at home</span>
+              <span>Speak With Our Care Team Today</span>
             </a>
           </div>
 

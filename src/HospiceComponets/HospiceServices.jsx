@@ -31,21 +31,21 @@ function HospiceServices() {
 
             {/* Sub-heading / Overline */}
             <h3 className="text-xs sm:text-sm font-bold tracking-widest text-teal-700 uppercase">
-              About Our Specialized Service
+              Our End-of-Life Commitment
             </h3>
 
             {/* Main Title */}
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              We Offer Hospice Care
+              Dedicated Comfort & Palliative Support
             </h2>
 
             {/* Description Text */}
             <p className="text-sm text-slate-600 leading-relaxed">
-              Serving families, our goal is to provide comfort, dignity, and peace during this important time.
+              We stand shoulder-to-shoulder with families, delivering serene comfort, absolute dignity, and peace of mind when it matters most.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              Our hospice care services provide comfort-focused support for individuals and families during end-of-life care. We work alongside healthcare providers to ensure compassionate, respectful care at every stage.
+              Our end-of-life care focuses entirely on symptom relief, emotional grounding, and holistic wellbeing, working in harmony with medical professionals to ensure graceful support at every stage.
             </p>
 
           </div>
@@ -64,33 +64,33 @@ function HospiceServices() {
               </div>
 
               <div className="p-6 sm:p-7 space-y-4">
-                <h3 className="text-xl font-bold tracking-tight">What We Provide</h3>
+                <h3 className="text-xl font-bold tracking-tight">Core Care Provisions</h3>
                 
                 <ul className="space-y-2.5 text-sm text-teal-100">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Pain and comfort support</span>
+                    <span className="text-left">Gentle pain and comfort management</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Emotional and family support</span>
+                    <span className="text-left">Emotional and family respite support</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Personal care assistance</span>
+                    <span className="text-left">Respectful personal hygiene assistance</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Companionship and presence</span>
+                    <span className="text-left">Soothing companionship and active presence</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Coordination with care teams</span>
+                    <span className="text-left">Seamless coordination with clinical care teams</span>
                   </li>
                 </ul>
 
                 <p className="text-xs text-teal-200 pt-2 italic border-t border-teal-600/60">
-                  Our nursing team works closely with healthcare providers to ensure coordinated care.
+                  Our professional care team coordinates seamlessly with your broader medical network.
                 </p>
               </div>
             </div>
@@ -106,20 +106,20 @@ function HospiceServices() {
               </div>
 
               <div className="p-6 sm:p-7 space-y-4">
-                <h3 className="text-xl font-bold tracking-tight">Who This Is For</h3>
+                <h3 className="text-xl font-bold tracking-tight">Who Benefits Most</h3>
                 
                 <ul className="space-y-3 text-sm text-slate-300">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Individuals with life-limiting conditions</span>
+                    <span className="text-left">Individuals facing advanced, life-limiting conditions</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Families seeking compassionate support</span>
+                    <span className="text-left">Families needing compassionate guidance and reassurance</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Those wishing to remain at home</span>
+                    <span className="text-left">Those desiring peaceful comfort within their own home</span>
                   </li>
                 </ul>
 

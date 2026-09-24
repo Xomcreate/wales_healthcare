@@ -29,7 +29,7 @@ function NursingMatters() {
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-100 leading-relaxed max-w-3xl mx-auto font-normal drop-shadow">
-            Access to skilled nursing at home reduces hospital visits and supports recovery in a more comfortable, familiar setting, helping individuals maintain stability and independence.
+            Expert nursing care at home cuts down hospital trips and drives faster recovery in a familiar space, empowering individuals to stay independent.
           </p>
 
           {/* Action Button styled in Teal */}

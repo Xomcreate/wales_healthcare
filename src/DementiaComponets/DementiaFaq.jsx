@@ -6,12 +6,12 @@ function DementiaFaq() {
 
   const faqData = [
     {
-      question: "What makes dementia care different?",
-      answer: "Dementia care focuses on routine and continuity of care, paired with a gentle persuasive approach."
+      question: "How does specialized dementia care differ from standard home care?",
+      answer: "Dementia care centers on structured daily rhythms, continuity of familiar routines, and empathetic redirection techniques tailored specifically to cognitive changes."
     },
     {
-      question: "Is care flexible as needs change?",
-      answer: "Yes, care plans evolve as needs change. Our Coordination Team is available 24/7 to cancel or modify scheduled care with no additional fees or penalties."
+      question: "Can care plans be adjusted as cognitive needs change?",
+      answer: "Absolutely. Care schedules and intensity evolve flexibly alongside your loved one's needs, backed by our 24/7 coordination team for seamless support modifications."
     }
   ];
 
@@ -29,10 +29,10 @@ function DementiaFaq() {
             Frequently Asked Questions
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">
-            Common questions about our dementia care services
+            Answers About Our Memory Care Services
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Find quick answers regarding our specialized approach and care flexibility.
+            Discover clear insights into our specialized approach, safety protocols, and schedule flexibility.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ function DementiaFaq() {
             to="/resources/faq" 
             className="bg-slate-900 hover:bg-teal-700 text-white font-medium px-7 py-3.5 rounded-xl shadow-sm transition-all duration-200 text-sm sm:text-base flex items-center gap-2.5 group"
           >
-            View all FAQ
+            Explore Complete FAQ Center
             <svg className="w-4 h-4 transform transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>

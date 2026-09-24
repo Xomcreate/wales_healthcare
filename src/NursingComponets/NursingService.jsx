@@ -31,21 +31,21 @@ function NursingService() {
 
             {/* Sub-heading / Overline */}
             <h3 className="text-xs sm:text-sm font-bold tracking-widest text-teal-700 uppercase">
-              About Our Specialized Service
+              Specialized Clinical Excellence
             </h3>
 
             {/* Main Title */}
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              We Offer Nursing Support
+              Advanced In-Home Nursing Care
             </h2>
 
             {/* Description Text */}
             <p className="text-sm text-slate-600 leading-relaxed">
-              We support families with reliable, in-home nursing care designed to promote recovery and ongoing health management.
+              We empower families with professional, dependable medical support tailored to foster smooth recoveries and proactive health management.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              Our nursing support services provide clinical care for individuals with more complex health needs. Delivered by trained professionals, this service ensures continuity of care outside of a hospital setting.
+              Our clinical nursing solutions bridge the gap between hospital and home, delivering advanced care from seasoned professionals who prioritize your safety and comfort every step of the way.
             </p>
 
           </div>
@@ -64,33 +64,33 @@ function NursingService() {
               </div>
 
               <div className="p-6 sm:p-7 space-y-4">
-                <h3 className="text-xl font-bold tracking-tight">What We Provide</h3>
+                <h3 className="text-xl font-bold tracking-tight">Clinical Services We Provide</h3>
                 
                 <ul className="space-y-2.5 text-sm text-teal-100">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Medication administration</span>
+                    <span className="text-left">Precise medication administration</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Wound care and monitoring</span>
+                    <span className="text-left">Advanced wound care and healing monitoring</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Chronic condition management</span>
+                    <span className="text-left">Comprehensive chronic condition management</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Post-surgical care</span>
+                    <span className="text-left">Attentive post-surgical care and recovery</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Health assessments and reporting</span>
+                    <span className="text-left">Regular health assessments and physician reporting</span>
                   </li>
                 </ul>
 
                 <p className="text-xs text-teal-200 pt-2 italic border-t border-teal-600/60">
-                  Our nursing team works closely with healthcare providers to ensure coordinated care.
+                  Our nurses collaborate closely with your primary care team to guarantee seamless, unified treatment.
                 </p>
               </div>
             </div>
@@ -106,24 +106,24 @@ function NursingService() {
               </div>
 
               <div className="p-6 sm:p-7 space-y-4">
-                <h3 className="text-xl font-bold tracking-tight">Who This Is For</h3>
+                <h3 className="text-xl font-bold tracking-tight">Who Benefits Most</h3>
                 
                 <ul className="space-y-3 text-sm text-slate-300">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Individuals recovering from surgery</span>
+                    <span className="text-left">Individuals healing smoothly after surgery</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Those managing chronic conditions</span>
+                    <span className="text-left">Those navigating long-term chronic conditions</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Patients requiring ongoing medical monitoring</span>
+                    <span className="text-left">Patients needing continuous vital signs and health tracking</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Families seeking professional in-home care</span>
+                    <span className="text-left">Families seeking reliable, expert clinical guidance at home</span>
                   </li>
                 </ul>
 
@@ -132,7 +132,7 @@ function NursingService() {
                     href="/contact"
                     className="inline-flex items-center justify-center w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-teal-500/20"
                   >
-                    <span>Request Services</span>
+                    <span>Request Nursing Services</span>
                   </a>
                 </div>
               </div>

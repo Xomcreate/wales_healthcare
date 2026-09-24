@@ -23,23 +23,23 @@ function NursingAbout() {
         {/* Top Badge */}
         <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-500/20 px-3.5 py-1.5 rounded-full text-xs font-semibold text-teal-700">
           <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-          <span>Professional Nursing Support</span>
+          <span>Specialized Nursing Care</span>
         </div>
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Professional medical care delivered safely and comfortably at home.
+          Expert clinical care delivered with warmth and safety in your home.
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          When healthcare needs become more complex, professional nursing support can provide valuable assistance while allowing individuals to remain in the comfort of their homes. Our experienced nursing professionals offer a range of services designed to support recovery, manage ongoing health conditions, and promote overall wellbeing. Working closely with clients, families, and healthcare providers, Staff Relief delivers personalized care focused on safety, comfort, and quality of life.
+          When medical needs become complex, having trusted professional nurses by your side makes all the difference. Our skilled nursing team provides comprehensive clinical support to assist with recovery, manage chronic conditions, and enhance daily wellness. Collaborating closely with families and physicians, we deliver personalized medical care centered entirely around safety, dignity, and comfort.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we combine clinical excellence with compassionate presence to help clients thrive securely at home.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we unite clinical precision with genuine compassion to help you recover and thrive securely at home.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ function NursingAbout() {
             href="/contact"
             className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-md hover:shadow-teal-500/20"
           >
-            <span>Request Nursing Care</span>
+            <span>Request Nursing Support</span>
           </a>
         </div>
 

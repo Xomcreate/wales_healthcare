@@ -28,18 +28,18 @@ function DementiaAbout() {
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Compassionate, patient-centered support for individuals living with memory loss.
+          Dignity-centered care designed for individuals navigating memory loss.
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Caring for a loved one living with dementia requires patience, understanding, and specialized support. Our dementia care services are designed to help individuals maintain comfort, routine, and a sense of familiarity while receiving compassionate assistance tailored to their unique needs. By providing personalized care in a supportive environment, we help families navigate the challenges of memory loss while enhancing the wellbeing and quality of life of their loved ones.
+          Caring for a loved one with dementia calls for a delicate blend of empathy, routine, and professional expertise. Our memory care programs empower individuals to preserve their independence and daily comfort within a familiar environment. By offering specialized guidance and emotional backing, we ease the daily journey for both our clients and their families.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we focus on preserving dignity and nurturing familiarity to provide the specialized support families can rely on.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we champion person-centered care that honors past memories while protecting future peace of mind.
           </p>
         </div>
 

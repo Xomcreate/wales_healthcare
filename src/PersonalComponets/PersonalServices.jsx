@@ -31,21 +31,21 @@ function PersonalServices() {
 
             {/* Sub-heading / Overline */}
             <h3 className="text-xs sm:text-sm font-bold tracking-widest text-teal-700 uppercase">
-              About Our Specialized Service
+              Tailored In-Home Support
             </h3>
 
             {/* Main Title */}
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              We Offer Personal Care
+              Compassionate Personal Care
             </h2>
 
             {/* Description Text */}
             <p className="text-sm text-slate-600 leading-relaxed">
-              We proudly offer personal care services to families and surrounding communities, helping individuals remain safe and supported in the comfort of their own homes.
+              We provide dedicated personal care services designed to help individuals maintain their independence, safety, and dignity within familiar surroundings.
             </p>
 
             <p className="text-sm text-slate-600 leading-relaxed">
-              Our caregivers provide compassionate assistance tailored to each person's comfort level and preferences.
+              Our professional caregivers deliver thoughtful, customized assistance built around each client’s unique routines, preferences, and comfort levels.
             </p>
 
           </div>
@@ -64,33 +64,33 @@ function PersonalServices() {
               </div>
 
               <div className="p-6 sm:p-7 space-y-4">
-                <h3 className="text-xl font-bold tracking-tight">What We Provide</h3>
+                <h3 className="text-xl font-bold tracking-tight">Our Core Services</h3>
                 
                 <ul className="space-y-2.5 text-sm text-teal-100">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Assistance with bathing, grooming, and hygiene</span>
+                    <span className="text-left">Bathing, grooming, and personal hygiene support</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Dressing and mobility support</span>
+                    <span className="text-left">Dressing and safe mobility assistance</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Toileting and incontinence care</span>
+                    <span className="text-left">Toileting and continence management</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Medication reminders</span>
+                    <span className="text-left">Timely medication reminders</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-300 font-bold shrink-0">✓</span>
-                    <span className="text-left">Morning and evening routines</span>
+                    <span className="text-left">Morning and evening routine facilitation</span>
                   </li>
                 </ul>
 
                 <p className="text-xs text-teal-200 pt-2 italic border-t border-teal-600/60">
-                  Each service is delivered with respect, patience, and attention to individual needs.
+                  Every service is provided with utmost respect, warmth, and meticulous attention to personal well-being.
                 </p>
               </div>
             </div>
@@ -106,24 +106,24 @@ function PersonalServices() {
               </div>
 
               <div className="p-6 sm:p-7 space-y-4">
-                <h3 className="text-xl font-bold tracking-tight">Who This Is For</h3>
+                <h3 className="text-xl font-bold tracking-tight">Who Can Benefit</h3>
                 
                 <ul className="space-y-3 text-sm text-slate-300">
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Seniors who need help with daily routines</span>
+                    <span className="text-left">Older adults requiring help with everyday tasks</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Individuals recovering from illness or surgery</span>
+                    <span className="text-left">Individuals healing after surgery or illness</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Those with limited mobility</span>
+                    <span className="text-left">Those navigating physical or mobility limitations</span>
                   </li>
                   <li className="flex items-start justify-center sm:justify-start space-x-2">
                     <span className="text-teal-400 font-bold shrink-0">✓</span>
-                    <span className="text-left">Families needing additional in-home support</span>
+                    <span className="text-left">Families seeking reliable, professional respite support</span>
                   </li>
                 </ul>
 
@@ -132,7 +132,7 @@ function PersonalServices() {
                     href="/contact"
                     className="inline-flex items-center justify-center w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md hover:shadow-teal-500/20"
                   >
-                    <span>Request Services</span>
+                    <span>Schedule a Consultation</span>
                   </a>
                 </div>
               </div>

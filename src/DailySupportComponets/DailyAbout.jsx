@@ -23,23 +23,23 @@ function DailyAbout() {
         {/* Top Badge */}
         <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-500/20 px-3.5 py-1.5 rounded-full text-xs font-semibold text-teal-700">
           <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-          <span>Dedicated Daily Support</span>
+          <span>Compassionate Daily Assistance</span>
         </div>
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Friendly, reliable support that helps make each day brighter and more manageable.
+          Enriching everyday living through trusted, person-centered companion care.
         </h2>
 
         {/* Body Description */}
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl mx-auto">
-          Sometimes the most meaningful care comes from simply having someone there. Our companionship and daily support services help individuals remain active, engaged, and connected while receiving assistance with everyday activities. From friendly conversation and meal preparation to errands and light household support, Wales Healthcare’s caregivers provide dependable companionship that promotes independence, wellbeing, and peace of mind for both clients and their families.
+          True quality of life often stems from having reliable, warm support by your side. Our daily support services are thoughtfully designed to help individuals maintain their independence, dignity, and active connection to the things they love. Whether it is engaging conversation, nutritious meal preparation, light housekeeping, or gentle assistance with errands and routines, our dedicated caregivers provide the dependable presence families trust and clients cherish.
         </p>
 
         {/* Brand Accent Box */}
         <div className="max-w-2xl mx-auto bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-xs">
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we focus on meaningful presence and dependable support to help clients thrive at home.
+            At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we combine professional expertise with heartfelt companionship to ensure every client feels safe, valued, and empowered at home.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ function DailyAbout() {
             href="/contact"
             className="inline-flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-md hover:shadow-teal-500/20"
           >
-            <span>Request Support Services</span>
+            <span>Arrange Support Services</span>
           </a>
         </div>
 

@@ -24,12 +24,12 @@ function PersonalLast() {
           
           {/* Main Title */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 leading-tight">
-            Get started with personal care today
+            Begin Your Care Journey With Confidence
           </h2>
 
           {/* Description Text */}
           <p className="text-sm sm:text-base lg:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
-            Our initial consultations are complimentary and obligation-free. Let’s discuss how we can support your loved one.
+            Our initial consultations are entirely complimentary and without obligation. Let us help you find the ideal support plan tailored for your loved one.
           </p>
 
           {/* Action Button (Background color matched to text-slate-950) */}
@@ -38,15 +38,15 @@ function PersonalLast() {
               href="/contact"
               className="inline-flex items-center justify-center bg-slate-950 hover:bg-slate-800 text-white font-medium py-3 px-7 rounded-full text-sm sm:text-base transition-all shadow-xl hover:shadow-slate-950/20"
             >
-              <span>Request A Care Assessment</span>
+              <span>Schedule Your Free Consultation</span>
             </a>
           </div>
 
           {/* Inline Feature List with Dots */}
           <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm sm:text-base text-slate-800 font-medium pt-1">
-            <li>No Obligation</li>
+            <li>Zero Commitment</li>
             <li aria-hidden="true" className="text-slate-400">&bull;</li>
-            <li>Confidential</li>
+            <li>Strictly Confidential</li>
             <li aria-hidden="true" className="text-slate-400">&bull;</li>
             <li>Expert Guidance</li>
           </ul>
