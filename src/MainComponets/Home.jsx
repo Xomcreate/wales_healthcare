@@ -16,7 +16,7 @@ function Home() {
     <div>
       <HomeHero/>
       <HomeAbout/>
-      <HomeLogo/>
+      {/* <HomeLogo/> */}
       <HomeServices/>
       <HomeChoose/>
       <HomeWork/>

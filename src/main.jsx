@@ -10,6 +10,18 @@ import {
 
 import './index.css'
 
+
+// ========================================
+// HIDE CONSOLE MESSAGES IN PRODUCTION
+// ========================================
+
+if (import.meta.env.PROD) {
+  console.log = () => {}
+  console.warn = () => {}
+  console.error = () => {}
+}
+
+
 // ========================================
 // MAIN COMPONENTS
 // ========================================
@@ -358,13 +370,20 @@ createRoot(document.getElementById('root')).render(
             element={<Login />}
           />
 
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-<Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/forgot-password"
+            element={<ForgotPassword />}
+          />
 
           <Route
-  path="/set-password"
-  element={<SetPassword />}
-/>
+            path="/reset-password"
+            element={<ResetPassword />}
+          />
+
+          <Route
+            path="/set-password"
+            element={<SetPassword />}
+          />
 
           <Route
             path="/apply"

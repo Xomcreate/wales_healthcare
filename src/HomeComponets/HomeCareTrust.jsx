@@ -4,19 +4,19 @@ function HomeCareTrust() {
   const trustPoints = [
     {
       title: "Certified & Experienced Caregivers",
-      description: "Trained professionals with extensive backgrounds in personal support, specialized health needs, and elder care."
+      description: "Trained professionals specializing in personal support, elder care, and medical needs."
     },
     {
       title: "Safety & Compliance Standards",
-      description: "Rigorous protocols, comprehensive background checks, and adherence to top healthcare regulatory frameworks."
+      description: "Rigorous background checks and strict adherence to healthcare regulations."
     },
     {
-      title: "Personalized & Flexible Care Plans",
-      description: "Tailored schedules and customized care strategies designed to match each unique client and family situation."
+      title: "Personalized Care Plans",
+      description: "Customized schedules and tailored support designed for your family."
     },
     {
-      title: "Emotional Support",
-      description: "Compassionate companionship and dedicated care focused on preserving client dignity, comfort, and happiness."
+      title: "Compassionate Companionship",
+      description: "Dedicated care focused on preserving client dignity, comfort, and happiness."
     }
   ];
 
@@ -30,7 +30,7 @@ function HomeCareTrust() {
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-10">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[#1b2a4e]">
-              Why Families Trust Staff Relief
+              Why Families Trust Wales Healthcare 
             </h2>
           </div>
 
@@ -42,7 +42,7 @@ function HomeCareTrust() {
                 className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 flex flex-col justify-between"
               >
                 <div>
-                  <h3 className="text-lg font-bold text-[#1b2a4e] mb-3">
+                  <h3 className="text-lg font-bold text-[#1b2a4e] mb-2">
                     {item.title}
                   </h3>
                   <p className="text-sm sm:text-base text-slate-600 leading-relaxed">

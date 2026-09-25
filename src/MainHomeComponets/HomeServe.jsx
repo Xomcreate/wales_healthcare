@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function HomeServe() {
+  const navigate = useNavigate();
+
   return (
     <section className="relative bg-[#132A3E] py-12 lg:py-16 font-sans text-white w-full overflow-hidden">
       
@@ -17,7 +20,7 @@ function HomeServe() {
         </svg>
       </div>
 
-      <div className="relative w-full max-w-350 mx-auto px-4 sm:px-6 lg:px-12">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
         
         {/* Main Grid: Left Map Container & Right Text Area */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -26,7 +29,7 @@ function HomeServe() {
           <div className="lg:col-span-7 relative w-full h-85 sm:h-100 rounded-3xl overflow-hidden shadow-xl border border-slate-700/50 bg-[#e5e3df]">
             
             <iframe 
-              title="Ontario Service Areas Map"
+              title="Canada Service Areas Map"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2934.546781292067!2d-79.3832!3d43.6532!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b34d68bf332af%3A0x4235f4864896fc44!2sToronto%2C%20ON%2C%20Canada!5e0!3m2!1sen!2sus!4v1650000000000!5m2!1sen!2sus"
               className="w-full h-full border-0 filter contrast-[1.05] opacity-90"
               allowFullScreen="" 
@@ -58,18 +61,19 @@ function HomeServe() {
               </div>
             </div>
 
-            {/* Google Attribution watermark overlay */}
-            <div className="absolute bottom-1 left-2 text-[10px] text-slate-500 bg-white/80 px-1 rounded">
-              Map data ©2026 Google
+            {/* Region Callout Badge */}
+            <div className="absolute bottom-3 left-3 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-xl text-[11px] font-semibold text-slate-800 shadow-md">
+              📍 Ontario, Quebec & British Columbia
             </div>
+
           </div>
 
-          {/* Right Side: Centered on mobile/tablet, left-aligned on desktop (lg) */}
+          {/* Right Side: Content Area */}
           <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left">
             
             {/* Eyebrow Header */}
             <span className="text-xs sm:text-sm font-bold tracking-[0.2em] text-teal-400 uppercase mb-3">
-              Our Coverage
+              Nationwide Coverage
             </span>
 
             {/* Main Title */}
@@ -79,11 +83,14 @@ function HomeServe() {
 
             {/* Description Body */}
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6 max-w-lg">
-              Proudly supporting families and healthcare organizations across communities throughout Ontario with dedicated, professional assistance.
+              Proudly supporting families and healthcare organizations across communities in Ontario, Quebec, and British Columbia with dedicated, professional assistance.
             </p>
 
             {/* Action Button */}
-            <button className="bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sky-400">
+            <button 
+              onClick={() => navigate('/service-areas')}
+              className="bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sky-400"
+            >
               View All Service Areas
             </button>
 
