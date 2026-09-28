@@ -24,6 +24,29 @@ const NAV = [
     ],
   },
   {
+    label: 'Programs',
+    href: '/programs',
+    items: [
+      { label: 'Shelter Support Worker Certificate Program', href: '/programs/shelter-support-worker' },
+      { label: 'Intensive Case Management Certificate Program', href: '/programs/intensive-case-management' },
+      { label: 'Food Service Worker Certificate Program', href: '/programs/food-service-worker' },
+      { label: 'NACC Personal Support Worker (PSW) DE 2022 Certificate Program', href: '/programs/nacc-psw-2022' },
+      { label: 'Mental Health and Addictions Diploma Program', href: '/programs/mental-health-addictions' },
+      { label: 'Child and Youth Care Worker Diploma Program', href: '/programs/child-youth-care' },
+      { label: 'Developmental Services Worker Diploma Program', href: '/programs/developmental-services' },
+    ],
+  },
+  {
+    label: 'Certificates',
+    href: '/certificates',
+    items: [
+      { label: 'A.S.I.S.T. (Applied Suicide Intervention Skills Training)', href: '/certificates/asist' },
+      { label: 'First Aid & CPR Training', href: '/certificates/first-aid-cpr' },
+      { label: 'De-escalation, Crisis Intervention & Conflict Resolution', href: '/certificates/crisis-intervention' },
+      { label: 'Harm Reduction Training', href: '/certificates/harm-reduction' },
+    ],
+  },
+  {
     label: 'About',
     href: '/about',
     items: [
@@ -41,10 +64,14 @@ const NAV = [
   },
 ]
 
+// How many of the LAST nav items should have their dropdown anchored to the
+// right edge of the trigger (so they open leftwards and never overflow).
+const RIGHT_ALIGNED_COUNT = 3
+
 function ChevronIcon({ open }) {
   return (
     <svg
-      className={`w-3.5 h-3.5 ml-1 transition-transform duration-200 ${
+      className={`w-3.5 h-3.5 ml-1 shrink-0 transition-transform duration-200 ${
         open ? 'rotate-180' : ''
       }`}
       fill="none"
@@ -61,18 +88,22 @@ function ChevronIcon({ open }) {
   )
 }
 
-function DesktopDropdown({ item }) {
+function DesktopDropdown({ item, alignRight = false }) {
   return (
     <div className="relative group py-2">
       <Link
         to={item.href}
-        className="flex items-center text-slate-700 group-hover:text-teal-600 font-medium text-sm transition-colors"
+        className="flex items-center whitespace-nowrap text-slate-700 group-hover:text-teal-600 font-medium text-sm transition-colors"
       >
         {item.label}
         <ChevronIcon open={false} />
       </Link>
 
-      <div className="absolute left-0 top-full w-64 bg-white border border-slate-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50">
+      <div
+        className={`absolute top-full w-80 max-w-[calc(100vw-2rem)] bg-white border border-slate-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 p-2 z-50 ${
+          alignRight ? 'right-0' : 'left-0'
+        }`}
+      >
         {item.items.map((sub) => (
           <Link
             key={sub.href}
@@ -212,6 +243,11 @@ function Header() {
     return ROLE_DASHBOARDS[role] || '/'
   }
 
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false)
+    setOpenSection(null)
+  }
+
   const handleLogout = async () => {
     const refreshToken = localStorage.getItem('refresh_token')
 
@@ -223,7 +259,6 @@ function Header() {
       }
     } catch (error) {
       // Intentionally silent.
-      // Local session will still be cleared below.
     } finally {
       localStorage.removeItem('access_token')
       localStorage.removeItem('refresh_token')
@@ -242,23 +277,14 @@ function Header() {
   }
 
   const toggleSection = (label) => {
-    setOpenSection((prev) =>
-      prev === label ? null : label
-    )
-  }
-
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false)
-    setOpenSection(null)
+    setOpenSection((prev) => (prev === label ? null : label))
   }
 
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50 font-sans shadow-xs">
-
+      {/* Top bar */}
       <div className="bg-slate-50 border-b border-slate-200 text-xs py-2 px-4 sm:px-6 lg:px-12 flex flex-wrap gap-y-1 justify-between items-center">
-
         <div className="flex items-center space-x-1.5 sm:space-x-2 text-slate-600 font-medium min-w-0">
-
           <svg
             className="w-3.5 h-3.5 text-teal-600 shrink-0"
             fill="none"
@@ -274,9 +300,7 @@ function Header() {
           </svg>
 
           <span className="truncate">
-            <span className="hidden sm:inline">
-              Need Help?{' '}
-            </span>
+            <span className="hidden sm:inline">Need Help? </span>
 
             <a
               href="tel:09076084515"
@@ -285,14 +309,12 @@ function Header() {
               09076084515
             </a>
           </span>
-
         </div>
 
         {!authLoading && (
           <>
             {user ? (
               <div className="flex items-center space-x-3 sm:space-x-4">
-
                 <Link
                   to={getDashboardRoute()}
                   className="text-teal-600 hover:text-teal-700 font-semibold transition-colors"
@@ -300,9 +322,7 @@ function Header() {
                   Dashboard
                 </Link>
 
-                <span className="text-slate-300">
-                  |
-                </span>
+                <span className="text-slate-300">|</span>
 
                 <button
                   type="button"
@@ -311,11 +331,9 @@ function Header() {
                 >
                   Logout
                 </button>
-
               </div>
             ) : (
               <div className="flex items-center space-x-3 sm:space-x-4">
-
                 <Link
                   to="/login"
                   className="text-slate-600 hover:text-teal-600 font-medium transition-colors"
@@ -323,9 +341,7 @@ function Header() {
                   Login
                 </Link>
 
-                <span className="text-slate-300">
-                  |
-                </span>
+                <span className="text-slate-300">|</span>
 
                 <Link
                   to="/register"
@@ -333,84 +349,69 @@ function Header() {
                 >
                   Register
                 </Link>
-
               </div>
             )}
           </>
         )}
-
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-3.5 lg:py-4 flex items-center justify-between">
-
+      {/* Main bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-3.5 xl:py-4 flex items-center justify-between gap-6">
         <Link
           to="/"
           onClick={closeMobileMenu}
           className="flex items-center space-x-2.5 sm:space-x-3 cursor-pointer shrink-0"
         >
-
           <img
             src="/walescares.png"
             alt="Wales Healthcare logo"
             className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
           />
 
-          <span className="text-lg sm:text-xl font-bold tracking-tight text-slate-900">
-            Wales{' '}
-            <span className="text-teal-600">
-              Healthcare
-            </span>
+          <span className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 whitespace-nowrap">
+            Wales <span className="text-teal-600">Healthcare</span>
           </span>
-
         </Link>
 
-        <nav className="hidden lg:flex items-center space-x-7">
-
-          {NAV.map((item) => (
+        {/* Desktop nav: only from xl (1280px) up */}
+        <nav className="hidden xl:flex items-center space-x-7">
+          {NAV.map((item, i) => (
             <DesktopDropdown
               key={item.label}
               item={item}
+              alignRight={i >= NAV.length - RIGHT_ALIGNED_COUNT}
             />
           ))}
 
           <Link
             to="/careers"
-            className="text-slate-700 hover:text-teal-600 font-medium text-sm transition-colors"
+            className="whitespace-nowrap text-slate-700 hover:text-teal-600 font-medium text-sm transition-colors"
           >
             Careers
           </Link>
 
           <Link
             to="/contact"
-            className="text-slate-700 hover:text-teal-600 font-medium text-sm transition-colors"
+            className="whitespace-nowrap text-slate-700 hover:text-teal-600 font-medium text-sm transition-colors"
           >
             Contact
           </Link>
-
         </nav>
 
-        <div className="lg:hidden flex items-center">
-
+        {/* Hamburger: below xl */}
+        <div className="xl:hidden flex items-center">
           <button
-            onClick={() =>
-              setMobileMenuOpen(!mobileMenuOpen)
-            }
-            aria-label={
-              mobileMenuOpen
-                ? 'Close menu'
-                : 'Open menu'
-            }
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
             className="text-slate-700 hover:text-teal-600 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-teal-500 rounded-md p-1.5"
           >
-
             <svg
               className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-
               {mobileMenuOpen ? (
                 <path
                   strokeLinecap="round"
@@ -426,25 +427,20 @@ function Header() {
                   d="M4 6h16M4 12h16M4 18h16"
                 />
               )}
-
             </svg>
-
           </button>
-
         </div>
-
       </div>
 
+      {/* Mobile / tablet panel */}
       <div
-        className={`lg:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out border-t border-slate-200 ${
+        className={`xl:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out border-t border-slate-200 ${
           mobileMenuOpen
             ? 'max-h-[80vh] overflow-y-auto'
             : 'max-h-0 border-t-0'
         }`}
       >
-
         <div className="px-4 sm:px-6 py-2 bg-white">
-
           {NAV.map((item) => (
             <MobileAccordionItem
               key={item.label}
@@ -457,7 +453,6 @@ function Header() {
           ))}
 
           <div className="py-1">
-
             <Link
               to="/careers"
               onClick={closeMobileMenu}
@@ -478,7 +473,6 @@ function Header() {
               <>
                 {user ? (
                   <>
-
                     <Link
                       to={getDashboardRoute()}
                       onClick={closeMobileMenu}
@@ -494,11 +488,9 @@ function Header() {
                     >
                       Logout
                     </button>
-
                   </>
                 ) : (
                   <>
-
                     <Link
                       to="/login"
                       onClick={closeMobileMenu}
@@ -514,18 +506,13 @@ function Header() {
                     >
                       Register
                     </Link>
-
                   </>
                 )}
               </>
             )}
-
           </div>
-
         </div>
-
       </div>
-
     </header>
   )
 }

@@ -122,6 +122,19 @@ import ProtectedRoute from './MainComponets/ProtectedRoute'
 import SetPassword from './MainComponets/SetPassword'
 import ResetPassword from './MainComponets/ResetPassword'
 import ForgotPassword from './MainComponets/ForgotPassword'
+import Program from './ProgramsComponets/Program'
+import Shelter from './ShelterProgramComponets/Shelter'
+import Intensive from './IntensiveCareComponets/Intensive'
+import FoodService from './FoodServiceComponets/FoodService'
+import Nacc from './NaccComponets/Nacc'
+import MentalHealth from './MentalHealthComponets/MentalHealth'
+import ChildCare from './ChildCareComponets/ChildCare'
+import Development from './DevelopmentalWorkerComponets/Development'
+import Cert from './CertificatesComponets/Cert'
+import Assit from './AssitComponets/Assit'
+import FirstAid from './FirstAidComponets/FirstAid'
+import Escalation from './EscalationComponets/Escalation'
+import Harm from './HarmReductionComponets/Harm'
 
 
 // ========================================
@@ -343,6 +356,79 @@ createRoot(document.getElementById('root')).render(
           <Route
             path="/guides/alzheimer-guide"
             element={<AlzheimerGuide />}
+          />
+
+           <Route
+            path="/programs"
+            element={<Program/>}
+          />
+
+           <Route
+            path="/programs/shelter-support-worker"
+            element={<Shelter/>}
+          />
+
+          
+           <Route
+            path="/programs/intensive-case-management"
+            element={<Intensive/>}
+          />
+
+           <Route
+            path="/programs/food-service-worker"
+            element={<FoodService/>}
+          />
+          
+           <Route
+            path="/programs/nacc-psw-2022"
+            element={<Nacc/>}
+          />
+
+          
+           <Route
+            path="/programs/mental-health-addictions"
+            element={<MentalHealth/>}
+          />
+
+              
+           <Route
+            path="/programs/child-youth-care"
+            element={<ChildCare/>}
+          />
+
+              <Route
+            path="/programs/developmental-services"
+            element={<Development/>}
+          />
+
+          
+          
+              <Route
+            path="/certificates"
+            element={<Cert/>}
+          />
+
+               <Route
+            path="/certificates/asist"
+            element={<Assit/>}
+          />
+
+          
+               <Route
+            path="/certificates/first-aid-cpr"
+            element={<FirstAid/>}
+          />
+
+          
+               <Route
+            path="/certificates/crisis-intervention"
+            element={<Escalation/>}
+          />
+
+          
+               <Route
+            path="/certificates/harm-reduction"
+            element={<Harm/>}
           />
 
 
