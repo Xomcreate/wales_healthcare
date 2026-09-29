@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Swap this for your own De-escalation training image
-const HERO_IMAGE = 'https://i.pinimg.com/1200x/5e/9d/ba/5e9dbadcef0add2db47d470d1f933f59.jpg';
+const HERO_IMAGE = 'https://i.pinimg.com/736x/31/92/a5/3192a5486d764e77e13b3292fbf3aa7d.jpg';
 
 function EscaltionHero() {
   return (

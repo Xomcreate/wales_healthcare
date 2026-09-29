@@ -8,28 +8,28 @@ const trainings = [
     title: 'A.S.I.S.T. \u2013 Suicide Intervention',
     description:
       'Learn to spot the signs that someone may be thinking about suicide and respond with confidence, care, and a clear, proven approach.',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80',
+    image: 'https://i.pinimg.com/1200x/da/fc/fa/dafcfa7b27d405d40a1e07e12bb8542d.jpg',
     to: '/certificates/asist',
   },
   {
     title: 'First Aid & CPR',
     description:
       'Build the life-saving skills to act quickly in a medical emergency, whether at home, at work, or out in the community.',
-    image: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80',
+    image: 'https://i.pinimg.com/736x/05/3d/81/053d81260551dfcdc1a8f20450ddef4d.jpg',
     to: '/certificates/first-aid-cpr',
   },
   {
     title: 'De-escalation, Crisis Intervention & Conflict Resolution',
     description:
       'Gain the confidence to calm tense moments, support people in crisis, and work through conflict respectfully and professionally.',
-    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80',
+    image: 'https://i.pinimg.com/736x/f7/b2/f8/f7b2f84f3c0737a48aadc5eb6099b9b8.jpg',
     to: '/certificates/crisis-intervention',
   },
   {
     title: 'Harm Reduction',
     description:
       'Explore practical, non-judgmental ways to support people who use substances, centred on safety, dignity, and access to help.',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80',
+    image: 'https://i.pinimg.com/236x/77/5b/78/775b78b22b184f95a3140a475e2f4507.jpg',
     to: '/certificates/harm-reduction',
   },
 ];

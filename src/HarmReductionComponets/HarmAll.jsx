@@ -184,7 +184,7 @@ function HarmAll() {
           className="absolute inset-0 z-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=2000')",
+              "url('https://i.pinimg.com/1200x/ad/42/5b/ad425bb0a5aa802f280782169a19c571.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -240,7 +240,7 @@ function HarmAll() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className="relative rounded-2xl overflow-hidden shadow-md bg-slate-100 h-80">
             <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000"
+              src="https://i.pinimg.com/736x/be/c6/c2/bec6c21bd364f39bbb8f82417bfc42c5.jpg"
               alt="Participants taking part in harm reduction training"
               className="w-full h-full object-cover"
             />

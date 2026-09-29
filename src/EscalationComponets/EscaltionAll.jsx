@@ -178,7 +178,7 @@ function EscaltionAll() {
           className="absolute inset-0 z-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=2000')",
+              "url('https://i.pinimg.com/736x/6f/1d/b4/6f1db47d5bfe3361bf3acd982d5b8b0f.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -234,7 +234,7 @@ function EscaltionAll() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className="relative rounded-2xl overflow-hidden shadow-md bg-slate-100 h-80">
             <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000"
+              src="https://i.pinimg.com/736x/8b/02/92/8b0292b535311e21d627463c69f60d62.jpg"
               alt="Participants taking part in de-escalation and crisis intervention training"
               className="w-full h-full object-cover"
             />

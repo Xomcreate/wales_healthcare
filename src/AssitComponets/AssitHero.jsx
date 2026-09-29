@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Swap this for your own A.S.I.S.T. training image
-const HERO_IMAGE = 'https://i.pinimg.com/1200x/5e/9d/ba/5e9dbadcef0add2db47d470d1f933f59.jpg';
+const HERO_IMAGE = 'https://i.pinimg.com/1200x/56/5e/32/565e3216babe46a6bc47fc555ed4a81f.jpg';
 
 function AssitHero() {
   return (

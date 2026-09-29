@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Swap this for your own First Aid & CPR training image
-const HERO_IMAGE = 'https://i.pinimg.com/1200x/5e/9d/ba/5e9dbadcef0add2db47d470d1f933f59.jpg';
+const HERO_IMAGE = 'https://i.pinimg.com/1200x/ab/cb/fc/abcbfc82cc5f4c0e71a48c9e6471def5.jpg';
 
 function FirstAidHero() {
   return (

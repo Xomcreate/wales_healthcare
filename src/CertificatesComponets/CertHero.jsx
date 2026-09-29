@@ -2,7 +2,7 @@ import React from 'react';
 
 // Swap this for your own training / certification image
 const HERO_IMAGE =
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1A1kOIFLTUlFO6TQL2O-9HENKtPagV7REPGIUqmAacw&s=10';
+  'https://i.pinimg.com/736x/f2/d1/64/f2d1647f12eb4afc57610c01054a9631.jpg';
 
 function CertHero() {
   return (

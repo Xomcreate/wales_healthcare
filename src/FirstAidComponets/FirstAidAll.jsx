@@ -169,7 +169,7 @@ function FirstAidAll() {
           className="absolute inset-0 z-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=2000')",
+              "url('https://i.pinimg.com/1200x/b8/45/cb/b845cb2ca962ae591fa3b728aec08786.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -223,7 +223,7 @@ function FirstAidAll() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className="relative rounded-2xl overflow-hidden shadow-md bg-slate-100 h-80">
             <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000"
+              src="https://i.pinimg.com/736x/3f/8e/69/3f8e69491d584c019ab28336b52e14c6.jpg"
               alt="Participants taking part in First Aid & CPR training"
               className="w-full h-full object-cover"
             />

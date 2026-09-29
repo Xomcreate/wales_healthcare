@@ -172,7 +172,7 @@ function AssitAll() {
           className="absolute inset-0 z-0 opacity-15 pointer-events-none"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=2000')",
+              "url('https://i.pinimg.com/236x/7c/6f/bf/7c6fbf87a16b64df85733c97d489a558.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
@@ -222,7 +222,7 @@ function AssitAll() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div className="relative rounded-2xl overflow-hidden shadow-md bg-slate-100 h-80">
             <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000"
+              src="https://i.pinimg.com/1200x/cd/22/45/cd2245cd36817607ce0ef18707b34549.jpg"
               alt="Participants taking part in A.S.I.S.T. training"
               className="w-full h-full object-cover"
             />
