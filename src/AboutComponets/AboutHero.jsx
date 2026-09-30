@@ -8,7 +8,7 @@ function AboutHero() {
       <div className="absolute inset-0 z-0">
         <img
           src="https://i.pinimg.com/736x/3d/e6/bc/3de6bcd1b20e001c659576cc57cc286a.jpg"
-          alt="Wales Healthcare background"
+          alt="Wales Healthcare Services background"
           className="w-full h-full object-cover object-center"
         />
         {/* Very light transparent veil so text is legible while the image stays clear */}
@@ -26,17 +26,17 @@ function AboutHero() {
             {/* Medical Badge */}
             <div className="inline-flex items-center space-x-2 bg-slate-900/40 backdrop-blur-md border border-teal-500/30 px-3 py-1 rounded-md text-xs font-medium text-teal-300 shadow-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-              <span>Wales Healthcare • Ontario-Wide Clinical Support</span>
+              <span>Healthcare. Workforce & Education.</span>
             </div>
 
             {/* Headline */}
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white drop-shadow-md leading-tight">
-              About <span className="text-teal-400">Wales Healthcare</span>
+              About <span className="text-teal-400">Wales Healthcare Services Inc.</span>
             </h1>
 
             {/* Description */}
             <p className="text-sm sm:text-base text-slate-100 drop-shadow leading-relaxed max-w-2xl font-medium">
-              Wales Healthcare serves as a premier, trusted partner for families and healthcare institutions across Ontario, delivering dependable, compassionate care when it matters most.
+              Wales Healthcare Services Inc. is a Canadian healthcare organization committed to providing compassionate, reliable, and person-centred healthcare services while supporting the development of a skilled and capable healthcare workforce.
             </p>
 
           </div>
@@ -49,19 +49,19 @@ function AboutHero() {
                   ✚
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">Healthcare Excellence</h3>
-                  <p className="text-xs text-slate-200">Ontario-wide care support</p>
+                  <h3 className="text-sm font-bold text-white">Healthcare & Education</h3>
+                  <p className="text-xs text-slate-200">Canadian Workforce Support</p>
                 </div>
               </div>
 
               <div className="space-y-2 pt-2 border-t border-white/10 text-xs text-slate-200">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300">Standard</span>
-                  <span className="text-teal-300 font-semibold">Fully Credentialed</span>
+                  <span className="text-slate-300">Organization</span>
+                  <span className="text-teal-300 font-semibold">Canadian Registered</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300">Coverage</span>
-                  <span className="text-white font-semibold">Families & Facilities</span>
+                  <span className="text-slate-300">Focus</span>
+                  <span className="text-white font-semibold">Care & Workforce Development</span>
                 </div>
               </div>
             </div>

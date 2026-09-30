@@ -114,8 +114,8 @@ function ContactB() {
               </div>
               <div>
                 <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Office Address</h3>
-                <p className="text-base font-bold text-slate-900 mt-0.5">123 Healthcare Avenue</p>
-                <p className="text-xs text-slate-500 mt-0.5">Suite 400, Wales, UK</p>
+                <p className="text-base font-bold text-slate-900 mt-0.5">1526 Dusty Drive,</p>
+                <p className="text-xs text-slate-500 mt-0.5">Pickering, Ontario, L1X 0C9</p>
               </div>
             </div>
 

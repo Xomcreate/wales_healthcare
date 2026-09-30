@@ -28,7 +28,7 @@ function ServiceAbout() {
 
         {/* Headline */}
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 leading-tight max-w-3xl mx-auto">
-          Serving Communities Across Ontario with Trusted Care
+          Serving Communities Across Canada with Trusted Care & Training
         </h2>
 
         {/* Body Description */}

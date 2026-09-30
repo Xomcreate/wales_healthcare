@@ -11,7 +11,7 @@ function AboutB() {
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100 aspect-4/3 sm:aspect-16/11 group">
               <img
                 src="https://i.pinimg.com/736x/1c/e6/68/1ce66810219cdc6cc5013364a8dcf3b4.jpg"
-                alt="Compassionate caregiver supporting a client at Wales Healthcare"
+                alt="Healthcare professional supporting a client at Wales Healthcare Services"
                 className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-linear-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none" />
@@ -23,7 +23,7 @@ function AboutB() {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Committed Care</h4>
-                  <p className="text-xs text-slate-600">Ontario-Wide Support</p>
+                  <p className="text-xs text-slate-600">Canadian Healthcare Partner</p>
                 </div>
               </div>
             </div>
@@ -35,34 +35,34 @@ function AboutB() {
             {/* Top Tag */}
             <div className="inline-flex items-center space-x-2 bg-teal-50 border border-teal-500/20 px-3.5 py-1.5 rounded-full text-xs font-semibold text-teal-700">
               <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
-              <span>Dedicated Healthcare Excellence</span>
+              <span>Healthcare. Workforce & Education.</span>
             </div>
 
             {/* Main Heading */}
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              Compassionate Care Tailored to Your Unique Needs
+              Wales Healthcare Services Inc.
             </h2>
 
             {/* Paragraph 1 */}
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-              Wales Healthcare is a trusted healthcare partner proudly serving families, communities, and care facilities across Ontario, from Windsor to Ottawa. 
+              Wales Healthcare Services Inc. is a Canadian healthcare organization committed to providing compassionate, reliable, and person-centred healthcare services while supporting the development of a skilled and capable healthcare workforce.
             </p>
 
             {/* Paragraph 2 */}
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-              We were founded with a simple yet powerful mission: to empower individuals to care for their loved ones with dignity, clinical professionalism, and uncompromised respect. Our certified caregivers and healthcare professionals are dedicated to supporting clients and facilities every single day.
+              We empower individuals, families, and care facilities by delivering exceptional clinical professionalism, dignity, and uncompromised respect tailored to unique personal and operational requirements.
             </p>
 
             {/* Paragraph 3 */}
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-              We believe that exceptional care is deeply personal. By taking the time to understand individual requirements and facility standards, we craft customized support solutions that promote safety, comfort, and enduring peace of mind.
+              Through our core pillars of healthcare delivery and workforce education, we craft customized support solutions that promote safety, comfort, and enduring peace of mind across communities.
             </p>
 
             {/* Closing Tagline / Accent Box */}
             <div className="pt-2 w-full max-w-xl">
               <div className="bg-slate-50 border border-slate-200/80 p-4 rounded-2xl shadow-xs">
                 <p className="text-xs sm:text-sm font-semibold text-slate-800">
-                  At <span className="text-teal-600 font-bold">Wales Healthcare</span>, we’re more than a service provider—we’re your reliable partner in care continuity.
+                  At <span className="text-teal-600 font-bold">Wales Healthcare Services Inc.</span>, we’re more than a service provider—we’re your reliable partner in care continuity and workforce excellence.
                 </p>
               </div>
             </div>

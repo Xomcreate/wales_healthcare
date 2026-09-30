@@ -6,7 +6,7 @@ const trainingInfo = {
   time: '10:00 AM \u2013 4:30 PM',
   delivery: 'In-Person',
   cost: '$150',
-  location: '25 Tangiers Road, Unit 1, North York, ON M3J 2B1',
+  location: '1526 Dusty Drive, Pickering, Ontario, L1X 0C9',
 };
 
 const modules = [

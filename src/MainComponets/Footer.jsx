@@ -39,8 +39,8 @@ function Footer() {
             
             <div className="text-xs text-slate-600 space-y-1.5 leading-relaxed">
               <p className="font-semibold text-slate-800">Wales Healthcare Services Inc.</p>
-              <p>220 Duncan Mill Rd, Suite 520</p>
-              <p>North York, ON M3B 2V1</p>
+              <p>1526 Dusty Drive, Pickering</p>
+              <p>Ontario, L1X 0C9</p>
             </div>
 
             <div className="pt-1 text-xs text-slate-600">

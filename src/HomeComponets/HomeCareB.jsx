@@ -15,8 +15,8 @@ function HomeCareB() {
         </div>
 
         {/* Main Heading */}
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight mb-5">
-          Serving communities from Windsor to Ottawa
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 max-w-4xl mx-auto leading-tight mb-5">
+          Serving communities Across Canada With Trusted Care & Training
         </h2>
 
         {/* Subtitle */}
