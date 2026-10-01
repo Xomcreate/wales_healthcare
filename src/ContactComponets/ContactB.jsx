@@ -90,7 +90,7 @@ function ContactB() {
               </div>
               <div>
                 <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Phone Support</h3>
-                <p className="text-base font-bold text-slate-900 mt-0.5">09076084515</p>
+                <p className="text-base font-bold text-slate-900 mt-0.5">+1 (647) 692-7963</p>
                 <p className="text-xs text-slate-500 mt-0.5">Available 24/7 for urgent inquiries.</p>
               </div>
             </div>

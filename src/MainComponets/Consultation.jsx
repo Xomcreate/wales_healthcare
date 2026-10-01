@@ -241,7 +241,7 @@ function Consultation() {
             <div className="pt-4 border-t border-slate-200">
               <p className="text-xs text-slate-500">Need immediate assistance?</p>
               <p className="text-sm font-bold text-teal-700 mt-1">
-                Call <a href="tel:09076084515" className="hover:underline">09076084515</a> or email support.
+                Call <a href="tel:09076084515" className="hover:underline">+1 (647) 692-7963</a> or email support.
               </p>
             </div>
           </div>

@@ -49,8 +49,8 @@ function Footer() {
 
             <div className="pt-2 text-xs space-y-1">
               <p>
-                <a href="tel:9057091767" className="text-slate-700 hover:text-teal-600 font-medium">
-                  905-709-1767
+                <a href="tel:+1 (647) 692-7963" className="text-slate-700 hover:text-teal-600 font-medium">
+                +1 (647) 692-7963
                 </a>
               </p>
               <p>
@@ -176,7 +176,7 @@ function Footer() {
 
         {/* Divider Line */}
         <div className="mt-10 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 space-y-3 sm:space-y-0 text-center sm:text-left">
-          <p>Serving Communities Across Ontario, From Windsor to Ottawa</p>
+          <p>Serving Communities Across Canada With Trusted Care & Training</p>
           <p>© Wales Healthcare. All Rights Reserved.</p>
         </div>
 

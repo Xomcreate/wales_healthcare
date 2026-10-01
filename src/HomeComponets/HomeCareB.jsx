@@ -55,7 +55,7 @@ function HomeCareB() {
             href="tel:9057091767"
             className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-semibold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all text-center"
           >
-            905-709-1767 (24/7)
+           +1 (647) 692-7963 (24/7)
           </a>
         </div>
 

@@ -359,10 +359,10 @@ function Header() {
           <span className="truncate">
             <span className="hidden sm:inline">Need Help? </span>
             <a
-              href="tel:09076084515"
+              href="tel: +1 647 692 7963"
               className="text-teal-600 hover:text-teal-700 font-semibold"
             >
-              09076084515
+               +1 647 692 7963
             </a>
           </span>
         </div>
