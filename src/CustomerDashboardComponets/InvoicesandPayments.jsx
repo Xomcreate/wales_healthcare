@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   FaFileInvoiceDollar, FaSpinner, FaTimes, FaFileUpload, FaCheckCircle,
+  FaTimesCircle, FaInfoCircle, FaCreditCard,
 } from "react-icons/fa";
 import api from "../api/axios";
 
@@ -8,6 +9,12 @@ const statusStyle = {
   Paid: "bg-emerald-50 text-emerald-700 border-emerald-200",
   Overdue: "bg-rose-50 text-rose-700 border-rose-200",
   Pending: "bg-amber-50 text-amber-700 border-amber-200",
+};
+
+const NOTICE_STYLES = {
+  success: "bg-emerald-50 text-emerald-700",
+  error: "bg-rose-50 text-rose-700",
+  info: "bg-amber-50 text-amber-700",
 };
 
 const normalizeInvoice = (inv) => ({
@@ -21,11 +28,12 @@ const normalizeInvoice = (inv) => ({
 });
 
 const unwrapList = (data) => (Array.isArray(data) ? data : data?.results || []);
-const formatMoney = (n) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n || 0);
+// Card payments are taken in GBP, so show GBP everywhere on this page.
+const formatMoney = (n) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(n || 0);
 const formatDate = (iso) => {
   if (!iso) return "—";
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString("en-GB", { month: "short", day: "numeric", year: "numeric" });
 };
 const getApiError = (err, fallback) => {
   const data = err?.response?.data;
@@ -38,12 +46,19 @@ export default function InvoicesandPayments() {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
+
+  // { type: 'success' | 'error' | 'info', text, duration? }
+  const [notice, setNotice] = useState(null);
 
   const [showEvidenceModal, setShowEvidenceModal] = useState(false);
   const [evidenceForm, setEvidenceForm] = useState({ invoiceId: "", note: "", file: null });
   const [submitting, setSubmitting] = useState(false);
   const [evidenceError, setEvidenceError] = useState("");
+
+  // ---------------- Stripe card payment state ----------------
+  const [payingInvoiceId, setPayingInvoiceId] = useState(null); // invoice being sent to Stripe
+  const [verifyingPayment, setVerifyingPayment] = useState(false); // coming back from Stripe
+  const verifiedRef = useRef(false); // stops React StrictMode double-verifying
 
   const loadInvoices = useCallback(async () => {
     setError("");
@@ -58,11 +73,80 @@ export default function InvoicesandPayments() {
   }, []);
 
   useEffect(() => { loadInvoices(); }, [loadInvoices]);
+
   useEffect(() => {
     if (!notice) return undefined;
-    const t = setTimeout(() => setNotice(""), 4000);
+    const t = setTimeout(() => setNotice(null), notice.duration || 4000);
     return () => clearTimeout(t);
   }, [notice]);
+
+  // ---------------- Stripe: handle the redirect back from Checkout ----------------
+  //   ?payment=success&session_id=cs_...   (finished)
+  //   ?payment=cancelled                   (customer pressed "back")
+  useEffect(() => {
+    if (verifiedRef.current) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get("payment");
+    const sessionId = params.get("session_id");
+
+    if (!result) return;
+    verifiedRef.current = true;
+
+    // Clean the URL straight away so a refresh doesn't re-run this.
+    window.history.replaceState({}, "", window.location.pathname);
+
+    if (result === "cancelled") {
+      setNotice({
+        type: "info",
+        text: "Payment cancelled. No money was taken from your card.",
+        duration: 8000,
+      });
+      return;
+    }
+
+    if (result === "success" && sessionId) {
+      (async () => {
+        setVerifyingPayment(true);
+        try {
+          const { data } = await api.post("invoices/me/verify-session/", {
+            session_id: sessionId,
+          });
+
+          if (data.paid) {
+            const num = data.invoice?.invoice_number;
+            setNotice({
+              type: "success",
+              text: num
+                ? `Payment successful! Your payment for ${num} has been confirmed. Thank you.`
+                : "Payment successful! Your payment has been confirmed. Thank you.",
+              duration: 8000,
+            });
+          } else {
+            setNotice({
+              type: "info",
+              text:
+                data.detail ||
+                "We haven't received confirmation of this payment yet. If you were charged, it will appear here shortly.",
+              duration: 8000,
+            });
+          }
+        } catch (err) {
+          setNotice({
+            type: "error",
+            text: getApiError(
+              err,
+              "We couldn't verify your payment right now. If you were charged, it will appear here shortly."
+            ),
+            duration: 8000,
+          });
+        } finally {
+          setVerifyingPayment(false);
+          await loadInvoices();
+        }
+      })();
+    }
+  }, [loadInvoices]);
 
   const outstanding = useMemo(
     () => invoices.filter((i) => i.status === "Overdue" || i.status === "Pending"),
@@ -70,6 +154,31 @@ export default function InvoicesandPayments() {
   );
   const outstandingTotal = outstanding.reduce((sum, i) => sum + i.amount, 0);
 
+  // ---------------- pay an invoice by card (Stripe Checkout) ----------------
+  const handlePayWithCard = async (invoice) => {
+    setPayingInvoiceId(invoice.id);
+    try {
+      const { data } = await api.post(`invoices/me/${invoice.id}/checkout/`, {
+        // Stripe sends the customer back to exactly this page.
+        return_url: `${window.location.origin}${window.location.pathname}`,
+      });
+
+      if (!data.checkout_url) {
+        throw new Error("No checkout URL returned");
+      }
+
+      // Hand over to Stripe's hosted payment page.
+      window.location.href = data.checkout_url;
+    } catch (err) {
+      setNotice({
+        type: "error",
+        text: getApiError(err, "Could not start the card payment. Please try again."),
+      });
+      setPayingInvoiceId(null);
+    }
+  };
+
+  // ---------------- evidence upload (bank transfer etc.) ----------------
   const openEvidenceModal = (invoiceId) => {
     setEvidenceForm({ invoiceId: invoiceId ? String(invoiceId) : "", note: "", file: null });
     setEvidenceError("");
@@ -94,7 +203,7 @@ export default function InvoicesandPayments() {
       await api.post(`invoices/me/${evidenceForm.invoiceId}/evidence/`, formData, { headers });
 
       setShowEvidenceModal(false);
-      setNotice("Payment evidence submitted. Your franchise will confirm it.");
+      setNotice({ type: "success", text: "Payment evidence submitted. Your franchise will confirm it." });
       await loadInvoices();
     } catch (err) {
       setEvidenceError(getApiError(err, "Could not submit evidence. Please try again."));
@@ -118,81 +227,127 @@ export default function InvoicesandPayments() {
         <button
           onClick={() => openEvidenceModal("")}
           disabled={loading || outstanding.length === 0}
-          className="flex items-center gap-2 rounded-xl bg-teal-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-700 transition disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-3.5 py-2 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition disabled:opacity-60"
         >
-          <FaFileUpload className="text-[10px]" /> Submit Payment Evidence
+          <FaFileUpload className="text-[10px]" /> Paid another way? Submit Evidence
         </button>
       </div>
 
+      {/* VERIFYING STRIPE PAYMENT BANNER */}
+      {verifyingPayment && (
+        <div
+          role="status"
+          className="rounded-xl px-4 py-3 text-xs font-semibold bg-slate-100 text-slate-700 flex items-center gap-2"
+        >
+          <FaSpinner className="animate-spin text-[11px]" />
+          Confirming your payment with Stripe… please don't close this page.
+        </div>
+      )}
+
+      {/* NOTICE BANNER */}
       {notice && (
-        <div role="status" className="rounded-xl bg-slate-100 px-4 py-3 text-xs font-semibold text-slate-700">
-          {notice}
+        <div
+          role="status"
+          className={`rounded-xl px-4 py-3 text-xs font-semibold flex items-start justify-between gap-3 ${
+            NOTICE_STYLES[notice.type] || NOTICE_STYLES.info
+          }`}
+        >
+          <span className="flex items-start gap-2">
+            {notice.type === "success" && <FaCheckCircle className="text-[12px] mt-0.5 shrink-0" />}
+            {notice.type === "error" && <FaTimesCircle className="text-[12px] mt-0.5 shrink-0" />}
+            {notice.type === "info" && <FaInfoCircle className="text-[12px] mt-0.5 shrink-0" />}
+            <span>{notice.text}</span>
+          </span>
+          <button
+            type="button"
+            onClick={() => setNotice(null)}
+            className="shrink-0 opacity-60 hover:opacity-100"
+            aria-label="Dismiss"
+          >
+            <FaTimes className="text-[10px]" />
+          </button>
         </div>
       )}
 
       <div className="overflow-hidden rounded-2xl border border-slate-200/80 shadow-xs">
-        <table className="w-full text-left text-xs">
-          <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            <tr>
-              <th className="px-5 py-3">Invoice</th>
-              <th className="px-5 py-3">Date</th>
-              <th className="px-5 py-3">Amount</th>
-              <th className="px-5 py-3">Status</th>
-              <th className="px-5 py-3 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100 bg-white">
-            {loading && (
-              <tr><td colSpan={5} className="px-5 py-10 text-center text-slate-500">
-                <FaSpinner className="mx-auto mb-2 animate-spin" /> Loading invoices…
-              </td></tr>
-            )}
-            {!loading && error && (
-              <tr><td colSpan={5} className="px-5 py-10 text-center text-rose-600 font-semibold">{error}</td></tr>
-            )}
-            {!loading && !error && invoices.length === 0 && (
-              <tr><td colSpan={5} className="px-5 py-10 text-center text-slate-500">
-                You don't have any invoices yet.
-              </td></tr>
-            )}
-            {!loading && !error && invoices.map((inv) => {
-              const latest = inv.evidenceSubmissions[0];
-              return (
-                <tr key={inv.id}>
-                  <td className="flex items-center gap-2 px-5 py-3.5 font-bold text-slate-800">
-                    <FaFileInvoiceDollar className="text-teal-600" /> {inv.number}
-                  </td>
-                  <td className="px-5 py-3.5 text-slate-500">{formatDate(inv.date)}</td>
-                  <td className="px-5 py-3.5 font-bold text-slate-800">{formatMoney(inv.amount)}</td>
-                  <td className="px-5 py-3.5">
-                    <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase ${statusStyle[inv.status]}`}>
-                      {inv.status}
-                    </span>
-                    {latest && inv.status !== "Paid" && (
-                      <p className="mt-1 text-[10px] text-slate-400">
-                        Evidence {latest.status.toLowerCase()} {formatDate(latest.created_at)}
-                      </p>
-                    )}
-                  </td>
-                  <td className="px-5 py-3.5 text-right">
-                    {inv.status === "Paid" ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
-                        <FaCheckCircle className="text-[10px]" /> Paid
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              <tr>
+                <th className="px-5 py-3">Invoice</th>
+                <th className="px-5 py-3">Date</th>
+                <th className="px-5 py-3">Amount</th>
+                <th className="px-5 py-3">Status</th>
+                <th className="px-5 py-3 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 bg-white">
+              {loading && (
+                <tr><td colSpan={5} className="px-5 py-10 text-center text-slate-500">
+                  <FaSpinner className="mx-auto mb-2 animate-spin" /> Loading invoices…
+                </td></tr>
+              )}
+              {!loading && error && (
+                <tr><td colSpan={5} className="px-5 py-10 text-center text-rose-600 font-semibold">{error}</td></tr>
+              )}
+              {!loading && !error && invoices.length === 0 && (
+                <tr><td colSpan={5} className="px-5 py-10 text-center text-slate-500">
+                  You don't have any invoices yet.
+                </td></tr>
+              )}
+              {!loading && !error && invoices.map((inv) => {
+                const latest = inv.evidenceSubmissions[0];
+                return (
+                  <tr key={inv.id}>
+                    <td className="flex items-center gap-2 px-5 py-3.5 font-bold text-slate-800">
+                      <FaFileInvoiceDollar className="text-teal-600" /> {inv.number}
+                    </td>
+                    <td className="px-5 py-3.5 text-slate-500">{formatDate(inv.date)}</td>
+                    <td className="px-5 py-3.5 font-bold text-slate-800">{formatMoney(inv.amount)}</td>
+                    <td className="px-5 py-3.5">
+                      <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase ${statusStyle[inv.status]}`}>
+                        {inv.status}
                       </span>
-                    ) : (
-                      <button
-                        onClick={() => openEvidenceModal(inv.id)}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-teal-50 border border-teal-200 px-3 py-1.5 text-[11px] font-bold text-teal-700 hover:bg-teal-100 transition"
-                      >
-                        Submit Evidence
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                      {latest && inv.status !== "Paid" && (
+                        <p className="mt-1 text-[10px] text-slate-400">
+                          Evidence {latest.status.toLowerCase()} {formatDate(latest.created_at)}
+                        </p>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      {inv.status === "Paid" ? (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+                          <FaCheckCircle className="text-[10px]" /> Paid
+                        </span>
+                      ) : (
+                        <div className="inline-flex items-center gap-2">
+                          <button
+                            onClick={() => handlePayWithCard(inv)}
+                            disabled={payingInvoiceId !== null || verifyingPayment}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-teal-600 px-3 py-1.5 text-[11px] font-bold text-white hover:bg-teal-700 transition disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {payingInvoiceId === inv.id ? (
+                              <FaSpinner className="animate-spin text-[10px]" />
+                            ) : (
+                              <FaCreditCard className="text-[10px]" />
+                            )}
+                            {payingInvoiceId === inv.id ? "Redirecting…" : `Pay ${formatMoney(inv.amount)}`}
+                          </button>
+                          <button
+                            onClick={() => openEvidenceModal(inv.id)}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-teal-50 border border-teal-200 px-3 py-1.5 text-[11px] font-bold text-teal-700 hover:bg-teal-100 transition"
+                          >
+                            Submit Evidence
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {showEvidenceModal && (

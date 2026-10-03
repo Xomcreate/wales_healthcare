@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   FaFileInvoiceDollar,
-  FaMoneyCheckAlt,
   FaHistory,
   FaFileUpload,
   FaBell,
@@ -13,6 +12,7 @@ import {
   FaTimesCircle,
   FaCalendarAlt,
   FaUserCheck,
+  FaCreditCard,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../api/axios"; // adjust the path if this page lives at a different depth
@@ -42,6 +42,15 @@ const formatGBP = (n) =>
     currency: "GBP",
     maximumFractionDigits: 0,
   }).format(n || 0);
+
+// Pay buttons / receipts need pence, so no rounding here.
+const formatGBPExact = (n) =>
+  new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(n) || 0);
 
 const formatDate = (iso) => {
   if (!iso) return "—";
@@ -77,6 +86,12 @@ const getStatusBadge = (status) => {
   }
 };
 
+const NOTICE_STYLES = {
+  success: "bg-emerald-50 text-emerald-700",
+  error: "bg-rose-50 text-rose-700",
+  info: "bg-amber-50 text-amber-700",
+};
+
 const inputCls =
   "w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:border-teal-600";
 
@@ -95,7 +110,13 @@ export default function InvoicesPayments() {
   const [submittingEvidence, setSubmittingEvidence] = useState(false);
   const [evidenceError, setEvidenceError] = useState("");
 
-  const [notice, setNotice] = useState(null); // { type: 'success' | 'error', text }
+  // { type: 'success' | 'error' | 'info', text, duration? }
+  const [notice, setNotice] = useState(null);
+
+  // ---------------- Stripe card payment state ----------------
+  const [payingFeeId, setPayingFeeId] = useState(null); // fee being sent to Stripe
+  const [verifyingPayment, setVerifyingPayment] = useState(false); // coming back from Stripe
+  const verifiedRef = useRef(false); // stops React StrictMode double-verifying
 
   // ---------------- customer payment confirmations (their invoices) ----------------
   const [customerEvidenceQueue, setCustomerEvidenceQueue] = useState([]);
@@ -139,9 +160,78 @@ export default function InvoicesPayments() {
 
   useEffect(() => {
     if (!notice) return undefined;
-    const t = setTimeout(() => setNotice(null), 4000);
+    const t = setTimeout(() => setNotice(null), notice.duration || 4000);
     return () => clearTimeout(t);
   }, [notice]);
+
+  // ---------------- Stripe: handle the redirect back from Checkout ----------------
+  // Stripe sends the user back to this page with
+  //   ?payment=success&session_id=cs_...   (paid / finished)
+  //   ?payment=cancelled                   (user pressed "back")
+  useEffect(() => {
+    if (verifiedRef.current) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get("payment");
+    const sessionId = params.get("session_id");
+
+    if (!result) return;
+    verifiedRef.current = true;
+
+    // Clean the URL straight away so a refresh doesn't re-run this.
+    window.history.replaceState({}, "", window.location.pathname);
+
+    if (result === "cancelled") {
+      setNotice({
+        type: "info",
+        text: "Payment cancelled. No money was taken from your card.",
+        duration: 8000,
+      });
+      return;
+    }
+
+    if (result === "success" && sessionId) {
+      (async () => {
+        setVerifyingPayment(true);
+        try {
+          const { data } = await api.post("fees/mine/verify-session/", {
+            session_id: sessionId,
+          });
+
+          if (data.paid) {
+            const ref = data.fee?.reference;
+            setNotice({
+              type: "success",
+              text: ref
+                ? `Payment successful! Stripe has confirmed your payment for ${ref}. Thank you.`
+                : "Payment successful! Stripe has confirmed your payment. Thank you.",
+              duration: 8000,
+            });
+          } else {
+            setNotice({
+              type: "info",
+              text:
+                data.detail ||
+                "Stripe has not confirmed this payment yet. If you were charged, it will appear here shortly.",
+              duration: 8000,
+            });
+          }
+        } catch (err) {
+          setNotice({
+            type: "error",
+            text: getApiError(
+              err,
+              "We couldn't verify your payment right now. If you were charged, it will appear here shortly."
+            ),
+            duration: 8000,
+          });
+        } finally {
+          setVerifyingPayment(false);
+          await loadFees();
+        }
+      })();
+    }
+  }, [loadFees]);
 
   // ---------------- derived data (franchise's own fees) ----------------
   const normalizedFees = useMemo(
@@ -206,6 +296,30 @@ export default function InvoicesPayments() {
     : unpaidFees.length === 0
     ? "No outstanding fees to submit evidence for"
     : "";
+
+  // ---------------- actions: pay a fee by card (Stripe Checkout) ----------------
+  const handlePayWithCard = async (fee) => {
+    setPayingFeeId(fee.id);
+    try {
+      const { data } = await api.post(`fees/mine/${fee.id}/checkout/`, {
+        // Stripe sends the user back to exactly this page.
+        return_url: `${window.location.origin}${window.location.pathname}`,
+      });
+
+      if (!data.checkout_url) {
+        throw new Error("No checkout URL returned");
+      }
+
+      // Hand over to Stripe's hosted payment page.
+      window.location.href = data.checkout_url;
+    } catch (err) {
+      setNotice({
+        type: "error",
+        text: getApiError(err, "Could not start the card payment. Please try again."),
+      });
+      setPayingFeeId(null);
+    }
+  };
 
   // ---------------- actions: franchise's own fee evidence ----------------
   const openEvidenceModal = (feeId) => {
@@ -304,7 +418,7 @@ export default function InvoicesPayments() {
             Fees, Renewals & Payments
           </h3>
           <p className="text-xs text-slate-500 mt-1">
-            View fees set by Head Office, track what's due or overdue, submit payment evidence, and confirm your customers' payments.
+            View fees set by Head Office, pay by card, track what's due or overdue, submit payment evidence, and confirm your customers' payments.
           </p>
         </div>
 
@@ -328,15 +442,39 @@ export default function InvoicesPayments() {
         </div>
       </div>
 
+      {/* VERIFYING STRIPE PAYMENT BANNER */}
+      {verifyingPayment && (
+        <div
+          role="status"
+          className="rounded-xl px-4 py-3 text-xs font-semibold bg-slate-100 text-slate-700 flex items-center gap-2"
+        >
+          <FaSpinner className="animate-spin text-[11px]" />
+          Confirming your payment with Stripe… please don't close this page.
+        </div>
+      )}
+
       {/* NOTICE BANNER */}
       {notice && (
         <div
           role="status"
-          className={`rounded-xl px-4 py-3 text-xs font-semibold ${
-            notice.type === "success" ? "bg-emerald-50 text-emerald-700" : "bg-rose-50 text-rose-700"
+          className={`rounded-xl px-4 py-3 text-xs font-semibold flex items-start justify-between gap-3 ${
+            NOTICE_STYLES[notice.type] || NOTICE_STYLES.info
           }`}
         >
-          {notice.text}
+          <span className="flex items-start gap-2">
+            {notice.type === "success" && <FaCheckCircle className="text-[12px] mt-0.5 shrink-0" />}
+            {notice.type === "error" && <FaTimesCircle className="text-[12px] mt-0.5 shrink-0" />}
+            {notice.type === "info" && <FaInfoCircle className="text-[12px] mt-0.5 shrink-0" />}
+            <span>{notice.text}</span>
+          </span>
+          <button
+            type="button"
+            onClick={() => setNotice(null)}
+            className="shrink-0 opacity-60 hover:opacity-100"
+            aria-label="Dismiss"
+          >
+            <FaTimes className="text-[10px]" />
+          </button>
         </div>
       )}
 
@@ -344,7 +482,7 @@ export default function InvoicesPayments() {
       {!loading && !loadError && normalizedFees.length > 0 && unpaidFees.length === 0 && (
         <div className="rounded-xl px-4 py-3 text-xs font-semibold bg-emerald-50 text-emerald-700 flex items-center gap-2">
           <FaCheckCircle className="text-[11px]" />
-          All fees are marked paid — there's nothing outstanding to submit evidence for right now.
+          All fees are marked paid — there's nothing outstanding to pay right now.
         </div>
       )}
 
@@ -476,12 +614,28 @@ export default function InvoicesPayments() {
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         {fee.displayStatus !== "Paid" && (
-                          <button
-                            onClick={() => openEvidenceModal(fee.id)}
-                            className="px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 text-xs font-bold border border-teal-200 hover:bg-teal-100 transition"
-                          >
-                            Submit Evidence
-                          </button>
+                          <div className="inline-flex items-center gap-2">
+                            <button
+                              onClick={() => handlePayWithCard(fee)}
+                              disabled={payingFeeId !== null || verifyingPayment}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 text-white text-xs font-bold hover:bg-teal-700 transition disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                              {payingFeeId === fee.id ? (
+                                <FaSpinner className="animate-spin text-[10px]" />
+                              ) : (
+                                <FaCreditCard className="text-[10px]" />
+                              )}
+                              {payingFeeId === fee.id
+                                ? "Redirecting…"
+                                : `Pay ${formatGBPExact(fee.balance)}`}
+                            </button>
+                            <button
+                              onClick={() => openEvidenceModal(fee.id)}
+                              className="px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 text-xs font-bold border border-teal-200 hover:bg-teal-100 transition"
+                            >
+                              Submit Evidence
+                            </button>
+                          </div>
                         )}
                       </td>
                     </tr>
@@ -522,9 +676,13 @@ export default function InvoicesPayments() {
                       <td className="py-3.5 px-4 font-bold text-slate-900">{p.feeReference}</td>
                       <td className="py-3.5 px-4 font-black text-slate-900">{formatGBP(p.amount)}</td>
                       <td className="py-3.5 px-4 text-slate-700">{p.method}</td>
-                      <td className="py-3.5 px-4 text-slate-500">{p.reference || "—"}</td>
+                      <td className="py-3.5 px-4 text-slate-500 max-w-45 truncate" title={p.reference}>
+                        {p.reference || "—"}
+                      </td>
                       <td className="py-3.5 px-4 text-slate-600">{formatDate(p.paid_on)}</td>
-                      <td className="py-3.5 px-4 text-slate-500">{p.recorded_by_name || "—"}</td>
+                      <td className="py-3.5 px-4 text-slate-500">
+                        {p.recorded_by_name || (String(p.method).startsWith("Stripe") ? "Stripe (automatic)" : "—")}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -879,7 +1037,10 @@ export default function InvoicesPayments() {
                   Head Office manages and issues franchise fees and agreement renewals. Each fee has a designated due date and reference code.
                 </p>
                 <p>
-                  If you have made a payment outside the automated gateway, you can upload payment evidence (bank receipts/slips) directly against the specific fee. Head Office will review and reconcile your statement.
+                  You can pay any outstanding fee by card using the <span className="font-bold">Pay</span> button. You'll be taken to Stripe's secure payment page, and as soon as Stripe confirms the payment your fee is updated automatically.
+                </p>
+                <p>
+                  If you have paid another way (for example a bank transfer), upload payment evidence (bank receipts/slips) against the specific fee. Head Office will review and reconcile your statement.
                 </p>
               </div>
               <div className="flex justify-end pt-2">
